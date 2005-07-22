@@ -30,8 +30,9 @@ public class ProblemHandlerTest extends TestCase {
     protected void setUp() throws Exception {
         m_teh = new TestProblemHandler();
 
-        m_eh = ErrorHandlerProxy.create(ProblemHandlerTest.class.getClassLoader(),
-                ExampleProblemHandler.class, m_teh);
+        ProblemReporterFactory factory = new DefaultProblemReporterFactory(m_teh);
+        m_eh = factory.create(ProblemHandlerTest.class.getClassLoader(),
+                ExampleProblemHandler.class);
     }
 
     public void testSimpleMessage() {

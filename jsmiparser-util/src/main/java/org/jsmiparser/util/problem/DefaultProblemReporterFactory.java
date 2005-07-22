@@ -19,15 +19,18 @@ import org.apache.log4j.Logger;
 
 import java.lang.reflect.Proxy;
 
-public class ErrorHandlerProxy<T> {
-    private static final Logger m_log = Logger.getLogger(ErrorHandlerProxy.class);
+public class DefaultProblemReporterFactory implements ProblemReporterFactory {
+    private static final Logger m_log = Logger.getLogger(DefaultProblemReporterFactory.class);
 
-    public ErrorHandlerProxy(Class<T> cl, ProblemHandler eh) {
+    private ProblemHandler m_problemHandler;
+
+    public DefaultProblemReporterFactory(ProblemHandler ph) {
+        m_problemHandler = ph;
     }
 
-    public static <T> T create(ClassLoader classLoader, Class<T> cl, ProblemHandler eh) {
+    public <T> T create(ClassLoader classLoader, Class<T> cl) {
         Class[] classArray = { cl };
-        return (T) Proxy.newProxyInstance(classLoader, classArray, new ProblemInvocationHandler(cl, eh));
+        return (T) Proxy.newProxyInstance(classLoader, classArray, new ProblemInvocationHandler(cl, m_problemHandler));
     }
 
 }
