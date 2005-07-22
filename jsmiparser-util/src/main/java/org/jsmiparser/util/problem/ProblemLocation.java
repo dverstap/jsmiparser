@@ -25,9 +25,11 @@ import java.io.File;
 public class ProblemLocation {
     private static final Logger m_log = Logger.getLogger(ProblemLocation.class);
 
+    private static final char SEPARATOR = ':';
+
     private File m_file;
-    private int m_line;
-    private int m_column;
+    private int m_line = -1;
+    private int m_column = -1;
 
     public ProblemLocation(File file, int line, int column) {
         m_file = file;
@@ -57,5 +59,21 @@ public class ProblemLocation {
 
     public void setColumn(int column) {
         m_column = column;
+    }
+
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        if (m_file != null) {
+            result.append(m_file);
+        }
+        result.append(SEPARATOR);
+        if (m_line > -1) {
+            result.append(m_line);
+        }
+        result.append(SEPARATOR);
+        if (m_column > -1) {
+            result.append(m_column);
+        }
+        return result.toString();
     }
 }

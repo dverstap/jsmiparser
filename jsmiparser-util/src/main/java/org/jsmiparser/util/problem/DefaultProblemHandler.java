@@ -21,7 +21,7 @@ import java.io.PrintStream;
 import java.util.Formatter;
 
 
-public class DefaultProblemHandler {
+public class DefaultProblemHandler implements ProblemHandler {
     private String name_;
     private PrintStream out_;
     private PrintStream err_;
@@ -139,5 +139,34 @@ public class DefaultProblemHandler {
         Formatter f = new Formatter();
         f.format(formatStr, args);
         warning(f.out().toString());
+    }
+
+    public void handle(ProblemEvent event) {
+        switch (event.getSeverity()) {
+            case ERROR:
+                error(event.getLocation(), event.getLocalizedMessage());
+                break;
+            case FATAL:
+                error(event.getLocation(), event.getLocalizedMessage());
+                break;
+            case WARNING:
+                warning(event.getLocation(), event.getLocalizedMessage());
+                break;
+        }
+    }
+
+    private void error(ProblemLocation location, String localizedMessage) {
+        errorCount_++;
+        print(err_, "Error", location, localizedMessage);
+    }
+
+
+    private void warning(ProblemLocation location, String localizedMessage) {
+        warningCount_++;
+        print(out_, "Warning", location, localizedMessage);
+    }
+
+    private void print(PrintStream stream, String sev, ProblemLocation location, String localizedMessage) {
+        stream.println(sev + ":" + location + ":" + localizedMessage);
     }
 }

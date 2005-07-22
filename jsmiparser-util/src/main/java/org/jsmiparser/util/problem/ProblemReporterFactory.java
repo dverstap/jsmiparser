@@ -17,5 +17,6 @@ package org.jsmiparser.util.problem;
 
 public interface ProblemReporterFactory {
 
+    // TODO add FileLocator as a parameter here?
     <T> T create(ClassLoader classLoader, Class<T> cl);
 }
