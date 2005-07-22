@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+<!--
+    Copyright 2005 Davy Verstappen.
+    
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+    
+        http://www.apache.org/licenses/LICENSE-2.0
+    
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<project>
+    <pomVersion>3</pomVersion>
+    <id>jsmiparser</id>
+    <groupId>jsmiparser</groupId>
+    <currentVersion>1.0</currentVersion>
+    <name>Java SNMP Mib Parser</name>
+
+    <inceptionYear>2005</inceptionYear>
+    <url>http://jsmiparser.berlios.de</url>
+    <issueTrackingUrl>http://developer.berlios.de/bugs/?group_id=4221</issueTrackingUrl>
+    <siteAddress>jsmiparser.berlios.de</siteAddress>
+    <siteDirectory/> <!-- TODO -->
+    <distributionDirectory/>
+
+    <developers>
+        <developer>
+            <id>stappend</id>
+            <name>Davy Verstappen</name>
+            <email>davy@jsmiparser.org</email>
+            <timezone>+1</timezone>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>Apache License 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
+
+
+    <dependencies>
+
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.8</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.0</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+
+        <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
+        <unitTestSourceDirectory>${basedir}/src/test/java</unitTestSourceDirectory>
+
+        <unitTest>
+            <resources>
+                <resource>
+                    <directory>${basedir}/src/test/resources</directory>
+                </resource>
+            </resources>
+            <includes>
+                <include>**/*Test.java</include>
+            </includes>
+        </unitTest>
+
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+            </resource>
+        </resources>
+
+    </build>
+
+    <!--
+    <reports>
+      <report>maven-checkstyle-plugin</report>
+    </reports>
+    -->
+
+    <reports>
+        <report>maven-changes-plugin</report>
+        <report>maven-jdepend-plugin</report>
+        <report>maven-checkstyle-plugin</report>
+        <report>maven-pmd-plugin</report>
+        <report>maven-junit-report-plugin</report>
+        <!-- <report>maven-clover-plugin</report> -->
+        <report>maven-changelog-plugin</report>
+        <report>maven-file-activity-plugin</report>
+        <report>maven-developer-activity-plugin</report>
+        <report>maven-file-activity-plugin</report>
+        <report>maven-license-plugin</report>
+        <report>maven-linkcheck-plugin</report>
+        <report>maven-jxr-plugin</report>
+        <report>maven-dashboard-plugin</report>
+        <report>maven-faq-plugin</report>
+        <report>maven-multiproject-plugin</report>
+    </reports>
+
+
+</project>
+
