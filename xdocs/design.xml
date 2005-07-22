@@ -52,5 +52,53 @@
 	
 	</section>
 		
+
+	<section name="Features">
+
+	    <ul>
+		<li>
+		    Configurable error/warning reporting.
+		</li>
+		<li>
+		    Comparing whether two mibs are equal or not, with
+		    appropriate reporting.
+		</li>
+		<li>
+		    Pretty printing of a mib file, either as SMIv1 or
+		    SMIv2. This can also be used as a unit test: parse
+		    a mib, print it, parse the printed version and
+		    compare the two parsed mibs: they should be
+		    identical (apart from file/line numbers).
+		</li>
+		<li>
+		    Merging of multiple mibs versions, with error
+		    reporting when there are incompatibilities. From
+		    an implementation point of view, there is a bit of
+		    overlap with comparing for equality, so
+		    duplication should be avoided.
+		</li>
+		<li>
+		    Building of a conceptual model. For more
+		    information, see <a
+		    href="http://www.ibr.cs.tu-bs.de/vs/papers/im-2001.pdf">
+		    Reverse Engineering Internet MIBs</a>. The
+		    algorithm for building the model should be
+		    pluggable.
+		</li>
+		<li>
+		    Saving to and restoring from XML.
+		</li>
+	    </ul>
+
+	</section>
+
+	<section name="Error Handling">
+	    
+	    <p>
+		TODO.
+	    </p>
+
+	</section>
+
     </body>
 </document>
