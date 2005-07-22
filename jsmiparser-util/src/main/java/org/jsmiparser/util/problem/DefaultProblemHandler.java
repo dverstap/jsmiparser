@@ -21,7 +21,7 @@ import java.io.PrintStream;
 import java.util.Formatter;
 
 
-public class ErrorHandlerImpl {
+public class DefaultProblemHandler {
     private String name_;
     private PrintStream out_;
     private PrintStream err_;
@@ -30,21 +30,21 @@ public class ErrorHandlerImpl {
     private FileLocator locator_ = null;
 
 
-    public ErrorHandlerImpl(String name, PrintStream err) {
+    public DefaultProblemHandler(String name, PrintStream err) {
         super();
         name_ = name;
         out_ = System.out;
         err_ = err;
     }
 
-    public ErrorHandlerImpl(String name) {
+    public DefaultProblemHandler(String name) {
         super();
         name_ = name;
         out_ = System.out;
         err_ = System.err;
     }
 
-    public ErrorHandlerImpl() {
+    public DefaultProblemHandler() {
         super();
         out_ = System.out;
         err_ = System.err;

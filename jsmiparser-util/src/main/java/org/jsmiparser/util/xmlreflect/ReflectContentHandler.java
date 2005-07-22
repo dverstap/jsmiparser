@@ -20,7 +20,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.*;
 import org.apache.log4j.Logger;
 import org.jsmiparser.util.SAXFileLocator;
-import org.jsmiparser.util.problem.ErrorHandlerImpl;
+import org.jsmiparser.util.problem.DefaultProblemHandler;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -33,7 +33,7 @@ public class ReflectContentHandler extends DefaultHandler
 
     public static final ReflectElementHandlerFactory[] FACTORIES = { TextElementHandler.FACTORY, BeanElementHandler.FACTORY };
 
-    ErrorHandlerImpl eh_; // TODO
+    DefaultProblemHandler eh_; // TODO
     Object root_;
     ElementHandlerStack stack_ = new ElementHandlerStack();
     boolean isOk_ = true;
@@ -45,12 +45,12 @@ public class ReflectContentHandler extends DefaultHandler
     private Map<String, ReflectElementHandler> m_elementHandlerCache = new HashMap<String, ReflectElementHandler>();
     private Set<String> m_skippedPathSet = new LinkedHashSet<String>();
 
-    public ReflectContentHandler(ErrorHandlerImpl eh, Object object) {
+    public ReflectContentHandler(DefaultProblemHandler eh, Object object) {
         this(eh, FACTORIES, object);
     }
 
 
-    public ReflectContentHandler(ErrorHandlerImpl eh, ReflectElementHandlerFactory[] elementHandlerFactories, Object root)
+    public ReflectContentHandler(DefaultProblemHandler eh, ReflectElementHandlerFactory[] elementHandlerFactories, Object root)
     {
         super();
         eh_ = eh;

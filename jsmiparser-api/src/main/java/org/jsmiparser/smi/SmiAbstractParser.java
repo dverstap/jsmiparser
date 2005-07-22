@@ -17,7 +17,7 @@ package org.jsmiparser.smi;
 
 import org.jsmiparser.util.xmlreflect.ReflectContentHandler;
 import org.apache.log4j.Logger;
-import org.jsmiparser.util.problem.ErrorHandlerImpl;
+import org.jsmiparser.util.problem.DefaultProblemHandler;
 import org.xml.sax.SAXException;
 
 import java.io.File;
@@ -29,11 +29,11 @@ public abstract class SmiAbstractParser implements SmiParser {
 
     private static final Logger m_log = Logger.getLogger(SmiAbstractParser.class);
 
-	protected ErrorHandlerImpl eh_;
+	protected DefaultProblemHandler eh_;
 	protected SmiCodeNamingStrategy codeNamingStrategy_;
 	private List<File> classDefinitionFiles_ = new ArrayList<File>();
 
-	public SmiAbstractParser(ErrorHandlerImpl eh, SmiCodeNamingStrategy strategy) {
+	public SmiAbstractParser(DefaultProblemHandler eh, SmiCodeNamingStrategy strategy) {
 		super();
 		eh_ = eh;
 		codeNamingStrategy_ = strategy;
@@ -75,7 +75,7 @@ public abstract class SmiAbstractParser implements SmiParser {
 
 	protected abstract SmiMib parseBasics() throws IOException;
 
-	public ErrorHandlerImpl getErrorHandler() {
+	public DefaultProblemHandler getErrorHandler() {
 		return eh_;
 	}
 

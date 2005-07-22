@@ -25,14 +25,14 @@ import java.util.List;
 public class ProblemHandlerTest extends TestCase {
     private static final Logger m_log = Logger.getLogger(ProblemHandlerTest.class);
     private TestProblemHandler m_teh;
-    private ExampleProblemHandler m_eh;
+    private ExampleProblemReporter m_eh;
 
     protected void setUp() throws Exception {
         m_teh = new TestProblemHandler();
 
         ProblemReporterFactory factory = new DefaultProblemReporterFactory(m_teh);
         m_eh = factory.create(ProblemHandlerTest.class.getClassLoader(),
-                ExampleProblemHandler.class);
+                ExampleProblemReporter.class);
     }
 
     public void testSimpleMessage() {

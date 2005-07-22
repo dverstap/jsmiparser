@@ -26,7 +26,7 @@ import org.jsmiparser.antlr.smi.SMIObjectTypeMacro;
 import org.jsmiparser.antlr.smi.SMITextualConventionMacro;
 import org.jsmiparser.antlr.smi.SMIType;
 import org.jsmiparser.smi.*;
-import org.jsmiparser.util.problem.ErrorHandlerImpl;
+import org.jsmiparser.util.problem.DefaultProblemHandler;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,7 +40,7 @@ public class APParser extends SmiAbstractParser {
 	private ASNMibParser mibParser_ = new ASNMibParser();
 	
 	
-	public APParser(ErrorHandlerImpl eh, SmiCodeNamingStrategy strategy) {
+	public APParser(DefaultProblemHandler eh, SmiCodeNamingStrategy strategy) {
 		super(eh, strategy);
 	}
 

@@ -22,7 +22,7 @@ import org.jsmiparser.util.problem.annotations.ProblemProperty;
 import java.util.List;
 
 @ProblemInterface
-public interface ExampleProblemHandler {
+public interface ExampleProblemReporter {
 
     @ProblemMethod(message = "List size = %d")
     public void reportListSize(@ProblemProperty("size") List<?> l);
