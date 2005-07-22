@@ -18,7 +18,7 @@
 <project>
     <extend>${basedir}/../project.xml</extend>
     <id>jsmiparser-util</id>
-    <name>Java SNMP SMI Parser Utility Classes</name>
+    <name>Java SMI Parser Utility Classes</name>
 
     <dependencies>
         <dependency>

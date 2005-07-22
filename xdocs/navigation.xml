@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+
+  <body>
+
+    <menu name="Projects">
+	<item name="Overview of project"
+	      href="projects-overview.html"/>
+	<item name="Java SNMP SMI Parser Utility Classes"
+	      href="/multiproject/jsmiparser-util/index.html"/>
+	<item name="Java SMI Parser with ANTLR"
+	      href="/multiproject/jsmiparser-antlr/index.html"/>
+	<item name="Java SMI Parser API"
+	      href="/multiproject/jsmiparser-api/index.html"/>
+    </menu>
+
+    <menu name="Documentation">
+      <item  name="Design"
+	     href="/design.html"/>
+    </menu>
+
+  </body>
+</project>

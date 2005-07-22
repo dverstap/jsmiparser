@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<document>
+    <properties>
+	<author email="davy.AT.jsmiparser.DOT.org">Davy Verstappen</author>
+	<title>Java SMI Parser Design</title>
+    </properties>
+    <meta name="keyword" content="java,smi,snmp,parser,design"/>
+    
+    <body>
+	<section name="Phases">
+	    
+	    <ul>
+		<li>
+		    A pluggable parser generates a parse tree for each
+		    file. This can cause syntax errors, and also file
+		    resolution errors (e.g. when a module imports
+		    another one that cannot be found).
+		</li>
+		<li>
+		    OID's must be resolved. Again this can cause name
+		    resolution errors.
+		</li>
+		<li>
+		    The parse tree is converted into a symbol table.
+		</li>
+		<li>
+		    High level semantic error handling is done at this
+		    point (e.g. INDEX clauses must use INTEGER with a
+		    range, not Integer32).
+		</li>
+		<li>
+		    An optional pluggable conception model builder
+		    adds the class/attribute/relationship information
+		    to the symbol table.
+		</li>
+	    </ul>
+	
+	</section>
+		
+    </body>
+</document>
