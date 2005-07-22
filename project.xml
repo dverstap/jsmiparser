@@ -68,6 +68,12 @@
 
     </dependencies>
 
+    <repository>
+        <connection>scm:svn:svn://svn.berlios.de/jsmiparser/trunk</connection>
+        <developerConnection>scm:svn:svn+ssh://svn.berlios.de/svnroot/repos/jsmiparser/trunk</developerConnection>
+        <url>http://svn.berlios.de/wsvn/jsmiparser</url>
+    </repository>
+
     <build>
 
         <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
