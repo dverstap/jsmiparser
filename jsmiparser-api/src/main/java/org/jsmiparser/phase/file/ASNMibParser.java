@@ -26,8 +26,8 @@ import java.util.List;
 import org.jsmiparser.parsetree.asn1.ASNModule;
 import org.jsmiparser.parsetree.asn1.ASNMib;
 import org.jsmiparser.phase.file.ASNFileFinder;
-import org.jsmiparser.phase.file.parser.SMILexer;
-import org.jsmiparser.phase.file.parser.SMIParser;
+import org.jsmiparser.phase.file.antlr.SMILexer;
+import org.jsmiparser.phase.file.antlr.SMIParser;
 
 import antlr.RecognitionException;
 import antlr.TokenStreamException;

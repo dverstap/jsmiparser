@@ -32,27 +32,27 @@ public class SmiParserTest extends TestCase {
         DefaultProblemHandler problemHandler = new DefaultProblemHandler();
         ProblemReporterFactory problemReporterFactory = new DefaultProblemReporterFactory(problemHandler);
 
-        SmiDefaultParser parser = new SmiDefaultParser();
+        SmiDefaultParser antlr = new SmiDefaultParser();
 
         FileParserPhase fileParserPhase = new FileParserPhase(problemReporterFactory);
         FileParserOptions fileParserOptions = fileParserPhase.getOptions();
         fileParserOptions.setFileParserClass(AntlrFileParser.class);
-        parser.addPhase(fileParserPhase);
+        antlr.addPhase(fileParserPhase);
 
         OidResolverPhase oidResolverPhase = new OidResolverPhase(problemReporterFactory);
-        parser.addPhase(oidResolverPhase);
+        antlr.addPhase(oidResolverPhase);
 
         MibBuilderPhase mibBuilderPhase = new MibBuilderPhase(problemReporterFactory);
-        parser.addPhase(mibBuilderPhase);
+        antlr.addPhase(mibBuilderPhase);
 
         MibQualityCheckerPhase mibQualityCheckerPhase = new MibQualityCheckerPhase(problemReporterFactory);
-        parser.addPhase(mibQualityCheckerPhase);
+        antlr.addPhase(mibQualityCheckerPhase);
 
         ConceptualModelBuilderPhase cmBuilderPhase = new ConceptualModelBuilderPhase(problemReporterFactory);
-        parser.addPhase(cmBuilderPhase);
+        antlr.addPhase(cmBuilderPhase);
 
-        SmiMib mib1 = parser.parse();
-        SmiMib mib2 = parser.parse();
+        SmiMib mib1 = antlr.parse();
+        SmiMib mib2 = antlr.parse();
         assertEquals(mib1, mib2);
 
         int errorCount = problemHandler.getErrorCount();

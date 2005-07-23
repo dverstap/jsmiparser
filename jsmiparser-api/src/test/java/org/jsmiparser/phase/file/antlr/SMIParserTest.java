@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jsmiparser.phase.file.parser;
+package org.jsmiparser.phase.file.antlr;
 
 import antlr.RecognitionException;
 import antlr.TokenStreamException;

@@ -63,7 +63,7 @@ public abstract class AbstractSymbol implements Symbol {
 	
 	
 	/* (non-Javadoc)
-	 * @see org.parsesmi.parser.Symbol#setPosition(int, int)
+	 * @see org.parsesmi.antlr.Symbol#setPosition(int, int)
 	 */
 	public void setPosition(int line, int column) {
 		line_ = line;
