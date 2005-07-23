@@ -15,7 +15,6 @@
  */
 package org.jsmiparser.parser;
 
-import org.apache.log4j.Logger;
 import org.jsmiparser.phase.CompositePhase;
 import org.jsmiparser.phase.Phase;
 import org.jsmiparser.phase.PhaseException;
@@ -30,8 +29,8 @@ import org.jsmiparser.util.problem.DefaultProblemEventHandler;
 import org.jsmiparser.util.problem.DefaultProblemReporterFactory;
 import org.jsmiparser.util.problem.ProblemEventHandler;
 
-public class SmiDefaultParser extends CompositePhase {
-    private static final Logger m_log = Logger.getLogger(SmiDefaultParser.class);
+public class SmiDefaultParser extends CompositePhase implements SmiParser {
+
     private Phase m_fileParserPhase;
     private Phase m_oidResolverPhase;
     private Phase m_mibBuilderPhase;
