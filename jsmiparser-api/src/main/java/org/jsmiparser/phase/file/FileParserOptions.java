@@ -15,14 +15,11 @@
  */
 package org.jsmiparser.phase.file;
 
-import org.apache.log4j.Logger;
-
 import java.io.File;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class FileParserOptions {
-    private static final Logger m_log = Logger.getLogger(FileParserOptions.class);
 
     private List<File> m_usedDirList = new ArrayList<File>();
     private List<File> m_inputDirList = new ArrayList<File>();
