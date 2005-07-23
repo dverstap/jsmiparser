@@ -18,6 +18,7 @@ package org.jsmiparser.antlr.parser;
 
 import org.jsmiparser.antlr.asn1.ASNModule;
 import org.jsmiparser.antlr.asn1.Context;
+import org.apache.log4j.Logger;
 
 import antlr.Token;
 import antlr.TokenStreamException;
@@ -27,13 +28,14 @@ import antlr.TokenStreamException;
  *
  */
 class ContextImpl implements Context {
-	
-	SMIAbstractParser parser_;
+
+    private static final Logger m_log = Logger.getLogger(ContextImpl.class);
+
+    SMIAbstractParser parser_;
 	ASNModule module_;
 	
 	/**
 	 * @param parser
-	 * @param module
 	 */
 	public ContextImpl(SMIAbstractParser parser) {
 		super();
@@ -56,10 +58,10 @@ class ContextImpl implements Context {
 			}
 			else
 			{
-				System.err.println("Can't trace line info");
+				m_log.warn("Can't trace line info in " + module_.getName());
 			}
 		} catch (TokenStreamException e) {
-			// do nothing
+            m_log.warn("TokenStreamException while trying to trace line info in " + module_.getName(), e);
 		}
 		return result;
 	}
@@ -78,7 +80,7 @@ class ContextImpl implements Context {
 				result = t.getLine();
 			}
 		} catch (TokenStreamException e) {
-			// do nothing
+            m_log.warn("TokenStreamException while trying to trace column info in " + module_.getName(), e);						
 		}
 		return result;
 	}
