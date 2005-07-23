@@ -32,15 +32,6 @@
         </dependency>
 
         <dependency>
-            <groupId>jsmiparser</groupId>
-            <artifactId>jsmiparser-antlr</artifactId>
-            <version>${pom.currentVersion}</version>
-            <properties>
-                <eclipse.dependency>true</eclipse.dependency>
-            </properties>
-        </dependency>
-
-        <dependency>
             <groupId>antlr</groupId>
             <artifactId>antlr</artifactId>
             <version>2.7.5</version>
