@@ -13,11 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jsmiparser.phase;
+package org.jsmiparser.phase.cm;
 
-public interface Phase {
+import org.jsmiparser.phase.AbstractPhase;
+import org.jsmiparser.phase.PhaseException;
+import org.jsmiparser.smi.SmiMib;
+import org.jsmiparser.util.problem.ProblemReporterFactory;
 
-    Object getOptions();
-    
-    Object process(Object input) throws PhaseException;
+public class ConceptualModelBuilderPhase extends AbstractPhase {
+
+    public ConceptualModelBuilderPhase(ProblemReporterFactory problemReporterFactory) {
+        super(problemReporterFactory);
+    }
+
+    public SmiMib process(Object input) throws PhaseException {
+        SmiMib mib = (SmiMib) input;
+
+        return mib;
+    }
 }

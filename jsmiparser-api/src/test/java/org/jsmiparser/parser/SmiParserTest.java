@@ -17,7 +17,15 @@ package org.jsmiparser.parser;
 
 import junit.framework.TestCase;
 import org.apache.log4j.Logger;
+import org.jsmiparser.phase.PhaseException;
+import org.jsmiparser.phase.file.FileParserOptions;
+import org.jsmiparser.smi.SmiMib;
+import org.jsmiparser.util.problem.DefaultProblemHandler;
+import org.jsmiparser.util.problem.ProblemHandler;
 
+import java.io.File;
+
+// TODO rename to SmiDefaultParserTest
 public class SmiParserTest extends TestCase {
     private static final Logger m_log = Logger.getLogger(SmiParserTest.class);
 
@@ -26,44 +34,33 @@ public class SmiParserTest extends TestCase {
         assertTrue(true);
     }
 
-    /*
-    public void testParser() {
 
-        DefaultProblemHandler problemHandler = new DefaultProblemHandler();
-        ProblemReporterFactory problemReporterFactory = new DefaultProblemReporterFactory(problemHandler);
+    public void testParser() throws PhaseException {
 
-        SmiDefaultParser antlr = new SmiDefaultParser();
+        ProblemHandler problemHandler = new DefaultProblemHandler();
+        SmiDefaultParser parser = new SmiDefaultParser(problemHandler);
+        parser.init();
+        FileParserOptions options = (FileParserOptions) parser.getFileParserPhase().getOptions();
+        initFileParserOptions(options);
 
-        FileParserPhase fileParserPhase = new FileParserPhase(problemReporterFactory);
-        FileParserOptions fileParserOptions = fileParserPhase.getOptions();
-        fileParserOptions.setFileParserClass(AntlrFileParser.class);
-        antlr.addPhase(fileParserPhase);
+        SmiMib mib = parser.parse();
+        assertNotNull(mib);
+        assertEquals(216, mib.getModules().size());
 
-        OidResolverPhase oidResolverPhase = new OidResolverPhase(problemReporterFactory);
-        antlr.addPhase(oidResolverPhase);
+        //SmiMib mib2 = parser.parse();
+        //assertEquals(mib1, mib2);
 
-        MibBuilderPhase mibBuilderPhase = new MibBuilderPhase(problemReporterFactory);
-        antlr.addPhase(mibBuilderPhase);
+        /*
+        int errorCount = problemHandler.getSeverityCount(ProblemSeverity.ERROR);
 
-        MibQualityCheckerPhase mibQualityCheckerPhase = new MibQualityCheckerPhase(problemReporterFactory);
-        antlr.addPhase(mibQualityCheckerPhase);
-
-        ConceptualModelBuilderPhase cmBuilderPhase = new ConceptualModelBuilderPhase(problemReporterFactory);
-        antlr.addPhase(cmBuilderPhase);
-
-        SmiMib mib1 = antlr.parse();
-        SmiMib mib2 = antlr.parse();
-        assertEquals(mib1, mib2);
-
-        int errorCount = problemHandler.getErrorCount();
         MibMerger mibMerger = new MibMerger(problemReporterFactory);
         SmiMib mib3 = mibMerger.merge(mib1, mib2);
         assertEquals(errorCount, problemHandler.getErrorCount());
-
+        */
 
     }
 
-    private void initFileParserOptions(FileParserOptions options) throws FileNotFoundException, RecognitionException, TokenStreamException {
+    private void initFileParserOptions(FileParserOptions options) {
         String mibsVar = System.getenv("MIBS");
         assertNotNull(mibsVar);
         String[] mibDirs = mibsVar.split(":");
@@ -84,5 +81,5 @@ public class SmiParserTest extends TestCase {
             }
         }
     }
-    */
+
 }

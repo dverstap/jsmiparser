@@ -23,7 +23,7 @@ import java.util.Formatter;
 // TODO remove all direct usage of this class
 // TODO then cleanup the class itself
 // TODO refactor into AbstractProblemHandler and also push some method declaration down to the ProblemHandler interface
-public class DefaultProblemHandler implements ProblemHandler {
+public class DefaultProblemHandler extends AbstractProblemEventHandler {
     private String name_;
     private PrintStream out_;
     private PrintStream err_;

@@ -16,10 +16,101 @@
 package org.jsmiparser.parser;
 
 import org.apache.log4j.Logger;
+import org.jsmiparser.phase.CompositePhase;
+import org.jsmiparser.phase.Phase;
+import org.jsmiparser.phase.PhaseException;
+import org.jsmiparser.phase.cm.ConceptualModelBuilderPhase;
+import org.jsmiparser.phase.file.FileParserPhase;
+import org.jsmiparser.phase.file.antlr.AntlrFileParser;
+import org.jsmiparser.phase.mib.MibBuilderPhase;
+import org.jsmiparser.phase.oid.OidResolverPhase;
+import org.jsmiparser.phase.quality.MibQualityCheckerPhase;
+import org.jsmiparser.smi.SmiMib;
+import org.jsmiparser.util.problem.DefaultProblemHandler;
+import org.jsmiparser.util.problem.DefaultProblemReporterFactory;
+import org.jsmiparser.util.problem.ProblemHandler;
 
-public class SmiDefaultParser {
+public class SmiDefaultParser extends CompositePhase {
     private static final Logger m_log = Logger.getLogger(SmiDefaultParser.class);
+    private Phase m_fileParserPhase;
+    private Phase m_oidResolverPhase;
+    private Phase m_mibBuilderPhase;
+    private Phase m_mibQualityCheckerPhase;
+    private Phase m_conceptualModelBuilderPhase;
 
-    
+    protected SmiDefaultParser() {
+        super(new DefaultProblemReporterFactory(new DefaultProblemHandler()));
+    }
 
+    public SmiDefaultParser(ProblemHandler problemHandler) {
+        super(new DefaultProblemReporterFactory(problemHandler));
+    }
+
+    public void init() {
+
+        m_fileParserPhase = createFileParserPhase();
+        addOptionalPhase(m_fileParserPhase);
+
+        m_oidResolverPhase = createOidResolverPhase();
+        addOptionalPhase(m_oidResolverPhase);
+
+        m_mibBuilderPhase = createMibBuilderPhase();
+        addOptionalPhase(m_mibBuilderPhase);
+
+        m_mibQualityCheckerPhase = createMibQualityCheckerPhase();
+        addOptionalPhase(m_mibQualityCheckerPhase);
+
+        m_conceptualModelBuilderPhase = createConceptualModelBuilderPhase();
+        addOptionalPhase(m_conceptualModelBuilderPhase);
+    }
+
+    protected Phase createFileParserPhase() {
+        return new FileParserPhase(m_problemReporterFactory, AntlrFileParser.class);
+    }
+
+    protected OidResolverPhase createOidResolverPhase() {
+        return new OidResolverPhase(m_problemReporterFactory);
+    }
+
+    protected MibBuilderPhase createMibBuilderPhase() {
+        return new MibBuilderPhase(m_problemReporterFactory);
+    }
+
+    protected Phase createMibQualityCheckerPhase() {
+        return new MibQualityCheckerPhase(m_problemReporterFactory);
+    }
+
+    protected ConceptualModelBuilderPhase createConceptualModelBuilderPhase() {
+        return new ConceptualModelBuilderPhase(m_problemReporterFactory);
+    }
+
+    private void addOptionalPhase(Phase phase) {
+        if (phase != null) {
+            addPhase(phase);
+        }
+    }
+
+    public Phase getFileParserPhase() {
+        return m_fileParserPhase;
+    }
+
+    public Phase getOidResolverPhase() {
+        return m_oidResolverPhase;
+    }
+
+    public Phase getMibBuilderPhase() {
+        return m_mibBuilderPhase;
+    }
+
+    public Phase getMibQualityCheckerPhase() {
+        return m_mibQualityCheckerPhase;
+    }
+
+    public Phase getConceptualModelBuilderPhase() {
+        return m_conceptualModelBuilderPhase;
+    }
+
+    public SmiMib parse() throws PhaseException {
+        return (SmiMib) process(null);
+    }
 }

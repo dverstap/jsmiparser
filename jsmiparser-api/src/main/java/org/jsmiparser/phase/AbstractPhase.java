@@ -13,21 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jsmiparser.phase.file;
+package org.jsmiparser.phase;
 
-import org.apache.log4j.Logger;
+import org.jsmiparser.util.problem.ProblemReporterFactory;
 
-import java.io.File;
-import java.util.List;
+public abstract class AbstractPhase implements Phase {
 
-public class ParserPhaseOptions {
-    private static final Logger m_log = Logger.getLogger(ParserPhaseOptions.class);
+    protected ProblemReporterFactory m_problemReporterFactory;
 
-    private List<File> m_usedDirList;
-    private List<File> m_inputDirList;
+    protected AbstractPhase(ProblemReporterFactory problemReporterFactory) {
+        m_problemReporterFactory = problemReporterFactory;
+    }
 
-    private List<File> m_usedFileList;
-    private List<File> m_inputFileList;
-
-    
+    public Object getOptions() {
+        return null;
+    }
 }
