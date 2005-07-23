@@ -15,7 +15,6 @@
  */
 package org.jsmiparser.smi;
 
-import org.jsmiparser.util.problem.DefaultProblemHandler;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
@@ -24,7 +23,5 @@ import java.io.IOException;
 public interface SmiParser {
 
 	SmiMib parse() throws IOException, SAXException;
-
-	DefaultProblemHandler getErrorHandler(); // TODO
 
 }

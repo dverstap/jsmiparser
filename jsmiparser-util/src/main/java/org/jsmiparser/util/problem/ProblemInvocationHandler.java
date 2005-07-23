@@ -15,32 +15,28 @@
  */
 package org.jsmiparser.util.problem;
 
-import org.apache.log4j.Logger;
-import org.apache.commons.beanutils.MethodUtils;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.MethodUtils;
 import org.jsmiparser.util.TextUtil;
 import org.jsmiparser.util.problem.annotations.ProblemMethod;
 import org.jsmiparser.util.problem.annotations.ProblemProperty;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ProblemInvocationHandler <T> implements InvocationHandler {
-    private static final Logger m_log = Logger.getLogger(ProblemInvocationHandler.class);
 
-    private Class<T> m_class;
     private ProblemHandler m_problemHandler;
     private Map<Method, MethodInvocationHandler> m_methodInvocationHandlerMap = new HashMap<Method, MethodInvocationHandler>();
 
     public ProblemInvocationHandler(Class<T> cl, ProblemHandler eh) {
-        m_class = cl;
         m_problemHandler = eh;
 
-        for (Method method : m_class.getDeclaredMethods()) {
+        for (Method method : cl.getDeclaredMethods()) {
             MethodInvocationHandler mih = new MethodInvocationHandler(method);
             m_methodInvocationHandlerMap.put(method, mih);
         }
@@ -73,7 +69,7 @@ public class ProblemInvocationHandler <T> implements InvocationHandler {
     class MethodInvocationHandler {
         private Method m_method;
         private ProblemMethod m_problemMethod;
-        private String m_messageKey;
+        private String m_messageKey; // TODO
         private int m_locationParameterIndex = -1;
 
         public MethodInvocationHandler(Method method) {
@@ -173,7 +169,7 @@ public class ProblemInvocationHandler <T> implements InvocationHandler {
                     String propertyName = ep.value();
                     Method m = MethodUtils.getAccessibleMethod(arg.getClass(), propertyName, (Class[]) null);
                     if (m != null) {
-                        args[i] = m.invoke(arg, (Class[])null);
+                        args[i] = m.invoke(arg);
                     } else {
                         args[i] = BeanUtils.getProperty(arg, propertyName);
                     }
