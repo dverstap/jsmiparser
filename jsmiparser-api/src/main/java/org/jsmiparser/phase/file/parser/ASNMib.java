@@ -19,12 +19,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jsmiparser.antlr.asn1.ASNAssignment;
-import org.jsmiparser.antlr.asn1.ASNModule;
-import org.jsmiparser.antlr.asn1.ASNOidComponentList;
-import org.jsmiparser.antlr.asn1.ASNTypeAssignment;
-import org.jsmiparser.antlr.asn1.ASNValue;
-import org.jsmiparser.antlr.asn1.ASNValueAssignment;
+import org.jsmiparser.parsetree.asn1.ASNAssignment;
+import org.jsmiparser.parsetree.asn1.ASNModule;
+import org.jsmiparser.parsetree.asn1.ASNOidComponentList;
+import org.jsmiparser.parsetree.asn1.ASNTypeAssignment;
+import org.jsmiparser.parsetree.asn1.ASNValue;
+import org.jsmiparser.parsetree.asn1.ASNValueAssignment;
 
 public class ASNMib {
 

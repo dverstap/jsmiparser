@@ -23,7 +23,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jsmiparser.antlr.asn1.ASNModule;
+import org.jsmiparser.parsetree.asn1.ASNModule;
 
 import antlr.RecognitionException;
 import antlr.TokenStreamException;

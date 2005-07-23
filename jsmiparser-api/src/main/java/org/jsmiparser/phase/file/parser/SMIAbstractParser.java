@@ -17,19 +17,19 @@ package org.jsmiparser.phase.file.parser;
 
 import java.util.List;
 
-import org.jsmiparser.antlr.asn1.ASNChoiceValue;
-import org.jsmiparser.antlr.asn1.ASNImports;
-import org.jsmiparser.antlr.asn1.ASNModule;
-import org.jsmiparser.antlr.asn1.ASNNamedNumber;
-import org.jsmiparser.antlr.asn1.ASNNamedNumberType;
-import org.jsmiparser.antlr.asn1.ASNNamedValue;
-import org.jsmiparser.antlr.asn1.ASNOidComponent;
-import org.jsmiparser.antlr.asn1.ASNValue;
-import org.jsmiparser.antlr.asn1.Symbol;
-import org.jsmiparser.antlr.smi.PIBAccess;
-import org.jsmiparser.antlr.smi.SMIAccess;
-import org.jsmiparser.antlr.smi.SMINamedBit;
-import org.jsmiparser.antlr.smi.SMIStatus;
+import org.jsmiparser.parsetree.asn1.ASNChoiceValue;
+import org.jsmiparser.parsetree.asn1.ASNImports;
+import org.jsmiparser.parsetree.asn1.ASNModule;
+import org.jsmiparser.parsetree.asn1.ASNNamedNumber;
+import org.jsmiparser.parsetree.asn1.ASNNamedNumberType;
+import org.jsmiparser.parsetree.asn1.ASNNamedValue;
+import org.jsmiparser.parsetree.asn1.ASNOidComponent;
+import org.jsmiparser.parsetree.asn1.ASNValue;
+import org.jsmiparser.parsetree.asn1.Symbol;
+import org.jsmiparser.parsetree.smi.PIBAccess;
+import org.jsmiparser.parsetree.smi.SMIAccess;
+import org.jsmiparser.parsetree.smi.SMINamedBit;
+import org.jsmiparser.parsetree.smi.SMIStatus;
 
 import antlr.LLkParser;
 import antlr.ParserSharedInputState;

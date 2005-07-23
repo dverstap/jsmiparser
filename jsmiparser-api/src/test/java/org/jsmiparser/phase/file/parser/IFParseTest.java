@@ -17,8 +17,8 @@ package org.jsmiparser.phase.file.parser;
 
 import java.io.InputStream;
 
-import org.jsmiparser.antlr.asn1.ASNAssignment;
-import org.jsmiparser.antlr.asn1.ASNModule;
+import org.jsmiparser.parsetree.asn1.ASNAssignment;
+import org.jsmiparser.parsetree.asn1.ASNModule;
 
 import junit.framework.TestCase;
 

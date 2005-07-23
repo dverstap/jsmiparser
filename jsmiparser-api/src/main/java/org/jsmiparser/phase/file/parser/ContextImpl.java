@@ -16,8 +16,8 @@
 package org.jsmiparser.phase.file.parser;
 
 
-import org.jsmiparser.antlr.asn1.ASNModule;
-import org.jsmiparser.antlr.asn1.Context;
+import org.jsmiparser.parsetree.asn1.ASNModule;
+import org.jsmiparser.parsetree.asn1.Context;
 import org.apache.log4j.Logger;
 
 import antlr.Token;

@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.math.BigInteger;
 
-import org.jsmiparser.antlr.asn1.*;
-import org.jsmiparser.antlr.smi.*;
+import org.jsmiparser.parsetree.asn1.*;
+import org.jsmiparser.parsetree.smi.*;
 }
 
 //	Creation of ASN.1 grammar for ANTLR	V2.7.1

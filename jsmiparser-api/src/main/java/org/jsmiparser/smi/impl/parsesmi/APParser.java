@@ -18,13 +18,13 @@ package org.jsmiparser.smi.impl.parsesmi;
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
 
-import org.jsmiparser.antlr.asn1.*;
+import org.jsmiparser.parsetree.asn1.*;
 import org.jsmiparser.phase.file.parser.ASNMib;
 import org.jsmiparser.phase.file.parser.ASNMibParser;
-import org.jsmiparser.antlr.smi.SMINamedBit;
-import org.jsmiparser.antlr.smi.SMIObjectTypeMacro;
-import org.jsmiparser.antlr.smi.SMITextualConventionMacro;
-import org.jsmiparser.antlr.smi.SMIType;
+import org.jsmiparser.parsetree.smi.SMINamedBit;
+import org.jsmiparser.parsetree.smi.SMIObjectTypeMacro;
+import org.jsmiparser.parsetree.smi.SMITextualConventionMacro;
+import org.jsmiparser.parsetree.smi.SMIType;
 import org.jsmiparser.smi.*;
 import org.jsmiparser.util.problem.DefaultProblemHandler;
 
