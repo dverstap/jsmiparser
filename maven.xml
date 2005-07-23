@@ -33,7 +33,7 @@
 		       ignoreFailures="false"/>
     </goal>
     
-    <goal name="all-clean">
+    <goal name="mrproper">
 	<maven:reactor basedir="${basedir}"
 		       includes="**/project.xml"
 		       ignoreFailures="true"
@@ -41,7 +41,7 @@
     </goal>
     
     <goal name="rebuild">
-        <attainGoal name="all-clean"/>
+        <attainGoal name="mrproper"/>
         <attainGoal name="jsmiparser-default"/>
     </goal>
     
