@@ -16,7 +16,6 @@
 package org.jsmiparser.parser;
 
 import junit.framework.TestCase;
-import org.apache.log4j.Logger;
 import org.jsmiparser.phase.PhaseException;
 import org.jsmiparser.phase.file.FileParserOptions;
 import org.jsmiparser.smi.SmiMib;
@@ -25,9 +24,7 @@ import org.jsmiparser.util.problem.ProblemEventHandler;
 
 import java.io.File;
 
-// TODO rename to SmiDefaultParserTest
-public class SmiParserTest extends TestCase {
-    private static final Logger m_log = Logger.getLogger(SmiParserTest.class);
+public class SmiDefaultParserTest extends TestCase {
 
     public void testParser() throws PhaseException {
 
