@@ -15,36 +15,12 @@
  */
 package org.jsmiparser.util.problem;
 
-import org.jsmiparser.util.FileLocator;
-
 import java.io.PrintStream;
-import java.util.Formatter;
 
-// TODO remove all direct usage of this class
-// TODO then cleanup the class itself
-// TODO refactor into AbstractProblemHandler and also push some method declaration down to the ProblemHandler interface
 public class DefaultProblemHandler extends AbstractProblemEventHandler {
-    private String name_;
     private PrintStream out_;
     private PrintStream err_;
-    private int errorCount_ = 0;
-    private int warningCount_ = 0;
-    private FileLocator locator_ = null;
 
-
-    public DefaultProblemHandler(String name, PrintStream err) {
-        super();
-        name_ = name;
-        out_ = System.out;
-        err_ = err;
-    }
-
-    public DefaultProblemHandler(String name) {
-        super();
-        name_ = name;
-        out_ = System.out;
-        err_ = System.err;
-    }
 
     public DefaultProblemHandler() {
         super();
@@ -52,98 +28,9 @@ public class DefaultProblemHandler extends AbstractProblemEventHandler {
         err_ = System.err;
     }
 
-    private void print(PrintStream s, String msg) {
-        if (name_ != null) {
-            s.print(name_);
-            s.print(": ");
-        }
-        if (locator_ != null) {
-            locator_.printLocation(s);
-        }
-        s.println(msg);
-    }
-
-    public void error(String msg) {
-        print(err_, "Error: " + msg);
-        errorCount_++;
-    }
-
-    public void error(String msg, String what) {
-        print(err_, "Error: " + msg + " : " + what);
-        errorCount_++;
-    }
-
-    public void warning(String msg) {
-        print(out_, "Warning: " + msg);
-        warningCount_++;
-    }
-
-    public void warning(String msg, String what) {
-        print(out_, "Warning: " + msg + " : " + what);
-        warningCount_++;
-    }
-
-    public void info(String msg) {
-        print(out_, msg);
-    }
-
-    public void info(String msg, String what) {
-        print(out_, msg + " : " + what);
-    }
-
-    public int getErrorCount() {
-        return errorCount_;
-    }
-
-    public boolean isOk() {
-        return errorCount_ == 0;
-    }
-
-    public boolean isNotOk() {
-        return errorCount_ != 0;
-    }
-
-    public void printStat() {
-        err_.print("Total error count: ");
-        err_.println(errorCount_);
-    }
-
-    public void notFound(String msg, String name, Object obj) {
-        if (obj == null) {
-            error("Couldn't create " + msg, name);
-        }
-    }
-
-    public void notFound(String msg, String what, String inWhat, Object obj) {
-        if (obj == null) {
-            String errStr = "Couldn't create " + msg + " " + what + " " + "in";
-            error(errStr, inWhat);
-        }
-    }
-
-
-    public void setLocator(FileLocator locator) {
-        locator_ = locator;
-    }
-
-
-    public FileLocator getLocator() {
-        return locator_;
-    }
-
-    public void printLocation(PrintStream s) {
-        if (locator_ != null) {
-            locator_.printLocation(s);
-        }
-    }
-
-    public void warningf(String formatStr, Object... args) {
-        Formatter f = new Formatter();
-        f.format(formatStr, args);
-        warning(f.out().toString());
-    }
 
     public void handle(ProblemEvent event) {
+        super.handle(event);
         switch (event.getSeverity()) {
             case ERROR:
                 error(event.getLocation(), event.getLocalizedMessage());
@@ -158,13 +45,11 @@ public class DefaultProblemHandler extends AbstractProblemEventHandler {
     }
 
     private void error(ProblemLocation location, String localizedMessage) {
-        errorCount_++;
         print(err_, "Error", location, localizedMessage);
     }
 
 
     private void warning(ProblemLocation location, String localizedMessage) {
-        warningCount_++;
         print(out_, "Warning", location, localizedMessage);
     }
 

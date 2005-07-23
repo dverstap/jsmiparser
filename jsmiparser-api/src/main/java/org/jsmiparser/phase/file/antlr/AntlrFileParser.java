@@ -17,7 +17,6 @@ package org.jsmiparser.phase.file.antlr;
 
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
-import org.apache.log4j.Logger;
 import org.jsmiparser.parsetree.asn1.ASNModule;
 import org.jsmiparser.phase.PhaseException;
 import org.jsmiparser.phase.file.FileParser;
@@ -25,7 +24,6 @@ import org.jsmiparser.phase.file.FileParser;
 import java.io.*;
 
 public class AntlrFileParser implements FileParser {
-    private static final Logger m_log = Logger.getLogger(AntlrFileParser.class);
 
     public ASNModule parse(File file) throws PhaseException {
 
