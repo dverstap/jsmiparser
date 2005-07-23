@@ -58,9 +58,11 @@ class ContextImpl implements Context {
 			}
 			else
 			{
-				m_log.warn("Can't trace line info in " + module_.getName());
+                // TODO use AntlrErrorReporter
+                m_log.warn("Can't trace line info in " + module_.getName());
 			}
 		} catch (TokenStreamException e) {
+            // TODO use AntlrErrorReporter            
             m_log.warn("TokenStreamException while trying to trace line info in " + module_.getName(), e);
 		}
 		return result;
@@ -80,6 +82,7 @@ class ContextImpl implements Context {
 				result = t.getLine();
 			}
 		} catch (TokenStreamException e) {
+            // TODO use AntlrErrorReporter
             m_log.warn("TokenStreamException while trying to trace column info in " + module_.getName(), e);						
 		}
 		return result;

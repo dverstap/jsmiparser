@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO remove class, after moving part to ConceptualModelBuilderPhase
 public abstract class SmiAbstractParser implements SmiParser {
 
     private static final Logger m_log = Logger.getLogger(SmiAbstractParser.class);

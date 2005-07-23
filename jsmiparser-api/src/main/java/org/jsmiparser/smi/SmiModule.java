@@ -43,7 +43,9 @@ public class SmiModule extends SmiSymbolContainer {
 			setId(id);
 			
 			String classId = mib_.getCodeNamingStrategy().getModuleId(this) + "Scalars"; //TextUtil.makeTypeName(id);
-			scalarsClass_ = new SmiScalarsClass(classId, this);
+
+            // TODO move to ConceptualModelBuilderPhase
+            scalarsClass_ = new SmiScalarsClass(classId, this);
 			classMap_.put(classId, scalarsClass_);
 		}
 	}
