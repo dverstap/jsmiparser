@@ -18,7 +18,7 @@
 
 
 header {
-package org.jsmiparser.antlr.parser;
+package org.jsmiparser.phase.file.parser;
 
 import antlr.*;
 import java.util.List;
@@ -237,7 +237,7 @@ C_STRING 	: 	'"' (options {greedy=false;}
 //*************************************************************************
 
 
-class SMIParser	extends	Parser("org.jsmiparser.antlr.parser.SMIAbstractParser");
+class SMIParser	extends	Parser("org.jsmiparser.phase.file.parser.SMIAbstractParser");
 
 options	{
 	exportVocab=SMI;
