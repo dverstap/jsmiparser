@@ -34,12 +34,16 @@ public class AntlrFileParser implements FileParser {
             SMILexer lexer = new SMILexer(is);
             SMIParser parser = new SMIParser(lexer);
 
-            return parser.module_definition();
+            ASNModule module = parser.module_definition();
+            is.close();
+            return module;
         } catch (FileNotFoundException e) {
             throw new PhaseException(e);
         } catch (RecognitionException e) {
             throw new PhaseException(e);
         } catch (TokenStreamException e) {
+            throw new PhaseException(e);
+        } catch (IOException e) {
             throw new PhaseException(e);
         }
     }
