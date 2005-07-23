@@ -22,6 +22,12 @@
     <meta name="keyword" content="java,smi,snmp,parser,design"/>
     
     <body>
+	<section name="Package Diagram">
+
+	    <img src="jsmiparser.png"/>
+
+	</section>
+
 	<section name="Phases">
 	    
 	    <ul>
@@ -97,6 +103,16 @@
 	    <p>
 		TODO.
 	    </p>
+	    <ul>
+		<li>
+		    Ensure that we use the necessary error handling
+		    mechanism from antlr.
+		</li>
+		<li>
+		    Explain the ProblemReporterFactory and
+		    ProblemEventHandler mechanism.
+		</li>
+	    </ul>
 
 	</section>
 

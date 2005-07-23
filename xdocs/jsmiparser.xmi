@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<XMI xmlns:UML="http://schema.omg.org/spec/UML/1.3" verified="false" timestamp="2005-07-23T10:31:49" xmi.version="1.2" >
+ <XMI.header>
+  <XMI.documentation>
+   <XMI.exporter>umbrello uml modeller http://uml.sf.net</XMI.exporter>
+   <XMI.exporterVersion>1.4.1</XMI.exporterVersion>
+   <XMI.exporterEncoding>UnicodeUTF8</XMI.exporterEncoding>
+  </XMI.documentation>
+  <XMI.metamodel xmi.name="UML" href="UML.xml" xmi.version="1.3" />
+ </XMI.header>
+ <XMI.content>
+  <UML:Model isSpecification="false" isLeaf="false" isRoot="false" isAbstract="false" >
+   <UML:Namespace.ownedElement>
+    <UML:Stereotype isSpecification="false" isLeaf="false" visibility="public" xmi.id="3" isRoot="false" isAbstract="false" name="datatype" />
+    <UML:DataType stereotype="3" isSpecification="false" isLeaf="false" visibility="public" xmi.id="2" isRoot="false" isAbstract="false" name="int" />
+    <UML:DataType stereotype="3" isSpecification="false" isLeaf="false" visibility="public" xmi.id="4" isRoot="false" isAbstract="false" name="char" />
+    <UML:DataType stereotype="3" isSpecification="false" isLeaf="false" visibility="public" xmi.id="5" isRoot="false" isAbstract="false" name="boolean" />
+    <UML:DataType stereotype="3" isSpecification="false" isLeaf="false" visibility="public" xmi.id="6" isRoot="false" isAbstract="false" name="float" />
+    <UML:DataType stereotype="3" isSpecification="false" isLeaf="false" visibility="public" xmi.id="7" isRoot="false" isAbstract="false" name="double" />
+    <UML:DataType stereotype="3" isSpecification="false" isLeaf="false" visibility="public" xmi.id="8" isRoot="false" isAbstract="false" name="byte" />
+    <UML:DataType stereotype="3" isSpecification="false" isLeaf="false" visibility="public" xmi.id="9" isRoot="false" isAbstract="false" name="short" />
+    <UML:DataType stereotype="3" isSpecification="false" isLeaf="false" visibility="public" xmi.id="10" isRoot="false" isAbstract="false" name="string" />
+    <UML:Package isSpecification="false" isLeaf="false" visibility="public" xmi.id="11" isRoot="false" isAbstract="false" name="smi" >
+     <UML:Namespace.ownedElement/>
+    </UML:Package>
+    <UML:Package isSpecification="false" isLeaf="false" visibility="public" xmi.id="12" isRoot="false" isAbstract="false" name="phase.file" >
+     <UML:Namespace.ownedElement/>
+    </UML:Package>
+    <UML:Package isSpecification="false" isLeaf="false" visibility="public" xmi.id="14" isRoot="false" isAbstract="false" name="util.problem" >
+     <UML:Namespace.ownedElement/>
+    </UML:Package>
+    <UML:Package isSpecification="false" isLeaf="false" visibility="public" xmi.id="15" isRoot="false" isAbstract="false" name="util.phase" >
+     <UML:Namespace.ownedElement/>
+    </UML:Package>
+    <UML:Package isSpecification="false" isLeaf="false" visibility="public" xmi.id="17" isRoot="false" isAbstract="false" name="parser" >
+     <UML:Namespace.ownedElement/>
+    </UML:Package>
+    <UML:Package isSpecification="false" isLeaf="false" visibility="public" xmi.id="36" isRoot="false" isAbstract="false" name="phase.file.antlr" >
+     <UML:Namespace.ownedElement/>
+    </UML:Package>
+    <UML:Package isSpecification="false" isLeaf="false" visibility="public" xmi.id="53" isRoot="false" isAbstract="false" name="parsetree.asn1" >
+     <UML:Namespace.ownedElement/>
+    </UML:Package>
+    <UML:Package isSpecification="false" isLeaf="false" visibility="public" xmi.id="54" isRoot="false" isAbstract="false" name="parsetree.smi" >
+     <UML:Namespace.ownedElement/>
+    </UML:Package>
+    <UML:Package isSpecification="false" isLeaf="false" visibility="public" xmi.id="77" isRoot="false" isAbstract="false" name="phase.oid" >
+     <UML:Namespace.ownedElement/>
+    </UML:Package>
+    <UML:Package isSpecification="false" isLeaf="false" visibility="public" xmi.id="78" isRoot="false" isAbstract="false" name="phase.mib" >
+     <UML:Namespace.ownedElement/>
+    </UML:Package>
+    <UML:Package isSpecification="false" isLeaf="false" visibility="public" xmi.id="79" isRoot="false" isAbstract="false" name="phase.quality" >
+     <UML:Namespace.ownedElement/>
+    </UML:Package>
+    <UML:Package isSpecification="false" isLeaf="false" visibility="public" xmi.id="80" isRoot="false" isAbstract="false" name="phase.cm" >
+     <UML:Namespace.ownedElement/>
+    </UML:Package>
+    <UML:Dependency isSpecification="false" visibility="public" xmi.id="18" client="13" name="" supplier="14" />
+    <UML:Dependency isSpecification="false" visibility="public" xmi.id="21" client="17" name="" supplier="14" />
+    <UML:Dependency isSpecification="false" visibility="public" xmi.id="24" client="13" name="" supplier="15" />
+    <UML:Dependency isSpecification="false" visibility="public" xmi.id="27" client="17" name="" supplier="15" />
+    <UML:Dependency isSpecification="false" visibility="public" xmi.id="30" client="13" name="" supplier="11" />
+    <UML:Dependency isSpecification="false" visibility="public" xmi.id="37" client="36" name="" supplier="17" />
+    <UML:Dependency isSpecification="false" visibility="public" xmi.id="40" client="17" name="" supplier="12" />
+    <UML:Dependency isSpecification="false" visibility="public" xmi.id="44" client="36" name="" supplier="36" />
+    <UML:Dependency isSpecification="false" visibility="public" xmi.id="47" client="36" name="" supplier="12" />
+    <UML:Dependency isSpecification="false" visibility="public" xmi.id="50" client="17" name="" supplier="11" />
+    <UML:Dependency isSpecification="false" visibility="public" xmi.id="55" client="12" name="" supplier="53" />
+    <UML:Dependency isSpecification="false" visibility="public" xmi.id="58" client="36" name="" supplier="54" />
+    <UML:Dependency isSpecification="false" visibility="public" xmi.id="61" client="54" name="" supplier="53" />
+    <UML:Dependency isSpecification="false" visibility="public" xmi.id="64" client="17" name="" supplier="54" />
+    <UML:Dependency isSpecification="false" visibility="public" xmi.id="68" client="12" name="" supplier="54" />
+    <UML:Dependency isSpecification="false" visibility="public" xmi.id="71" client="12" name="" supplier="14" />
+    <UML:Dependency isSpecification="false" visibility="public" xmi.id="74" client="12" name="" supplier="11" />
+    <UML:Dependency isSpecification="false" visibility="public" xmi.id="81" client="77" name="" supplier="11" />
+    <UML:Dependency isSpecification="false" visibility="public" xmi.id="84" client="78" name="" supplier="11" />
+    <UML:Dependency isSpecification="false" visibility="public" xmi.id="87" client="79" name="" supplier="11" />
+    <UML:Dependency isSpecification="false" visibility="public" xmi.id="90" client="80" name="" supplier="11" />
+    <UML:Dependency isSpecification="false" visibility="public" xmi.id="93" client="77" name="" supplier="54" />
+    <UML:Dependency isSpecification="false" visibility="public" xmi.id="96" client="78" name="" supplier="54" />
+    <UML:Dependency isSpecification="false" visibility="public" xmi.id="99" client="17" name="" supplier="77" />
+    <UML:Dependency isSpecification="false" visibility="public" xmi.id="102" client="17" name="" supplier="78" />
+    <UML:Dependency isSpecification="false" visibility="public" xmi.id="105" client="17" name="" supplier="79" />
+    <UML:Dependency isSpecification="false" visibility="public" xmi.id="108" client="17" name="" supplier="80" />
+   </UML:Namespace.ownedElement>
+  </UML:Model>
+ </XMI.content>
+ <XMI.extensions xmi.extender="umbrello" >
+  <docsettings viewid="1" documentation="" uniqueid="111" />
+  <diagrams>
+   <diagram snapgrid="1" showattsig="1" fillcolor="#ffffc0" linewidth="0" zoom="100" showgrid="1" showopsig="1" usefillcolor="1" snapx="10" canvaswidth="852" snapy="10" showatts="1" xmi.id="1" documentation="" type="402" showops="1" showpackage="0" name="class diagram" localid="900000" showstereotype="0" showscope="1" snapcsgrid="0" font="Sans,10,-1,5,50,0,0,0,0,0" linecolor="#ff0000" canvasheight="721" >
+    <widgets>
+     <packagewidget usesdiagramfillcolour="1" width="70" usesdiagramusefillcolour="1" x="405" linecolour="none" y="247" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="46" usefillcolor="1" isinstance="0" xmi.id="11" showstereotype="0" font="Sans,10,-1,5,75,0,0,0,0,0" />
+     <packagewidget usesdiagramfillcolour="0" width="70" usesdiagramusefillcolour="0" x="35" linecolour="#ff0000" y="137" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="0" fillcolour="#ffffc0" height="46" usefillcolor="1" isinstance="0" xmi.id="12" showstereotype="0" font="Sans,10,-1,5,75,1,0,0,0,0" />
+     <packagewidget usesdiagramfillcolour="1" width="70" usesdiagramusefillcolour="1" x="275" linecolour="none" y="17" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="46" usefillcolor="1" isinstance="0" xmi.id="17" showstereotype="0" font="Sans,10,-1,5,75,0,0,0,0,0" />
+     <packagewidget usesdiagramfillcolour="0" width="102" usesdiagramusefillcolour="0" x="19" linecolour="#ff0000" y="17" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="0" fillcolour="#ffffc0" height="46" usefillcolor="1" isinstance="0" xmi.id="36" showstereotype="0" font="Sans,10,-1,5,75,1,0,0,0,0" />
+     <packagewidget usesdiagramfillcolour="0" width="100" usesdiagramusefillcolour="0" x="140" linecolour="#ff0000" y="317" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="0" fillcolour="#ffffc0" height="46" usefillcolor="1" isinstance="0" xmi.id="53" showstereotype="0" font="Sans,10,-1,5,75,0,0,0,0,0" />
+     <packagewidget usesdiagramfillcolour="0" width="94" usesdiagramusefillcolour="0" x="143" linecolour="#ff0000" y="247" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="0" fillcolour="#ffffc0" height="46" usefillcolor="1" isinstance="0" xmi.id="54" showstereotype="0" font="Sans,10,-1,5,75,0,0,0,0,0" />
+     <packagewidget usesdiagramfillcolour="1" width="71" usesdiagramusefillcolour="1" x="155" linecolour="none" y="137" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="46" usefillcolor="1" isinstance="0" xmi.id="77" showstereotype="0" font="Sans,10,-1,5,75,0,0,0,0,0" />
+     <packagewidget usesdiagramfillcolour="1" width="75" usesdiagramusefillcolour="1" x="273" linecolour="none" y="137" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="46" usefillcolor="1" isinstance="0" xmi.id="78" showstereotype="0" font="Sans,10,-1,5,75,0,0,0,0,0" />
+     <packagewidget usesdiagramfillcolour="1" width="93" usesdiagramusefillcolour="1" x="394" linecolour="none" y="137" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="46" usefillcolor="1" isinstance="0" xmi.id="79" showstereotype="0" font="Sans,10,-1,5,75,0,0,0,0,0" />
+     <packagewidget usesdiagramfillcolour="1" width="70" usesdiagramusefillcolour="1" x="535" linecolour="none" y="137" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="46" usefillcolor="1" isinstance="0" xmi.id="80" showstereotype="0" font="Sans,10,-1,5,75,0,0,0,0,0" />
+     <packagewidget usesdiagramfillcolour="1" width="86" usesdiagramusefillcolour="1" x="217" linecolour="none" y="397" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="46" usefillcolor="1" isinstance="0" xmi.id="14" showstereotype="0" font="Sans,10,-1,5,75,0,0,0,0,0" />
+     <packagewidget usesdiagramfillcolour="1" width="71" usesdiagramusefillcolour="1" x="335" linecolour="none" y="397" linewidth="none" usesdiagramlinewidth="1" usesdiagramlinecolour="1" fillcolour="none" height="46" usefillcolor="1" isinstance="0" xmi.id="15" showstereotype="0" font="Sans,10,-1,5,75,0,0,0,0,0" />
+    </widgets>
+    <messages/>
+    <associations>
+     <assocwidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" widgetbid="12" widgetaid="17" xmi.id="40" >
+      <linepath>
+       <startpoint startx="275" starty="40" />
+       <endpoint endx="105" endy="160" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" widgetbid="12" widgetaid="36" xmi.id="47" >
+      <linepath>
+       <startpoint startx="70" starty="63" />
+       <endpoint endx="70" endy="137" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" widgetbid="53" widgetaid="54" xmi.id="61" >
+      <linepath>
+       <startpoint startx="190" starty="293" />
+       <endpoint endx="190" endy="317" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="2" indexa="1" totalcountb="4" indexb="1" widgetbid="54" widgetaid="12" xmi.id="68" >
+      <linepath>
+       <startpoint startx="70" starty="183" />
+       <endpoint endx="170" endy="247" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="3" indexa="2" totalcountb="4" indexb="1" widgetbid="11" widgetaid="78" xmi.id="84" >
+      <linepath>
+       <startpoint startx="320" starty="183" />
+       <endpoint endx="420" endy="247" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="2" indexa="1" totalcountb="4" indexb="2" widgetbid="11" widgetaid="79" xmi.id="87" >
+      <linepath>
+       <startpoint startx="440" starty="183" />
+       <endpoint endx="440" endy="247" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="2" indexa="1" totalcountb="4" indexb="3" widgetbid="11" widgetaid="80" xmi.id="90" >
+      <linepath>
+       <startpoint startx="570" starty="183" />
+       <endpoint endx="460" endy="247" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="2" indexa="1" totalcountb="4" indexb="2" widgetbid="54" widgetaid="77" xmi.id="93" >
+      <linepath>
+       <startpoint startx="190" starty="183" />
+       <endpoint endx="190" endy="247" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="3" indexa="1" totalcountb="4" indexb="3" widgetbid="54" widgetaid="78" xmi.id="96" >
+      <linepath>
+       <startpoint startx="300" starty="183" />
+       <endpoint endx="210" endy="247" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="4" indexa="1" totalcountb="2" indexb="1" widgetbid="77" widgetaid="17" xmi.id="99" >
+      <linepath>
+       <startpoint startx="290" starty="63" />
+       <endpoint endx="190" endy="137" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="4" indexa="2" totalcountb="2" indexb="1" widgetbid="78" widgetaid="17" xmi.id="102" >
+      <linepath>
+       <startpoint startx="310" starty="63" />
+       <endpoint endx="310" endy="137" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="4" indexa="3" totalcountb="2" indexb="1" widgetbid="79" widgetaid="17" xmi.id="105" >
+      <linepath>
+       <startpoint startx="330" starty="63" />
+       <endpoint endx="440" endy="137" />
+      </linepath>
+     </assocwidget>
+     <assocwidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" widgetbid="80" widgetaid="17" xmi.id="108" >
+      <linepath>
+       <startpoint startx="345" starty="40" />
+       <endpoint endx="535" endy="160" />
+      </linepath>
+     </assocwidget>
+    </associations>
+   </diagram>
+  </diagrams>
+  <listview>
+   <listitem open="1" type="800" label="Views" >
+    <listitem open="1" type="801" label="Logical View" >
+     <listitem open="1" type="818" id="17" />
+     <listitem open="1" type="818" id="53" />
+     <listitem open="1" type="818" id="54" />
+     <listitem open="1" type="818" id="80" />
+     <listitem open="1" type="818" id="12" />
+     <listitem open="1" type="818" id="36" />
+     <listitem open="1" type="818" id="78" />
+     <listitem open="1" type="818" id="77" />
+     <listitem open="1" type="818" id="79" />
+     <listitem open="1" type="818" id="11" />
+     <listitem open="1" type="818" id="15" />
+     <listitem open="1" type="818" id="14" />
+     <listitem open="0" type="830" label="Datatypes" >
+      <listitem open="1" type="829" id="5" />
+      <listitem open="1" type="829" id="8" />
+      <listitem open="1" type="829" id="4" />
+      <listitem open="1" type="829" id="7" />
+      <listitem open="1" type="829" id="6" />
+      <listitem open="1" type="829" id="2" />
+      <listitem open="1" type="829" id="9" />
+      <listitem open="1" type="829" id="10" />
+     </listitem>
+    </listitem>
+    <listitem open="1" type="802" label="Use Case View" />
+    <listitem open="1" type="821" label="Component View" />
+    <listitem open="1" type="827" label="Deployment View" />
+    <listitem open="1" type="836" label="Entity Relationship Model" />
+   </listitem>
+  </listview>
+  <codegeneration/>
+ </XMI.extensions>
+</XMI>

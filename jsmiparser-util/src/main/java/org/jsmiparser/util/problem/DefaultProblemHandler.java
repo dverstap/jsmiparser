@@ -20,7 +20,9 @@ import org.jsmiparser.util.FileLocator;
 import java.io.PrintStream;
 import java.util.Formatter;
 
-
+// TODO remove all direct usage of this class
+// TODO then cleanup the class itself
+// TODO refactor into AbstractProblemHandler and also push some method declaration down to the ProblemHandler interface
 public class DefaultProblemHandler implements ProblemHandler {
     private String name_;
     private PrintStream out_;
