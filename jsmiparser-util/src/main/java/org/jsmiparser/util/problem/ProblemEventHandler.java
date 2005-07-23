@@ -15,16 +15,23 @@
  */
 package org.jsmiparser.util.problem;
 
+import org.jsmiparser.util.problem.annotations.ProblemSeverity;
 
-public class TestProblemHandler extends AbstractProblemEventHandler {
+public interface ProblemEventHandler {
 
-    private ProblemEvent m_lastProblemEvent;
+    void handle(ProblemEvent event);
 
-    public void handle(ProblemEvent event) {
-        m_lastProblemEvent = event;
-    }
+    /**
+     * @return true if there were FATAL or ERROR events.
+     */
+    boolean isOk();
 
-    public ProblemEvent getLastProblemEvent() {
-        return m_lastProblemEvent;
-    }
+    /**
+     * @return true if there were no problem with a severity higher than or equal to ERROR
+     */
+    boolean isNotOk();
+
+    int getSeverityCount(ProblemSeverity severity);
+
+    int getTotalCount();
 }

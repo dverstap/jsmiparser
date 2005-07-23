@@ -22,11 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProblemHandlerTest extends TestCase {
-    private TestProblemHandler m_teh;
+    private TestProblemEventHandler m_teh;
     private ExampleProblemReporter m_eh;
 
     protected void setUp() throws Exception {
-        m_teh = new TestProblemHandler();
+        m_teh = new TestProblemEventHandler();
 
         ProblemReporterFactory factory = new DefaultProblemReporterFactory(m_teh);
         m_eh = factory.create(ProblemHandlerTest.class.getClassLoader(),

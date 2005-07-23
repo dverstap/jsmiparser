@@ -17,7 +17,7 @@ package org.jsmiparser.util.problem;
 
 import org.jsmiparser.util.problem.annotations.ProblemSeverity;
 
-public abstract class AbstractProblemEventHandler implements ProblemHandler {
+public abstract class AbstractProblemEventHandler implements ProblemEventHandler {
 
     private int[] m_severityCounters = new int[ProblemSeverity.values().length];
     private int m_totalCounter;

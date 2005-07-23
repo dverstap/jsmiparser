@@ -17,12 +17,12 @@ package org.jsmiparser.util.problem;
 
 import java.io.PrintStream;
 
-public class DefaultProblemHandler extends AbstractProblemEventHandler {
+public class DefaultProblemEventHandler extends AbstractProblemEventHandler {
     private PrintStream out_;
     private PrintStream err_;
 
 
-    public DefaultProblemHandler() {
+    public DefaultProblemEventHandler() {
         super();
         out_ = System.out;
         err_ = System.err;

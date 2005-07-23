@@ -26,9 +26,9 @@ import org.jsmiparser.phase.mib.MibBuilderPhase;
 import org.jsmiparser.phase.oid.OidResolverPhase;
 import org.jsmiparser.phase.quality.MibQualityCheckerPhase;
 import org.jsmiparser.smi.SmiMib;
-import org.jsmiparser.util.problem.DefaultProblemHandler;
+import org.jsmiparser.util.problem.DefaultProblemEventHandler;
 import org.jsmiparser.util.problem.DefaultProblemReporterFactory;
-import org.jsmiparser.util.problem.ProblemHandler;
+import org.jsmiparser.util.problem.ProblemEventHandler;
 
 public class SmiDefaultParser extends CompositePhase {
     private static final Logger m_log = Logger.getLogger(SmiDefaultParser.class);
@@ -39,11 +39,11 @@ public class SmiDefaultParser extends CompositePhase {
     private Phase m_conceptualModelBuilderPhase;
 
     protected SmiDefaultParser() {
-        super(new DefaultProblemReporterFactory(new DefaultProblemHandler()));
+        super(new DefaultProblemReporterFactory(new DefaultProblemEventHandler()));
     }
 
-    public SmiDefaultParser(ProblemHandler problemHandler) {
-        super(new DefaultProblemReporterFactory(problemHandler));
+    public SmiDefaultParser(ProblemEventHandler problemEventHandler) {
+        super(new DefaultProblemReporterFactory(problemEventHandler));
     }
 
     public void init() {

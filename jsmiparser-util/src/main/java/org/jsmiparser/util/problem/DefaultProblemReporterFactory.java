@@ -22,15 +22,15 @@ import java.lang.reflect.Proxy;
 public class DefaultProblemReporterFactory implements ProblemReporterFactory {
     private static final Logger m_log = Logger.getLogger(DefaultProblemReporterFactory.class);
 
-    private ProblemHandler m_problemHandler;
+    private ProblemEventHandler m_problemEventHandler;
 
-    public DefaultProblemReporterFactory(ProblemHandler ph) {
-        m_problemHandler = ph;
+    public DefaultProblemReporterFactory(ProblemEventHandler ph) {
+        m_problemEventHandler = ph;
     }
 
     public <T> T create(ClassLoader classLoader, Class<T> cl) {
         Class[] classArray = { cl };
-        return (T) Proxy.newProxyInstance(classLoader, classArray, new ProblemInvocationHandler(cl, m_problemHandler));
+        return (T) Proxy.newProxyInstance(classLoader, classArray, new ProblemInvocationHandler(cl, m_problemEventHandler));
     }
 
 }

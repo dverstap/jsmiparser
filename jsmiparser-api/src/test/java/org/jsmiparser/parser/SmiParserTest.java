@@ -20,8 +20,8 @@ import org.apache.log4j.Logger;
 import org.jsmiparser.phase.PhaseException;
 import org.jsmiparser.phase.file.FileParserOptions;
 import org.jsmiparser.smi.SmiMib;
-import org.jsmiparser.util.problem.DefaultProblemHandler;
-import org.jsmiparser.util.problem.ProblemHandler;
+import org.jsmiparser.util.problem.DefaultProblemEventHandler;
+import org.jsmiparser.util.problem.ProblemEventHandler;
 
 import java.io.File;
 
@@ -31,8 +31,8 @@ public class SmiParserTest extends TestCase {
 
     public void testParser() throws PhaseException {
 
-        ProblemHandler problemHandler = new DefaultProblemHandler();
-        SmiDefaultParser parser = new SmiDefaultParser(problemHandler);
+        ProblemEventHandler problemEventHandler = new DefaultProblemEventHandler();
+        SmiDefaultParser parser = new SmiDefaultParser(problemEventHandler);
         parser.init();
         FileParserOptions options = (FileParserOptions) parser.getFileParserPhase().getOptions();
         initFileParserOptions(options);
@@ -45,11 +45,11 @@ public class SmiParserTest extends TestCase {
         //assertEquals(mib1, mib2);
 
         /*
-        int errorCount = problemHandler.getSeverityCount(ProblemSeverity.ERROR);
+        int errorCount = problemEventHandler.getSeverityCount(ProblemSeverity.ERROR);
 
         MibMerger mibMerger = new MibMerger(problemReporterFactory);
         SmiMib mib3 = mibMerger.merge(mib1, mib2);
-        assertEquals(errorCount, problemHandler.getErrorCount());
+        assertEquals(errorCount, problemEventHandler.getErrorCount());
         */
 
     }

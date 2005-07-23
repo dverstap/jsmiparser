@@ -30,11 +30,11 @@ import java.util.Map;
 
 public class ProblemInvocationHandler <T> implements InvocationHandler {
 
-    private ProblemHandler m_problemHandler;
+    private ProblemEventHandler m_problemEventHandler;
     private Map<Method, MethodInvocationHandler> m_methodInvocationHandlerMap = new HashMap<Method, MethodInvocationHandler>();
 
-    public ProblemInvocationHandler(Class<T> cl, ProblemHandler eh) {
-        m_problemHandler = eh;
+    public ProblemInvocationHandler(Class<T> cl, ProblemEventHandler eh) {
+        m_problemEventHandler = eh;
 
         for (Method method : cl.getDeclaredMethods()) {
             MethodInvocationHandler mih = new MethodInvocationHandler(method);
@@ -128,7 +128,7 @@ public class ProblemInvocationHandler <T> implements InvocationHandler {
                 }
 
                 ProblemEvent ev = new ProblemEvent(location, m_problemMethod.severity(), m_messageKey, m_problemMethod.message(), args);
-                m_problemHandler.handle(ev);
+                m_problemEventHandler.handle(ev);
             } catch (NoSuchMethodException e) {
                 throw new RuntimeException(e);
             } catch (IllegalAccessException e) {
