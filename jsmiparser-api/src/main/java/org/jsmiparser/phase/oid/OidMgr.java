@@ -102,9 +102,7 @@ public class OidMgr {
 
 
     public void resolveAll() {
-        for (Iterator<Map.Entry<String, OidNode>> i = idNodeMap_.entrySet().iterator(); i.hasNext();) {
-            Map.Entry<String, OidNode> entry = i.next();
-            String id = entry.getKey();
+        for (String id : idNodeMap_.keySet()) {
             resolve(id);
 //            OidNode node = (OidNode) entry.getValue();
 //            OidNode nodeRoot = node.getRoot();
@@ -143,8 +141,7 @@ public class OidMgr {
 
 
     public void printUnresolved() {
-        for (Iterator<Map.Entry<String, OidNode>> i = idNodeMap_.entrySet().iterator(); i.hasNext();) {
-            Map.Entry<String, OidNode> entry = i.next();
+        for (Map.Entry<String, OidNode> entry : idNodeMap_.entrySet()) {
             String id = entry.getKey();
             OidNode node = entry.getValue();
             if (!isResolved(node)) {
