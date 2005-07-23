@@ -19,8 +19,8 @@ import antlr.RecognitionException;
 import antlr.TokenStreamException;
 
 import org.jsmiparser.antlr.asn1.*;
-import org.jsmiparser.antlr.parser.ASNMib;
-import org.jsmiparser.antlr.parser.ASNMibParser;
+import org.jsmiparser.phase.file.parser.ASNMib;
+import org.jsmiparser.phase.file.parser.ASNMibParser;
 import org.jsmiparser.antlr.smi.SMINamedBit;
 import org.jsmiparser.antlr.smi.SMIObjectTypeMacro;
 import org.jsmiparser.antlr.smi.SMITextualConventionMacro;
