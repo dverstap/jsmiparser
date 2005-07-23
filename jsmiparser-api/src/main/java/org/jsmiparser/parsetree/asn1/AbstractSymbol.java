@@ -18,55 +18,36 @@ package org.jsmiparser.parsetree.asn1;
 
 /**
  * @author davy
- *
  */
 public abstract class AbstractSymbol implements Symbol {
 
-	private ASNModule module_;
-	private int line_;
-	private int column_;
-	
-	/**
-	 * @throws TokenStreamException 
-	 * 
-	 */
-	protected AbstractSymbol(Context context) {
-		super();
-		
-		module_ = context.getModule();
-		
-		line_ = context.getLine();
-		column_ = context.getColumn();
-	}
+    private ASNModule module_;
+    private int line_;
+    private int column_;
 
-	/**
-	 * @return Returns the column.
-	 */
-	public int getColumn() {
-		return column_;
-	}
-	
-	/**
-	 * @return Returns the line.
-	 */
-	public int getLine() {
-		return line_;
-	}
-	
-	/**
-	 * @return Returns the module.
-	 */
-	public ASNModule getModule() {
-		return module_;
-	}
-	
-	
-	
-	/* (non-Javadoc)
-	 * @see org.parsesmi.antlr.Symbol#setPosition(int, int)
-	 */
-	public void setPosition(int line, int column) {
-		line_ = line;
-		column_ = column;
-	}
+    protected AbstractSymbol(Context context) {
+        super();
+
+        module_ = context.getModule();
+
+        line_ = context.getLine();
+        column_ = context.getColumn();
+    }
+
+    public int getColumn() {
+        return column_;
+    }
+
+    public int getLine() {
+        return line_;
+    }
+
+    public ASNModule getModule() {
+        return module_;
+    }
+
+    public void setPosition(int line, int column) {
+        line_ = line;
+        column_ = column;
+    }
 }
