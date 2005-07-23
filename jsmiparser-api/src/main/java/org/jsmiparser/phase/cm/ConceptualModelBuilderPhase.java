@@ -18,17 +18,65 @@ package org.jsmiparser.phase.cm;
 import org.jsmiparser.phase.AbstractPhase;
 import org.jsmiparser.phase.PhaseException;
 import org.jsmiparser.smi.SmiMib;
+import org.jsmiparser.smi.SmiModule;
 import org.jsmiparser.util.problem.ProblemReporterFactory;
+import org.jsmiparser.util.xmlreflect.ReflectContentHandler;
+import org.xml.sax.SAXException;
+import org.apache.log4j.Logger;
+
+import java.io.IOException;
+import java.io.File;
+import java.util.List;
+import java.util.ArrayList;
 
 public class ConceptualModelBuilderPhase extends AbstractPhase {
+
+    private static final Logger m_log = Logger.getLogger(ConceptualModelBuilderPhase.class);
+
+    private List<File> m_classDefinitionFiles = new ArrayList<File>();
 
     public ConceptualModelBuilderPhase(ProblemReporterFactory problemReporterFactory) {
         super(problemReporterFactory);
     }
 
+    @Override
+    public List<File> getOptions() {
+        return m_classDefinitionFiles;
+    }
+
+    public List<File> getClassDefinitionFiles() {
+        return m_classDefinitionFiles;
+    }
+
+    public void setClassDefinitionFiles(List<File> classDefinitionFiles) {
+        m_classDefinitionFiles = classDefinitionFiles;
+    }
+
     public SmiMib process(Object input) throws PhaseException {
         SmiMib mib = (SmiMib) input;
 
+        try {
+            mib.determineInheritanceRelations();
+
+            parseClassDefinitions(mib);
+        } catch (SAXException e) {
+            throw new PhaseException(e);
+        } catch (IOException e) {
+            throw new PhaseException(e);
+        }
         return mib;
+    }
+
+        private void parseClassDefinitions(SmiMib mib) throws SAXException, IOException {
+        m_log.debug("parsing class definitions:");
+        for (File f : m_classDefinitionFiles ) {
+            m_log.debug("parsing " + f);
+            SmiModule module = mib.createModule(null);
+            ReflectContentHandler rch = new ReflectContentHandler(m_problemReporterFactory, module);
+            rch.parse(f);
+            if (rch.getSkippedPathSet().size() > 0) {
+                rch.printSkippedPathErrors();
+            }
+        }
     }
 }

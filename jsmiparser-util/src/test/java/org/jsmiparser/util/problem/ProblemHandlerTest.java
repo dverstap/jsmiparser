@@ -16,14 +16,12 @@
 package org.jsmiparser.util.problem;
 
 import junit.framework.TestCase;
-import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProblemHandlerTest extends TestCase {
-    private static final Logger m_log = Logger.getLogger(ProblemHandlerTest.class);
     private TestProblemHandler m_teh;
     private ExampleProblemReporter m_eh;
 

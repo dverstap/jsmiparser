@@ -15,25 +15,29 @@
  */
 package org.jsmiparser.util.xmlreflect;
 
-import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.helpers.XMLReaderFactory;
-import org.xml.sax.*;
 import org.apache.log4j.Logger;
 import org.jsmiparser.util.SAXFileLocator;
-import org.jsmiparser.util.problem.DefaultProblemHandler;
+import org.jsmiparser.util.problem.ProblemReporterFactory;
+import org.xml.sax.*;
+import org.xml.sax.helpers.DefaultHandler;
+import org.xml.sax.helpers.XMLReaderFactory;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 
-public class ReflectContentHandler extends DefaultHandler
-{
+public class ReflectContentHandler extends DefaultHandler {
     private static final Logger m_log = Logger.getLogger(ReflectContentHandler.class);
 
-    public static final ReflectElementHandlerFactory[] FACTORIES = { TextElementHandler.FACTORY, BeanElementHandler.FACTORY };
+    public static final ReflectElementHandlerFactory[] FACTORIES = {TextElementHandler.FACTORY, BeanElementHandler.FACTORY};
 
-    DefaultProblemHandler eh_; // TODO
+    private SAXFileLocator m_locator = new SAXFileLocator();
+    ;
+    private XmlReflectProblemReporter m_ph;
     Object root_;
     ElementHandlerStack stack_ = new ElementHandlerStack();
     boolean isOk_ = true;
@@ -45,15 +49,14 @@ public class ReflectContentHandler extends DefaultHandler
     private Map<String, ReflectElementHandler> m_elementHandlerCache = new HashMap<String, ReflectElementHandler>();
     private Set<String> m_skippedPathSet = new LinkedHashSet<String>();
 
-    public ReflectContentHandler(DefaultProblemHandler eh, Object object) {
-        this(eh, FACTORIES, object);
+    public ReflectContentHandler(ProblemReporterFactory problemReportFactory, Object object) {
+        this(problemReportFactory, FACTORIES, object);
     }
 
 
-    public ReflectContentHandler(DefaultProblemHandler eh, ReflectElementHandlerFactory[] elementHandlerFactories, Object root)
-    {
+    public ReflectContentHandler(ProblemReporterFactory problemReporterFactory, ReflectElementHandlerFactory[] elementHandlerFactories, Object root) {
         super();
-        eh_ = eh;
+        m_ph = problemReporterFactory.create(ReflectContentHandler.class.getClassLoader(), XmlReflectProblemReporter.class);
         m_elementHandlerFactories = elementHandlerFactories;
         root_ = root;
     }
@@ -62,19 +65,16 @@ public class ReflectContentHandler extends DefaultHandler
         return stack_.isEmpty();
     }
 
-    public void endDocument() throws SAXException
-    {
-        eh_.setLocator(null);
+    public void endDocument() throws SAXException {
+        m_locator.setLocator(null);
     }
 
-    public void setDocumentLocator(Locator locator)
-    {
-        eh_.setLocator(new SAXFileLocator(locator));
+    public void setDocumentLocator(Locator locator) {
+        m_locator.setLocator(locator);
     }
 
     public void characters(char[] ch, int start, int length)
-            throws SAXException
-    {
+            throws SAXException {
         ReflectElementHandler reh = stack_.getCurrentElementHandler();
         if (reh != null && reh.isHandlingText()) {
             if (text_ == null)
@@ -85,8 +85,7 @@ public class ReflectContentHandler extends DefaultHandler
 
 
     public void endElement(String namespaceURI, String localName, String qName)
-            throws SAXException
-    {
+            throws SAXException {
         ReflectElementHandler reh = stack_.getCurrentElementHandler();
         Object currentObject = stack_.getCurrentObject();
         if (reh != null && currentObject != null) {
@@ -108,8 +107,7 @@ public class ReflectContentHandler extends DefaultHandler
 
 
     public void startElement(String namespaceURI, String localName,
-                             String qName, Attributes atts) throws SAXException
-    {
+                             String qName, Attributes atts) throws SAXException {
         Object storedObject = null;
 
         ReflectElementHandler reh = null;
@@ -203,5 +201,11 @@ public class ReflectContentHandler extends DefaultHandler
         InputSource inputSource = new InputSource(is);
         reader.parse(inputSource);
         is.close();
+    }
+
+    public void printSkippedPathErrors() {
+        for (String skippedPath : getSkippedPathSet()) {
+            m_ph.reportSkippedPath(skippedPath);
+        }
     }
 }

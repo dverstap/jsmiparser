@@ -15,7 +15,6 @@
  */
 package org.jsmiparser.smi;
 
-import org.jsmiparser.util.xmlreflect.ReflectContentHandler;
 import org.apache.log4j.Logger;
 import org.jsmiparser.util.problem.DefaultProblemHandler;
 import org.xml.sax.SAXException;
@@ -47,32 +46,13 @@ public abstract class SmiAbstractParser implements SmiParser {
 	public final SmiMib parse() throws IOException, SAXException {
 		SmiMib mib = parseBasics();
 		
-		if (eh_.isOk()) {
-			mib.determineInheritanceRelations();
-		}
-		
-		if (eh_.isOk()) {
-			parseClassDefinitions(mib);
-		}
+
 		
 		return mib;
 	}
 
 
-	private void parseClassDefinitions(SmiMib mib) throws SAXException, IOException {
-        m_log.debug("parsing class definitions:");
-		for (File f : classDefinitionFiles_ ) {
-            m_log.debug("parsing " + f);
-			SmiModule module = mib.createModule(null);
-			ReflectContentHandler rch = new ReflectContentHandler(eh_, module);
-            rch.parse(f);
-            if (rch.getSkippedPathSet().size() > 0) {
-                for (String skippedPath : rch.getSkippedPathSet()) {
-                    eh_.error("Could not process: ", skippedPath);
-                }
-            }
-		}
-	}
+
 
 	protected abstract SmiMib parseBasics() throws IOException;
 

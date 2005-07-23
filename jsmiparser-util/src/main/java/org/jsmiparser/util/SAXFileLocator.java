@@ -17,35 +17,39 @@ package org.jsmiparser.util;
 
 import org.xml.sax.Locator;
 
-public class SAXFileLocator extends FileLocator
-{
-    private Locator locator_;
+public class SAXFileLocator extends FileLocator {
+    private Locator m_locator;
 
-    public SAXFileLocator(Locator locator)
-    {
-        super();
-        locator_ = locator;
+    public SAXFileLocator() {
     }
 
-    public String getFileName()
-    {
-        if (locator_.getPublicId() != null)
-            return "publicId: " + locator_.getPublicId();
-        if (locator_.getSystemId() != null)
-            return "systemId: " + locator_.getSystemId();
+    public SAXFileLocator(Locator locator) {
+        super();
+        m_locator = locator;
+    }
+
+    public Locator getLocator() {
+        return m_locator;
+    }
+
+    public void setLocator(Locator locator) {
+        this.m_locator = locator;
+    }
+
+    public String getFileName() {
+        if (m_locator.getPublicId() != null)
+            return "publicId: " + m_locator.getPublicId();
+        if (m_locator.getSystemId() != null)
+            return "systemId: " + m_locator.getSystemId();
         return null;
     }
 
-
-    public int getLine()
-    {
-        return locator_.getLineNumber();
+    public int getLine() {
+        return m_locator.getLineNumber();
     }
 
-
-    public int getColumn()
-    {
-        return locator_.getColumnNumber();
+    public int getColumn() {
+        return m_locator.getColumnNumber();
     }
 
 }

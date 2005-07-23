@@ -29,12 +29,6 @@ import java.io.File;
 public class SmiParserTest extends TestCase {
     private static final Logger m_log = Logger.getLogger(SmiParserTest.class);
 
-    // TODO
-    public void testSomething() {
-        assertTrue(true);
-    }
-
-
     public void testParser() throws PhaseException {
 
         ProblemHandler problemHandler = new DefaultProblemHandler();
