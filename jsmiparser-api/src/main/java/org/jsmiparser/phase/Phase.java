@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jsmiparser.parser;
+package org.jsmiparser.phase;
 
-import org.jsmiparser.smi.SmiMib;
+public interface Phase {
 
-public interface ParserPhase {
-
-    Object process(SmiMib input);
+    Object process(Object input);
 }
