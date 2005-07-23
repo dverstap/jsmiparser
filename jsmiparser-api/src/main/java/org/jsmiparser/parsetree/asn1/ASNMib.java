@@ -13,18 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jsmiparser.phase.file.parser;
+package org.jsmiparser.parsetree.asn1;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.jsmiparser.parsetree.asn1.ASNAssignment;
-import org.jsmiparser.parsetree.asn1.ASNModule;
-import org.jsmiparser.parsetree.asn1.ASNOidComponentList;
-import org.jsmiparser.parsetree.asn1.ASNTypeAssignment;
-import org.jsmiparser.parsetree.asn1.ASNValue;
-import org.jsmiparser.parsetree.asn1.ASNValueAssignment;
 
 public class ASNMib {
 

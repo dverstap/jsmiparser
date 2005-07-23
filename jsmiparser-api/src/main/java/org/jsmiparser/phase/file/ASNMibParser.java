@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jsmiparser.phase.file.parser;
+package org.jsmiparser.phase.file;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -24,6 +24,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jsmiparser.parsetree.asn1.ASNModule;
+import org.jsmiparser.parsetree.asn1.ASNMib;
+import org.jsmiparser.phase.file.ASNFileFinder;
+import org.jsmiparser.phase.file.parser.SMILexer;
+import org.jsmiparser.phase.file.parser.SMIParser;
 
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
