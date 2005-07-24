@@ -37,12 +37,14 @@
             <version>2.7.5</version>
         </dependency>
 
+        <!--
         <dependency>
             <groupId>ant</groupId>
             <artifactId>ant</artifactId>
             <version>1.5.3-1</version>
         </dependency>
-
+        -->
+        
     </dependencies>
 
 </project>
