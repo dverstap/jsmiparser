@@ -37,6 +37,10 @@ public class ASNNamedValue extends ASNValue implements NamedSymbol {
         return m_idToken.getId();
     }
 
+    public IdToken getIdToken() {
+        return m_idToken;
+    }
+
     public void setValue(ASNValue v) {
         m_value = v;
     }

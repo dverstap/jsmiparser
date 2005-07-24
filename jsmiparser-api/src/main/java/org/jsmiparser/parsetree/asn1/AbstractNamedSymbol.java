@@ -19,10 +19,8 @@ import org.jsmiparser.util.token.IdToken;
 
 /**
  * @author davy
- *
  */
-public abstract class AbstractNamedSymbol extends AbstractSymbol
-{
+public abstract class AbstractNamedSymbol extends AbstractSymbol implements NamedSymbol {
     private IdToken m_idToken;
 
     public AbstractNamedSymbol(Context context, IdToken idToken) {
@@ -30,10 +28,11 @@ public abstract class AbstractNamedSymbol extends AbstractSymbol
         m_idToken = idToken;
     }
 
-    /**
-     * @return Returns the name.
-     */
     public String getName() {
         return m_idToken.getId();
+    }
+
+    public IdToken getIdToken() {
+        return m_idToken;
     }
 }

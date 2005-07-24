@@ -15,13 +15,17 @@
  */
 package org.jsmiparser.parsetree.asn1;
 
+import org.jsmiparser.util.token.IdToken;
+
 
 /**
  * @author davy
  *
  */
 public interface NamedSymbol  extends Symbol {
-	
-	public String getName();
-	
+
+    public String getName();
+
+    public IdToken getIdToken();
+
 }

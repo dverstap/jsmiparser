@@ -42,6 +42,10 @@ public class ASNChoiceValue extends ASNValue implements NamedSymbol {
         return m_idToken.getId();
     }
 
+    public IdToken getIdToken() {
+        return m_idToken;
+    }
+
     /**
      * @return Returns the colon.
      */
