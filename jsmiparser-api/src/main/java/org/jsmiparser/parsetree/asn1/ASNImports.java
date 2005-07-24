@@ -16,6 +16,8 @@
 
 package org.jsmiparser.parsetree.asn1;
 
+import org.jsmiparser.util.token.IdToken;
+
 import java.util.*;
 
 
@@ -32,8 +34,8 @@ public class ASNImports extends AbstractNamedSymbol {
     private ASNDefinedValue assignedIdentifierDefined;
     
     /** Creates a new instance of ASNImports */
-    public ASNImports(Context context, String name, List<String> symbols) {
-    	super(context, name);
+    public ASNImports(Context context, IdToken idToken, List<String> symbols) {
+    	super(context, idToken);
     	
         this.symbols = symbols;
     }

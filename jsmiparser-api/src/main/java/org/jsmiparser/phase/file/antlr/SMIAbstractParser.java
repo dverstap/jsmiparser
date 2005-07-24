@@ -23,6 +23,7 @@ import org.jsmiparser.parsetree.smi.SMINamedBit;
 import org.jsmiparser.parsetree.smi.SMIStatus;
 import org.jsmiparser.util.location.Location;
 import org.jsmiparser.util.location.LocationFactory;
+import org.jsmiparser.util.token.IdToken;
 
 import java.util.List;
 
@@ -63,24 +64,31 @@ public abstract class SMIAbstractParser extends LLkParser implements Context {
         m_locationFactory = new AntlrLocationFactory(this, source);
     }
 
+    private Location makeLocation(Token token) {
+        return new Location(m_source, token.getLine(), token.getColumn());
+    }
+
+    protected IdToken idt(Token idToken) {
+        return new IdToken(makeLocation(idToken), idToken.getText());
+    }
+
     protected ASNModule makeModule(Token nameToken) {
-        m_module = new ASNModule(this, nameToken.getText());
+        m_module = new ASNModule(this, idt(nameToken));
         setPosition(m_module, nameToken);
         return m_module;
     }
 
     protected ASNImports makeImports(List<String> symbols, Token fromModuleToken) {
-        return new ASNImports(context_,
-                fromModuleToken.getText(), symbols);
+        return new ASNImports(context_, idt(fromModuleToken), symbols);
     }
 
     protected ASNNamedNumber makeNamedNumber(ASNNamedNumberType nnt,
                                              Token nameToken, ASNValue s, ASNValue d) {
-        return new ASNNamedNumber(context_, nnt, nameToken.getText(), s, d);
+        return new ASNNamedNumber(context_, nnt, idt(nameToken), s, d);
     }
 
     protected SMINamedBit makeNamedBit(List<SMINamedBit> list, Token nameToken, Token valueToken) {
-        SMINamedBit n = new SMINamedBit(context_, nameToken.getText());
+        SMINamedBit n = new SMINamedBit(context_, idt(nameToken));
         if (valueToken != null) // TODO don't allow null
         {
             n.setNumber(Long.parseLong(valueToken.getText()));
@@ -93,11 +101,11 @@ public abstract class SMIAbstractParser extends LLkParser implements Context {
     }
 
     protected ASNChoiceValue makeChoiceValue(Token nameToken) {
-        return new ASNChoiceValue(context_, nameToken.getText());
+        return new ASNChoiceValue(context_, idt(nameToken));
     }
 
     protected ASNNamedValue makeNamedValue(Token nameToken, ASNValue value) {
-        return new ASNNamedValue(context_, nameToken.getText(), value);
+        return new ASNNamedValue(context_, idt(nameToken), value);
     }
 
 //	protected ASNValueAssignment makeValueAssignment(Token nameToken)
@@ -108,12 +116,12 @@ public abstract class SMIAbstractParser extends LLkParser implements Context {
 //	}
 
     protected ASNOidComponent makeOidComponent(Token nameToken, Token numberToken) {
-        String name = null;
+        IdToken idToken = null;
         if (nameToken != null) {
-            name = nameToken.getText();
+            idToken = idt(nameToken);
         }
-        long number = Long.parseLong(numberToken.getText());
-        return new ASNOidComponent(context_, name, number);
+        long number = Long.parseLong(numberToken.getText()); // TODO LongToken
+        return new ASNOidComponent(context_, idToken, number);
     }
 
     protected long makeLong(Token minusToken, Token numberToken) {

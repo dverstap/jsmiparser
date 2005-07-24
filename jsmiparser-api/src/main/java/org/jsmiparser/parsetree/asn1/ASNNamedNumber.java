@@ -16,8 +16,7 @@
 
 package org.jsmiparser.parsetree.asn1;
 
-
-
+import org.jsmiparser.util.token.IdToken;
 
 /**
  *
@@ -34,8 +33,8 @@ public class ASNNamedNumber extends AbstractNamedSymbol {
     
     /** Creates a new instance of ASNNamedNumber */
     public ASNNamedNumber(Context context, ASNNamedNumberType nnt,
-    		String name, ASNValue intValue, ASNValue definedValue) {
-    	super(context, name);
+    		IdToken idToken, ASNValue intValue, ASNValue definedValue) {
+    	super(context, idToken);
     	
     	intValue_ = intValue;
     	definedValue_ = definedValue;

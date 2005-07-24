@@ -16,55 +16,57 @@
 
 package org.jsmiparser.parsetree.asn1;
 
+import org.jsmiparser.util.token.IdToken;
+
 
 /**
  *
  * @author  Nigel Sheridan-Smith
  */
 public class ASNChoiceValue extends ASNValue implements NamedSymbol {
-    
-    private String name_;
+
+    private IdToken m_idToken;
     private ASNValue value_;
-    private boolean colon_; // DV ?
-    
+    private boolean colon_; // TODO ?
+
     /** Creates a new instance of ASNChoiceValue */
-    public ASNChoiceValue(Context context, String name) {
-    	super(context, Type.CHOICEVALUE);
-    	name_ = name;
+    public ASNChoiceValue(Context context, IdToken idToken) {
+        super(context, Type.CHOICEVALUE);
+        m_idToken = idToken;
     }
 
-	/* (non-Javadoc)
-	 * @see org.parsesmi.asn1.NamedSymbol#getName()
-	 */
-	public String getName() {
-		return name_;
-	}
-    
-	/**
-	 * @return Returns the colon.
-	 */
-	public boolean isColon() {
-		return colon_;
-	}
-	
-	/**
-	 * @param colon The colon to set.
-	 */
-	public void setColon(boolean colon) {
-		colon_ = colon;
-	}
-	
-	/**
-	 * @return Returns the value.
-	 */
-	public ASNValue getValue() {
-		return value_;
-	}
-	
-	/**
-	 * @param value The value to set.
-	 */
-	public void setValue(ASNValue value) {
-		value_ = value;
-	}
+    /* (non-Javadoc)
+      * @see org.parsesmi.asn1.NamedSymbol#getName()
+      */
+    public String getName() {
+        return m_idToken.getId();
+    }
+
+    /**
+     * @return Returns the colon.
+     */
+    public boolean isColon() {
+        return colon_;
+    }
+
+    /**
+     * @param colon The colon to set.
+     */
+    public void setColon(boolean colon) {
+        colon_ = colon;
+    }
+
+    /**
+     * @return Returns the value.
+     */
+    public ASNValue getValue() {
+        return value_;
+    }
+
+    /**
+     * @param value The value to set.
+     */
+    public void setValue(ASNValue value) {
+        value_ = value;
+    }
 }

@@ -16,48 +16,34 @@
 
 package org.jsmiparser.parsetree.asn1;
 
+import org.jsmiparser.util.token.IdToken;
+
 
 /**
  *
  * @author  Nigel Sheridan-Smith
  */
 public class ASNOidComponent extends AbstractSymbol {
-    
-	private String name_; // optional
-    private long number_;
-    
+
+    private IdToken m_idToken; // optional
+    private long m_number;
+
     /** Creates a new instance of ASNOidComponent */
-    public ASNOidComponent(Context context, String name, long number) {
-    	super(context);
-    	name_ = name;
-    	number_ = number;
+    public ASNOidComponent(Context context, IdToken idToken, long number) {
+        super(context);
+        m_idToken = idToken;
+        m_number = number;
     }
 
-	/**
-	 * @return Returns the name.
-	 */
-	public String getName() {
-		return name_;
-	}
-	
-	/**
-	 * @param name The name to set.
-	 */
-	public void setName(String name) {
-		name_ = name;
-	}
-	
-	/**
-	 * @return Returns the number.
-	 */
-	public long getNumber() {
-		return number_;
-	}
-	
-	/**
-	 * @param number The number to set.
-	 */
-	public void setNumber(long number) {
-		number_ = number;
-	}
+    public String getName() {
+        return m_idToken.getId();
+    }
+
+    public long getNumber() {
+        return m_number;
+    }
+
+    public void setNumber(long number) {
+        m_number = number;
+    }
 }

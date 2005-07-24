@@ -16,6 +16,8 @@
 
 package org.jsmiparser.parsetree.asn1;
 
+import org.jsmiparser.util.token.IdToken;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,8 +29,8 @@ public class ASNMacroDefinition extends ASNAssignment {
     
     private List<String> tokens_ = new ArrayList<String>();
     
-    public ASNMacroDefinition(Context context, String name) {
-    	super(context, name);
+    public ASNMacroDefinition(Context context, IdToken idToken) {
+    	super(context, idToken);
     	
         setType (Type.MACRODEF);
     }

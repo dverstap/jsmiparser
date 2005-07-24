@@ -15,23 +15,25 @@
  */
 package org.jsmiparser.parsetree.asn1;
 
+import org.jsmiparser.util.token.IdToken;
+
 /**
  * @author davy
  *
  */
 public abstract class AbstractNamedSymbol extends AbstractSymbol
 {
-	private String name_;
-	
-	public AbstractNamedSymbol(Context context, String name) {
-		super(context);
-		name_ = name;
-	}
-	
-	/**
-	 * @return Returns the name.
-	 */
-	public String getName() {
-		return name_;
-	}
+    private IdToken m_idToken;
+
+    public AbstractNamedSymbol(Context context, IdToken idToken) {
+        super(context);
+        m_idToken = idToken;
+    }
+
+    /**
+     * @return Returns the name.
+     */
+    public String getName() {
+        return m_idToken.getId();
+    }
 }

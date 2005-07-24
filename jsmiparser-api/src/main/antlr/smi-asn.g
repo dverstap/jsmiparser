@@ -335,15 +335,15 @@ assignment  returns [ASNAssignment a = null]
 	Token m=null;
 }
 :
-	u1:UPPER ASSIGN_OP { ta = new ASNTypeAssignment(context_, u1.getText()); a = ta; }
+	u1:UPPER ASSIGN_OP { ta = new ASNTypeAssignment(context_, idt(u1)); a = ta; }
 	t1=type            { ta.setEntityType(t1); }
 |
- 	l:LOWER { va = new ASNValueAssignment(context_, l.getText()); a = va; }
+ 	l:LOWER { va = new ASNValueAssignment(context_, idt(l)); a = va; }
 	t2=type { va.setEntityType(t2); }
 	ASSIGN_OP v=value { va.setValue(v); }
 |
-        (u2:UPPER                       { ma = new ASNMacroDefinition(context_, u2.getText()); a = ma; }
-        | m=macroName                   { ma = new ASNMacroDefinition(context_, m.getText()); a = ma; }
+        (u2:UPPER                       { ma = new ASNMacroDefinition(context_, idt(u2)); a = ma; }
+        | m=macroName                   { ma = new ASNMacroDefinition(context_, idt(m)); a = ma; }
         ) "MACRO" ASSIGN_OP 
             BEGIN_KW (t:~(END_KW)       { ma.getTokens().add(t.getText()); }
                      )* END_KW

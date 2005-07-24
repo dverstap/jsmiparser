@@ -16,38 +16,40 @@
 
 package org.jsmiparser.parsetree.asn1;
 
+import org.jsmiparser.util.token.IdToken;
+
 /**
  *
  * @author  Nigel Sheridan-Smith
  */
 public class ASNAssignment extends AbstractNamedSymbol {
-    
-	enum Type
-	{
-		UNKNOWN,
-		TYPE,
-		VALUE,
-		MACRODEF
-	}
-	
-    
+
+    enum Type
+    {
+        UNKNOWN,
+        TYPE,
+        VALUE,
+        MACRODEF
+    }
+
+
     private Type type;
-    
-    /** Creates a new instance of ASNAssignment 
+
+    /** Creates a new instance of ASNAssignment
      */
-    public ASNAssignment(Context context, String name) {
-    	super(context, name);
+    public ASNAssignment(Context context, IdToken idToken) {
+        super(context, idToken);
         setType (Type.UNKNOWN);
     }
-    
+
     public void setType (Type t)
     {
         type = t;
     }
-    
+
     public Type getType ()
     {
         return type;
     }
-    
+
 }

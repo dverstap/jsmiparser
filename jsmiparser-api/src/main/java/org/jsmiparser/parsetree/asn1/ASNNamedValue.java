@@ -16,37 +16,33 @@
 
 package org.jsmiparser.parsetree.asn1;
 
+import org.jsmiparser.util.token.IdToken;
+
 
 /**
- *
- * @author  Nigel Sheridan-Smith
+ * @author Nigel Sheridan-Smith
  */
 public class ASNNamedValue extends ASNValue implements NamedSymbol {
-    
-    private String name;
-    private ASNValue value;
-    
-    /** Creates a new instance of ASNNamedValue 
-     * @param value */
-    public ASNNamedValue(Context context, String name, ASNValue value) {
-    	super(context, Type.NAMEDVALUE);
-    	this.name = name;
-    	this.value = value;
+
+    private IdToken m_idToken;
+    private ASNValue m_value;
+
+    public ASNNamedValue(Context context, IdToken idToken, ASNValue value) {
+        super(context, Type.NAMEDVALUE);
+        m_idToken = idToken;
+        this.m_value = value;
     }
-    
-    public String getName ()
-    {
-        return name;
+
+    public String getName() {
+        return m_idToken.getId();
     }
-    
-    public void setValue (ASNValue v)
-    {
-        value = v;
+
+    public void setValue(ASNValue v) {
+        m_value = v;
     }
-    
-    public ASNValue getValue ()
-    {
-        return value;
+
+    public ASNValue getValue() {
+        return m_value;
     }
-	
+
 }

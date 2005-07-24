@@ -16,40 +16,42 @@
 
 package org.jsmiparser.parsetree.asn1;
 
+import org.jsmiparser.util.token.IdToken;
+
 
 /**
  *
  * @author  Nigel Sheridan-Smith
  */
 public class ASNValueAssignment extends ASNAssignment {
-    
+
     private ASNType entityType;
     private ASNValue value;
 
     /** Creates a new instance of ASNValueAssignment */
-    public ASNValueAssignment(Context context, String name) {
-    	super(context, name);
+    public ASNValueAssignment(Context context, IdToken idToken) {
+        super(context, idToken);
         setType (Type.VALUE);
     }
-    
+
     public void setEntityType (ASNType t)
     {
         entityType = t;
     }
-    
+
     public ASNType getEntityType ()
     {
         return entityType;
     }
-    
+
     public void setValue (ASNValue v)
     {
         value = v;
     }
-    
+
     public ASNValue getValue ()
     {
         return value;
     }
-    
+
 }

@@ -16,6 +16,8 @@
 
 package org.jsmiparser.parsetree.asn1;
 
+import org.jsmiparser.util.token.IdToken;
+
 import java.io.PrintWriter;
 
 import java.util.List;
@@ -48,9 +50,9 @@ public class ASNModule extends AbstractNamedSymbol {
     
     
     /** Creates a new instance of ASNModule */
-    public ASNModule(Context context, String name) 
+    public ASNModule(Context context, IdToken idToken)
     {
-    	super(context, name);
+    	super(context, idToken);
         type = Type.ASN1;
     }
     

@@ -18,6 +18,7 @@ package org.jsmiparser.parsetree.smi;
 
 import org.jsmiparser.parsetree.asn1.AbstractNamedSymbol;
 import org.jsmiparser.parsetree.asn1.Context;
+import org.jsmiparser.util.token.IdToken;
 
 
 /**
@@ -25,39 +26,39 @@ import org.jsmiparser.parsetree.asn1.Context;
  * @author  Nigel Sheridan-Smith
  */
 public class SMINamedBit extends AbstractNamedSymbol {
-    
+
     private long number;
     private boolean minus;
-    
+
     /** Creates a new instance of SMINamedBit */
-    public SMINamedBit(Context context, String name) {
-    	super(context, name);
+    public SMINamedBit(Context context, IdToken idToken) {
+        super(context, idToken);
     }
-    
+
     public void setNumber (long n)
     {
         if (minus)
         {
             number = -n;
-            
+
         } else {
             number = n;
         }
     }
-    
+
     public long getNumber ()
     {
         return number;
     }
-    
+
     public void setMinus (boolean m)
     {
         minus = m;
     }
-    
+
     public boolean isMinus ()
     {
         return minus;
     }
-    
+
 }
