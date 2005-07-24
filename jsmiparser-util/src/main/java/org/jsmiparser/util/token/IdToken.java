@@ -23,4 +23,7 @@ public class IdToken extends StringToken {
         super(location, value);
     }
 
+    public String getId() {
+        return getValue();
+    }
 }
