@@ -15,39 +15,36 @@
  */
 package org.jsmiparser.parsetree.asn1;
 
+import org.jsmiparser.util.location.Location;
+
 
 /**
  * @author davy
  */
 public abstract class AbstractSymbol implements Symbol {
 
-    private ASNModule module_;
-    private int line_;
-    private int column_;
+    private ASNModule m_module;
+    private Location m_location;
 
     protected AbstractSymbol(Context context) {
         super();
 
-        module_ = context.getModule();
-
-        line_ = context.getLine();
-        column_ = context.getColumn();
+        m_module = context.getModule();
+        m_location = context.getLocationFactory().create();
     }
 
-    public int getColumn() {
-        return column_;
+    public Location getLocation() {
+        return m_location;
     }
 
-    public int getLine() {
-        return line_;
+    public void setLocation(Location location) {
+        // ensure that the strings are the same, not just equals; to ensure memory management is ok
+        assert(m_module == null || location.getSource() == m_module.getLocation().getSource());
+        m_location = location;
     }
 
     public ASNModule getModule() {
-        return module_;
+        return m_module;
     }
 
-    public void setPosition(int line, int column) {
-        line_ = line;
-        column_ = column;
-    }
 }

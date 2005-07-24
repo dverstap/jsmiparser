@@ -34,6 +34,15 @@ public class Location {
         m_column = column;
     }
 
+    public Location(String source, int line) {
+        m_source = source;
+        m_line = line;
+    }
+
+    public Location(String source) {
+        m_source = source;
+    }
+
     public String getSource() {
         return m_source;
     }

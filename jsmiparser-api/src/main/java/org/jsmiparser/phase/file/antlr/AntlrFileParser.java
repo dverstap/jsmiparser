@@ -31,7 +31,8 @@ public class AntlrFileParser implements FileParser {
             InputStream is = new BufferedInputStream(new FileInputStream(file));
             SMILexer lexer = new SMILexer(is);
             SMIParser parser = new SMIParser(lexer);
-
+            parser.setSource(file.toString());
+            
             ASNModule module = parser.module_definition();
             is.close();
             return module;

@@ -15,30 +15,18 @@
  */
 package org.jsmiparser.parsetree.asn1;
 
+import org.jsmiparser.util.location.Location;
+
 
 /**
  * @author davy
- *
  */
 public interface Symbol {
-	/**
-	 * @return Returns the column.
-	 */
-	public abstract int getColumn();
 
-	/**
-	 * @return Returns the line.
-	 */
-	public abstract int getLine();
+    Location getLocation();
 
-	/**
-	 * @return Returns the module.
-	 */
-	public abstract ASNModule getModule();
+    void setLocation(Location location);
 
-	/**
-	 * @param line
-	 * @param column
-	 */
-	public abstract void setPosition(int line, int column);
+    ASNModule getModule();
+
 }

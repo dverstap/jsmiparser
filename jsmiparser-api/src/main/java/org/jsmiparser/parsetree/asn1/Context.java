@@ -15,25 +15,16 @@
  */
 package org.jsmiparser.parsetree.asn1;
 
+import org.jsmiparser.util.location.LocationFactory;
+
 
 /**
  * @author davy
  *
  */
 public interface Context {
-	
-	/**
-	 * @return The current line number.
-	 */
-	public abstract int getLine();
 
-	/**
-	 * @return The current column number.
-	 */
-	public abstract int getColumn();
+    LocationFactory getLocationFactory();
 
-	/**
-	 * @return Returns the module.
-	 */
-	public abstract ASNModule getModule();
+    ASNModule getModule();
 }

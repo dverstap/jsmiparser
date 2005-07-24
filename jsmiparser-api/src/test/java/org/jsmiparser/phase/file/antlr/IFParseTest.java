@@ -15,15 +15,13 @@
  */
 package org.jsmiparser.phase.file.antlr;
 
-import java.io.InputStream;
-
+import antlr.RecognitionException;
+import antlr.TokenStreamException;
+import junit.framework.TestCase;
 import org.jsmiparser.parsetree.asn1.ASNAssignment;
 import org.jsmiparser.parsetree.asn1.ASNModule;
 
-import junit.framework.TestCase;
-
-import antlr.RecognitionException;
-import antlr.TokenStreamException;
+import java.io.InputStream;
 
 /**
  * @author davy
@@ -44,12 +42,13 @@ public class IFParseTest extends TestCase {
 		
 		SMILexer lexer = new SMILexer(is);
 		SMIParser parser = new SMIParser(lexer);
-		
-		ASNModule module = parser.module_definition();
+        parser.setSource("/IF-MIB");
+
+        ASNModule module = parser.module_definition();
 		
 		assertEquals("IF-MIB", module.getModuleName());
 		assertEquals("IF-MIB", module.getName());
-		assertEquals(1, module.getLine());
+		assertEquals(1, module.getLocation().getLine());
 		
 //		for (ASNAssignment a : module.getAssignments())
 //		{
@@ -58,7 +57,7 @@ public class IFParseTest extends TestCase {
 		
 		ASNAssignment a = module.findAssignment("ifCompliance");
 		assertNotNull(a);
-		assertEquals(1741, a.getLine());
+		assertEquals(1741, a.getLocation().getLine());
 		
 //		PrintWriter out = new PrintWriter(System.out);
 //		module.print(out);
