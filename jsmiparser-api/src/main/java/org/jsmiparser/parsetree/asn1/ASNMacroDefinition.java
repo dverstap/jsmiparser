@@ -27,17 +27,12 @@ public class ASNMacroDefinition extends ASNAssignment {
     
     private List<String> tokens_ = new ArrayList<String>();
     
-    /** Creates a new instance of ASNMacroDefinition 
-     * @throws TokenStreamException */
     public ASNMacroDefinition(Context context, String name) {
     	super(context, name);
     	
         setType (Type.MACRODEF);
     }
     
-	/**
-	 * @return Returns the tokens.
-	 */
 	public List<String> getTokens() {
 		return tokens_;
 	}
