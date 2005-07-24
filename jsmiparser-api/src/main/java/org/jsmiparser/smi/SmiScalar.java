@@ -15,30 +15,32 @@
  */
 package org.jsmiparser.smi;
 
+import org.jsmiparser.util.token.IdToken;
+
 public class SmiScalar extends SmiAttribute {
-	
-	private SmiScalarsClass scalarsClass_;
 
-	public SmiScalar(String id, SmiScalarsClass scalarsClass) {
-		super(id, scalarsClass.getModule());
-		
-		scalarsClass_ = scalarsClass;
-		scalarsClass_.getScalars().add(this);
-	}
+    private SmiScalarsClass scalarsClass_;
 
-	@Override
-	public SmiClass getSmiClass() {
-		return scalarsClass_;
-	}
+    public SmiScalar(IdToken idToken, SmiScalarsClass scalarsClass) {
+        super(idToken, scalarsClass.getModule());
 
-	@Override
-	public String getCodeOid() {
-		String result = super.getCodeOid();
-		if (!result.endsWith(".0")) {
-			result += ".0";
-		}
-		return result;
-	}
+        scalarsClass_ = scalarsClass;
+        scalarsClass_.getScalars().add(this);
+    }
 
-	
+    @Override
+    public SmiClass getSmiClass() {
+        return scalarsClass_;
+    }
+
+    @Override
+    public String getCodeOid() {
+        String result = super.getCodeOid();
+        if (!result.endsWith(".0")) {
+            result += ".0";
+        }
+        return result;
+    }
+
+
 }

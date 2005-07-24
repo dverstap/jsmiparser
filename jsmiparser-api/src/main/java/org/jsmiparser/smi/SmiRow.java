@@ -15,6 +15,8 @@
  */
 package org.jsmiparser.smi;
 
+import org.jsmiparser.util.token.IdToken;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -30,8 +32,8 @@ public class SmiRow extends SmiClass {
 	private SmiRow augments_;
 	private List<SmiIndex> indexes_ = new ArrayList<SmiIndex>();
 
-	public SmiRow(String id, SmiModule module) {
-		super(id, module);
+	public SmiRow(IdToken idToken, SmiModule module) {
+		super(idToken, module);
 	}
 	
 	public SmiTable getTable()

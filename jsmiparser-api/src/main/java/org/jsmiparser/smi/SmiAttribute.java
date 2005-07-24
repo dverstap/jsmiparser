@@ -15,6 +15,8 @@
  */
 package org.jsmiparser.smi;
 
+import org.jsmiparser.util.token.IdToken;
+
 import java.math.BigInteger;
 
 public abstract class SmiAttribute extends SmiSymbol {
@@ -25,8 +27,8 @@ public abstract class SmiAttribute extends SmiSymbol {
 	private SmiPrimitiveType primitiveType_;
 
 
-	public SmiAttribute(String id, SmiModule module) {
-		super(id, module);
+	public SmiAttribute(IdToken idToken, SmiModule module) {
+		super(idToken, module);
 	}
 
 	public abstract SmiClass getSmiClass();

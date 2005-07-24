@@ -15,10 +15,12 @@
  */
 package org.jsmiparser.smi;
 
+import org.jsmiparser.util.token.IdToken;
+
 public class SmiTextualConvention extends SmiType {
 
-	public SmiTextualConvention(String id, SmiModule module) {
-		super(id, module);
-	}
+    public SmiTextualConvention(IdToken idToken, SmiModule module) {
+        super(idToken, module);
+    }
 
 }

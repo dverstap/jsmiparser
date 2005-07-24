@@ -15,6 +15,8 @@
  */
 package org.jsmiparser.smi;
 
+import org.jsmiparser.util.token.IdToken;
+
 /**
  * @author davy
  *
@@ -22,19 +24,18 @@ package org.jsmiparser.smi;
 public class SmiUtil
 {
 
-    /**
-     * @param str
-     * @return
-     */
     public static String ucFirst(String str)
     {
         return Character.toUpperCase(str.charAt(0)) + str.substring(1);
     }
-    
+
     public static String stripLastOidPart(String oid)
     {
-    	int index = oid.lastIndexOf('.');
-    	return oid.substring(0, index);
+        int index = oid.lastIndexOf('.');
+        return oid.substring(0, index);
     }
 
+    public static IdToken ucFirst(IdToken idToken) {
+        return new IdToken(idToken.getLocation(), ucFirst(idToken.getId()));
+    }
 }

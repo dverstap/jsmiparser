@@ -15,13 +15,13 @@
  */
 package org.jsmiparser.smi;
 
+import org.apache.log4j.Logger;
+import org.jsmiparser.util.token.IdToken;
+
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-
-import org.apache.log4j.Logger;
-
 
 // TODO rename to SmiModuleClass
 public class SmiScalarsClass extends SmiClass {
@@ -32,9 +32,9 @@ public class SmiScalarsClass extends SmiClass {
 	private List<SmiScalarsClass> parentScalarsClasses_ = new ArrayList<SmiScalarsClass>();
 	private List<SmiScalarsClass> childScalarsClasses_ = new ArrayList<SmiScalarsClass>();
 	
-	public SmiScalarsClass(String id, SmiModule module) {
-		super(id, module);
-		log.debug("Creating SmiScalarsClass: " + id + " in module " + module.getId());
+	public SmiScalarsClass(IdToken idToken, SmiModule module) {
+		super(idToken, module);
+		log.debug("Creating SmiScalarsClass: " + idToken + " in module " + module.getId());
 	}
 
 	public List<SmiScalar> getScalars()

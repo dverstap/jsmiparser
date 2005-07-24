@@ -15,22 +15,24 @@
  */
 package org.jsmiparser.smi;
 
+import org.jsmiparser.util.token.IdToken;
+
 public class SmiTable extends SmiSymbol {
 
-	SmiRow row_;
-	
-	public SmiTable(String id, SmiModule module) {
-		super(id, module);
-	}
-	
-	public SmiRow getRow()
-	{
-		return row_;
-	}
+    SmiRow row_;
 
-	public String getCodeId() {
-		return getModule().getMib().getCodeNamingStrategy().getTableId(this);
-	}
-	
-	
+    public SmiTable(IdToken idToken, SmiModule module) {
+        super(idToken, module);
+    }
+
+    public SmiRow getRow()
+    {
+        return row_;
+    }
+
+    public String getCodeId() {
+        return getModule().getMib().getCodeNamingStrategy().getTableId(this);
+    }
+
+
 }

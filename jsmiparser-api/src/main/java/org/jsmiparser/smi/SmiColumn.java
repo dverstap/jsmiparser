@@ -15,6 +15,8 @@
  */
 package org.jsmiparser.smi;
 
+import org.jsmiparser.util.token.IdToken;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,8 +26,8 @@ public class SmiColumn extends SmiAttribute {
 	private List<SmiIndex> indexes_ = new ArrayList<SmiIndex>();
 	
 	
-	public SmiColumn(String id, SmiModule module) {
-		super(id, module);
+	public SmiColumn(IdToken idToken, SmiModule module) {
+		super(idToken, module);
 	}
 
 	public SmiRow getRow() {

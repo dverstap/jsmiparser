@@ -17,6 +17,7 @@ package org.jsmiparser.phase.mib;
 
 import org.apache.log4j.Logger;
 import org.jsmiparser.util.problem.ProblemReporterFactory;
+import org.jsmiparser.util.token.IdToken;
 import org.jsmiparser.phase.AbstractPhase;
 import org.jsmiparser.phase.PhaseException;
 import org.jsmiparser.smi.*;
@@ -40,7 +41,7 @@ public class MibBuilderPhase extends AbstractPhase {
 
         SmiMib result = new SmiMib(new SmiJavaCodeNamingStrategy("org.jsmiparser.mib")); // TODO
         for (ASNModule am : asnMib.getModules()) {
-            SmiModule sm = result.createModule(am.getModuleName());
+            SmiModule sm = result.createModule(am.getIdToken());
             processModule(result, am, sm);
         }
         return result;
@@ -48,22 +49,22 @@ public class MibBuilderPhase extends AbstractPhase {
 
     private void processModule(SmiMib mib, ASNModule m, SmiModule sm) {
         for (ASNAssignment a : m.getAssignments()) {
-            final String name = a.getName();
+            final IdToken idToken = a.getIdToken();
             if (a instanceof ASNTypeAssignment) {
                 ASNTypeAssignment typeAssignment = (ASNTypeAssignment) a;
                 ASNType asnType = typeAssignment.getEntityType();
 
                 SmiPrimitiveType pt = convertToPrimitiveType(asnType);
                 if (pt != null) {
-                    SmiType st = sm.createType(name);
+                    SmiType st = sm.createType(idToken);
                     st.setPrimitiveType(pt);
 
 
                     convertType(asnType, st);
                 } else if (asnType instanceof SMITextualConventionMacro) {
-                    //System.out.println("TC: " + m.getName() + ": " + name);
+                    //System.out.println("TC: " + m.getName() + ": " + idToken);
                     SMITextualConventionMacro atc = (SMITextualConventionMacro) asnType;
-                    SmiTextualConvention stc = sm.createTextualConvention(name);
+                    SmiTextualConvention stc = sm.createTextualConvention(idToken);
                     ASNType at = atc.getSyntax();
                     //System.out.println(" is " + at.getClass().getName());
                     convertType(at, stc);
@@ -77,13 +78,13 @@ public class MibBuilderPhase extends AbstractPhase {
                 ASNValueAssignment va = (ASNValueAssignment) a;
                 ASNType asnType = va.getEntityType();
                 if (asnType instanceof SMIObjectTypeMacro) {
-                    //System.out.println("ObjectType macro: " + name);
+                    //System.out.println("ObjectType macro: " + idToken);
                     SMIObjectTypeMacro otm = (SMIObjectTypeMacro) asnType;
                     if (otm.getSyntax().getType() != SMIType.Enum.SEQUENCE
                             && otm.getSyntax().getType() != SMIType.Enum.SEQUENCEOF) {
                         //System.out.println("  is not SEQ(OF)");
                         if (!otm.getNamedBits().isEmpty()) {
-                            SmiType type = sm.createType(SmiUtil.ucFirst(name));
+                            SmiType type = sm.createType(SmiUtil.ucFirst(idToken));
                             //System.out.println("Create attr type " + type.getId());
                             for (SMINamedBit nb : otm.getNamedBits()) {
                                 type.addEnumValue(nb.getName(), BigInteger.valueOf(nb.getNumber()));

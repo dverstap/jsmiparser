@@ -15,37 +15,43 @@
  */
 package org.jsmiparser.smi;
 
+import org.jsmiparser.util.token.IdToken;
+
 public abstract class SmiSymbol {
-	
-	private String id_;
-	private SmiModule module_;
-	
-	
-	public SmiSymbol(String id, SmiModule module) {
-		super();
-		id_ = id;
-		module_ = module;
-	}
+
+    private IdToken m_idToken;
+    private SmiModule module_;
 
 
-	public String getId() {
-		return id_;
-	}
-	
-	public abstract String getCodeId();
-	
-	public String getFullCodeId() {
-		return module_.getMib().getCodeNamingStrategy().getFullCodeId(this);
-	}
+    public SmiSymbol(IdToken idToken, SmiModule module) {
+        super();
+        m_idToken = idToken;
+        module_ = module;
+    }
 
 
-	public SmiModule getModule() {
-		return module_;
-	}
+    public String getId() {
+        return m_idToken.getId();
+    }
+
+    public IdToken getIdToken() {
+        return m_idToken;
+    }
+
+    public abstract String getCodeId();
+
+    public String getFullCodeId() {
+        return module_.getMib().getCodeNamingStrategy().getFullCodeId(this);
+    }
+
+
+    public SmiModule getModule() {
+        return module_;
+    }
 
     public String getUcId()
     {
         return SmiUtil.ucFirst(getId());
     }
-	
+
 }

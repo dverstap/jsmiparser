@@ -15,13 +15,15 @@
  */
 package org.jsmiparser.smi;
 
+import org.jsmiparser.util.token.IdToken;
+
 import java.util.List;
 import java.util.Set;
 
 public abstract class SmiClass extends SmiSymbol {
 
-	public SmiClass(String id, SmiModule module) {
-		super(id, module);
+	public SmiClass(IdToken idToken, SmiModule module) {
+		super(idToken, module);
 	}
 	
 	abstract public List<? extends SmiClass> getParentClasses();

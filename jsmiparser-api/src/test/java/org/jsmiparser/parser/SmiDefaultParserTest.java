@@ -38,6 +38,11 @@ public class SmiDefaultParserTest extends TestCase {
         assertNotNull(mib);
         assertEquals(216, mib.getModules().size());
 
+        assertEquals(1522, mib.getTypes().size());
+
+        // TODO: none of the node conversions are implemented yet
+        assertEquals(0, mib.getTables().size());
+
         //SmiMib mib2 = parser.parse();
         //assertEquals(mib1, mib2);
 

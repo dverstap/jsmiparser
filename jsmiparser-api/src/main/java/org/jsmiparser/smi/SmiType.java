@@ -15,6 +15,8 @@
  */
 package org.jsmiparser.smi;
 
+import org.jsmiparser.util.token.IdToken;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +27,8 @@ public class SmiType extends SmiSymbol {
 	private List<SmiEnumValue> enumValues_ = new ArrayList<SmiEnumValue>();
 	
 
-	public SmiType(String id, SmiModule module) {
-		super(id, module);
+	public SmiType(IdToken idToken, SmiModule module) {
+		super(idToken, module);
 	}
 
 	public SmiPrimitiveType getPrimitiveType() {

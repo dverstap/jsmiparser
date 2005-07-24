@@ -15,6 +15,8 @@
  */
 package org.jsmiparser.smi;
 
+import org.jsmiparser.util.token.IdToken;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,8 +50,8 @@ public class SmiMib extends SmiSymbolContainer {
 		codeNamingStrategy_ = codeNamingStrategy;
 	}
 
-	public SmiModule createModule(String id) {
-		return new SmiModule(this, id);
+	public SmiModule createModule(IdToken idToken) {
+		return new SmiModule(this, idToken);
 	}
 	
 	public SmiModule createModule() {

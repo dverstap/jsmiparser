@@ -15,15 +15,17 @@
  */
 package org.jsmiparser.smi;
 
+import org.jsmiparser.util.token.IdToken;
+
 
 public class SmiMultiRowClass extends SmiRow {
 
     private boolean m_identicalIndexColumns = true;
     private boolean m_identicalIndexTypes = true;
 
-    public SmiMultiRowClass(SmiModule module, String id) {
-		super(id, module);
-	}
+    public SmiMultiRowClass(SmiModule module, IdToken idToken) {
+        super(idToken, module);
+    }
 
     public boolean isIdenticalIndexColumns() {
         return m_identicalIndexColumns;
@@ -42,9 +44,9 @@ public class SmiMultiRowClass extends SmiRow {
     }
 
     public void addParentRow(String id) {
-		SmiRow row = getModule().getMib().findRow(id);
-		assert(row != null); // TODO
-		addParentRow(row);
-	}
+        SmiRow row = getModule().getMib().findRow(id);
+        assert(row != null); // TODO
+        addParentRow(row);
+    }
 
 }

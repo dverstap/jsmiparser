@@ -15,27 +15,28 @@
  */
 package org.jsmiparser.smi;
 
+import org.jsmiparser.util.token.IdToken;
+
 
 /**
  * This class represents an enum type that is not defined as an ASN.1 type assignment,
  * nor defined as a TextualConvention. Instead it is generated from the enum value
  * in the single scalar or column that uses these.
- * 
- * 
- * @author davy
  *
+ * @author davy
  */
 public class SmiSingleAttributeEnum extends SmiType {
 
-	private SmiAttribute singleAttribute_;
-	
-	public SmiSingleAttributeEnum(SmiAttribute attr) {
-		super(attr.getModule().getMib().getCodeNamingStrategy().getSingleAttributeEnumId(attr),
-				attr.getModule());
-		singleAttribute_ = attr;
-	}
+    private SmiAttribute singleAttribute_;
 
-	public SmiAttribute getSingleAttribute() {
-		return singleAttribute_;
-	}
+    public SmiSingleAttributeEnum(SmiAttribute attr) {
+        super(new IdToken(attr.getIdToken().getLocation(),
+                attr.getModule().getMib().getCodeNamingStrategy().getSingleAttributeEnumId(attr)),
+                attr.getModule());
+        singleAttribute_ = attr;
+    }
+
+    public SmiAttribute getSingleAttribute() {
+        return singleAttribute_;
+    }
 }
