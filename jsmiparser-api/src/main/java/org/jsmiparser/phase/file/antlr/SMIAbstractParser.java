@@ -74,7 +74,6 @@ public abstract class SMIAbstractParser extends LLkParser implements Context {
 
     protected ASNModule makeModule(Token nameToken) {
         m_module = new ASNModule(this, idt(nameToken));
-        setPosition(m_module, nameToken);
         return m_module;
     }
 
@@ -171,10 +170,6 @@ public abstract class SMIAbstractParser extends LLkParser implements Context {
         else
             throw new SemanticException("Invalid " + where + " access type for PIB");
         return p;
-    }
-
-    private void setPosition(Symbol symbol, Token token) {
-        symbol.setLocation(new Location(m_source, token.getLine(), token.getColumn()));
     }
 
     public LocationFactory getLocationFactory() {

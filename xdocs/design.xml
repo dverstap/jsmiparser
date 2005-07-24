@@ -63,6 +63,11 @@
 
 	    <ul>
 		<li>
+		    The location of a symbol (file, line, column)
+		    stays available throughout all the parsing phases,
+		    and in the resulting symbol table.
+		</li>
+		<li>
 		    Configurable error/warning reporting.
 		</li>
 		<li>

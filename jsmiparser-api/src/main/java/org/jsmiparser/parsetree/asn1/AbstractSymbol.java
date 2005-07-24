@@ -37,12 +37,6 @@ public abstract class AbstractSymbol implements Symbol {
         return m_location;
     }
 
-    public void setLocation(Location location) {
-        // ensure that the strings are the same, not just equals; to ensure memory management is ok
-        assert(m_module == null || location.getSource() == m_module.getLocation().getSource());
-        m_location = location;
-    }
-
     public ASNModule getModule() {
         return m_module;
     }

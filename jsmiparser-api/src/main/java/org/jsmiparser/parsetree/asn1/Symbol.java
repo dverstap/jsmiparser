@@ -25,8 +25,6 @@ public interface Symbol {
 
     Location getLocation();
 
-    void setLocation(Location location);
-
     ASNModule getModule();
 
 }
