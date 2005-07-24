@@ -16,7 +16,7 @@
 package org.jsmiparser.util.location;
 
 /**
- * @todo figure out and clarify whether line/column numbers are 0 or 1 based
+ * Line and column numbers are 1-based (not 0-based).
  */
 public class Location {
 

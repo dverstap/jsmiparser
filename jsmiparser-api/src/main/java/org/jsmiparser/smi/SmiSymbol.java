@@ -16,6 +16,7 @@
 package org.jsmiparser.smi;
 
 import org.jsmiparser.util.token.IdToken;
+import org.jsmiparser.util.location.Location;
 
 public abstract class SmiSymbol {
 
@@ -44,9 +45,12 @@ public abstract class SmiSymbol {
         return module_.getMib().getCodeNamingStrategy().getFullCodeId(this);
     }
 
-
     public SmiModule getModule() {
         return module_;
+    }
+
+    public Location getLocation() {
+        return m_idToken.getLocation();
     }
 
     public String getUcId()
