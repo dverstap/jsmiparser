@@ -16,8 +16,8 @@
 package org.jsmiparser.util.problem;
 
 import junit.framework.TestCase;
+import org.jsmiparser.util.location.Location;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +49,7 @@ public class ProblemHandlerTest extends TestCase {
     }
 
     public void testLocation() {
-        ProblemLocation location = new ProblemLocation(new File("/tmp/test"), 77, 20);
+        Location location = new Location("/tmp/test", 77, 20);
         m_eh.simpleLocation(location);
 
         assertEquals("Simple location message", m_teh.getLastProblemEvent().getLocalizedMessage());

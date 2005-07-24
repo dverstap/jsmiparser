@@ -13,36 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jsmiparser.util.problem;
-
-import org.apache.log4j.Logger;
-
-import java.io.File;
+package org.jsmiparser.util.location;
 
 /**
  * @todo figure out and clarify whether line/column numbers are 0 or 1 based
  */
-public class ProblemLocation {
-    private static final Logger m_log = Logger.getLogger(ProblemLocation.class);
+public class Location {
 
     private static final char SEPARATOR = ':';
+    public static final int INVALID_LINE = -1;
+    public static final int INVALID_COLUMN = -1;
 
-    private File m_file;
-    private int m_line = -1;
-    private int m_column = -1;
+    private String m_source;
+    private int m_line = INVALID_LINE;
+    private int m_column = INVALID_COLUMN;
 
-    public ProblemLocation(File file, int line, int column) {
-        m_file = file;
+    public Location(String file, int line, int column) {
+        m_source = file;
         m_line = line;
         m_column = column;
     }
 
-    public File getFile() {
-        return m_file;
+    public String getSource() {
+        return m_source;
     }
 
-    public void setFile(File file) {
-        m_file = file;
+    public void setSource(String source) {
+        m_source = source;
     }
 
     public int getLine() {
@@ -63,15 +60,15 @@ public class ProblemLocation {
 
     public String toString() {
         StringBuilder result = new StringBuilder();
-        if (m_file != null) {
-            result.append(m_file);
+        if (m_source != null) {
+            result.append(m_source);
         }
         result.append(SEPARATOR);
-        if (m_line > -1) {
+        if (m_line > INVALID_LINE) {
             result.append(m_line);
         }
         result.append(SEPARATOR);
-        if (m_column > -1) {
+        if (m_column > INVALID_LINE) {
             result.append(m_column);
         }
         return result.toString();

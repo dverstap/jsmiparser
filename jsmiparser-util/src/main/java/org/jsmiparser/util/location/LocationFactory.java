@@ -13,27 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jsmiparser.util;
+package org.jsmiparser.util.location;
 
-import java.io.PrintStream;
-
-
-public abstract class FileLocator
+public interface LocationFactory
 {
-    public abstract String getFileName();
 
-    public abstract int getLine();
-
-    public abstract int getColumn();
-
-    public void printLocation(PrintStream s)
-    {
-        s.print(getFileName());
-        s.print(":");
-        s.print(getLine());
-        s.print(":");
-        s.print(getColumn());
-        s.print(": ");
-    }
+    Location create();
 
 }

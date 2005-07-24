@@ -18,6 +18,7 @@ package org.jsmiparser.util.problem;
 import org.jsmiparser.util.problem.annotations.ProblemInterface;
 import org.jsmiparser.util.problem.annotations.ProblemMethod;
 import org.jsmiparser.util.problem.annotations.ProblemProperty;
+import org.jsmiparser.util.location.Location;
 
 import java.util.List;
 
@@ -31,5 +32,5 @@ public interface ExampleProblemReporter {
     void simpleMessage();
 
     @ProblemMethod(message = "Simple location message")
-    void simpleLocation(ProblemLocation location);
+    void simpleLocation(Location location);
 }

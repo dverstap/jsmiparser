@@ -17,19 +17,20 @@ package org.jsmiparser.util.problem;
 
 import org.apache.log4j.Logger;
 import org.jsmiparser.util.problem.annotations.ProblemSeverity;
+import org.jsmiparser.util.location.Location;
 
 import java.util.Formatter;
 
 public class ProblemEvent {
     private static final Logger m_log = Logger.getLogger(ProblemEvent.class);
 
-    private ProblemLocation m_location;
+    private Location m_location;
     private ProblemSeverity m_severity;
     private String m_messageKey;
     private String m_defaultMessage;
     private Object[] m_arguments;
 
-    public ProblemEvent(ProblemLocation location, ProblemSeverity severity, String messageKey, String defaultMessage, Object[] arguments) {
+    public ProblemEvent(Location location, ProblemSeverity severity, String messageKey, String defaultMessage, Object[] arguments) {
         m_location = location;
         m_severity = severity;
         m_messageKey = messageKey;
@@ -37,7 +38,7 @@ public class ProblemEvent {
         m_arguments = arguments;
     }
 
-    public ProblemLocation getLocation() {
+    public Location getLocation() {
         return m_location;
     }
 

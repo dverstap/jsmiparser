@@ -15,6 +15,8 @@
  */
 package org.jsmiparser.util.problem;
 
+import org.jsmiparser.util.location.Location;
+
 import java.io.PrintStream;
 
 public class DefaultProblemEventHandler extends AbstractProblemEventHandler {
@@ -44,16 +46,16 @@ public class DefaultProblemEventHandler extends AbstractProblemEventHandler {
         }
     }
 
-    private void error(ProblemLocation location, String localizedMessage) {
+    private void error(Location location, String localizedMessage) {
         print(err_, "Error", location, localizedMessage);
     }
 
 
-    private void warning(ProblemLocation location, String localizedMessage) {
+    private void warning(Location location, String localizedMessage) {
         print(out_, "Warning", location, localizedMessage);
     }
 
-    private void print(PrintStream stream, String sev, ProblemLocation location, String localizedMessage) {
+    private void print(PrintStream stream, String sev, Location location, String localizedMessage) {
         stream.println(sev + ":" + location + ":" + localizedMessage);
     }
 }

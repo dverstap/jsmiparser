@@ -16,7 +16,7 @@
 package org.jsmiparser.util.xmlreflect;
 
 import org.apache.log4j.Logger;
-import org.jsmiparser.util.SAXFileLocator;
+import org.jsmiparser.util.location.SAXLocationFactory;
 import org.jsmiparser.util.problem.ProblemReporterFactory;
 import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
@@ -35,7 +35,7 @@ public class ReflectContentHandler extends DefaultHandler {
 
     public static final ReflectElementHandlerFactory[] FACTORIES = {TextElementHandler.FACTORY, BeanElementHandler.FACTORY};
 
-    private SAXFileLocator m_locator = new SAXFileLocator();
+    private SAXLocationFactory m_locator = new SAXLocationFactory();
     ;
     private XmlReflectProblemReporter m_ph;
     Object root_;

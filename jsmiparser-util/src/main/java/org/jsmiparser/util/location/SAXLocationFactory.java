@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jsmiparser.util;
+package org.jsmiparser.util.location;
 
 import org.xml.sax.Locator;
 
-public class SAXFileLocator extends FileLocator {
+public class SAXLocationFactory implements LocationFactory {
     private Locator m_locator;
 
-    public SAXFileLocator() {
+    public SAXLocationFactory() {
     }
 
-    public SAXFileLocator(Locator locator) {
+    public SAXLocationFactory(Locator locator) {
         super();
         m_locator = locator;
     }
@@ -36,20 +36,15 @@ public class SAXFileLocator extends FileLocator {
         this.m_locator = locator;
     }
 
-    public String getFileName() {
+    public Location create() {
+        return new Location(getFileName(), m_locator.getLineNumber(), m_locator.getColumnNumber());
+    }
+
+    private String getFileName() {
         if (m_locator.getPublicId() != null)
             return "publicId: " + m_locator.getPublicId();
         if (m_locator.getSystemId() != null)
             return "systemId: " + m_locator.getSystemId();
         return null;
     }
-
-    public int getLine() {
-        return m_locator.getLineNumber();
-    }
-
-    public int getColumn() {
-        return m_locator.getColumnNumber();
-    }
-
 }
