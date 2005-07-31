@@ -17,10 +17,11 @@ package org.jsmiparser.smi;
 
 import junit.framework.TestCase;
 import org.jsmiparser.util.token.IdToken;
+import org.jsmiparser.util.location.Location;
 
 public class SmiModuleTest extends TestCase {
     private SmiMib mib_ = new SmiMib(new SmiJavaCodeNamingStrategy("test"));
-    private SmiModule module_ = new SmiModule(mib_, new IdToken(null, "IF-MIB"));
+    private SmiModule module_ = new SmiModule(mib_, new IdToken(new Location("IF-MIBsource", 1, 0), "IF-MIB"));
 
     public void testGetJavaId() {
         assertEquals("IfMib", module_.getCodeId());

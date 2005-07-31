@@ -23,14 +23,20 @@ import org.jsmiparser.util.location.Location;
  */
 public abstract class AbstractSymbol implements Symbol {
 
-    private ASNModule m_module;
+    protected ASNModule m_module;
     private Location m_location;
 
+    // TODO remove
     protected AbstractSymbol(Context context) {
         super();
 
         m_module = context.getModule();
         m_location = context.getLocationFactory().create();
+    }
+
+    protected AbstractSymbol(ASNModule module, Location location) {
+        m_module = module;
+        m_location = location;
     }
 
     public Location getLocation() {

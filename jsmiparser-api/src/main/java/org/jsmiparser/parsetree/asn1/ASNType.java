@@ -85,4 +85,15 @@ public class ASNType extends AbstractSymbol {
 	public void setType(Enum type) {
 		type_ = type;
 	}
+
+    /**
+     * Calls the resolveDefinedType() method on each referenced type.
+     * ASNDefinedType implementation returns the referenced type.
+     * The end result is that there will be no more ASNDefinedType objects used anywhere.
+     *
+     * @todo implement in the derived classes
+     */
+    public ASNType resolveDefinedType() {
+        return this;
+    }
 }

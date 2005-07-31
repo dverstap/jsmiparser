@@ -30,6 +30,6 @@ public abstract class AbstractToken implements Token {
     }
 
     public String toString() {
-        return getObject().toString();
+        return getLocation().toString() + Location.SEPARATOR + getObject().toString();
     }
 }

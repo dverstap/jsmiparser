@@ -15,35 +15,19 @@
  */
 package org.jsmiparser.phase.file;
 
-import org.jsmiparser.parsetree.asn1.*;
 import org.jsmiparser.util.token.IdToken;
+import org.jsmiparser.util.problem.annotations.ProblemMethod;
+import org.jsmiparser.parsetree.asn1.ASNModule;
+import org.jsmiparser.parsetree.asn1.ASNAssignment;
 
-import java.io.File;
+public interface FileParserProblemReporter {
 
-public interface FileParser {
+    @ProblemMethod(message = "Cannot find file for module %s")
+    void reportCannotFindModuleFile(IdToken moduleToken);
 
-    enum State {
-        UNPARSED,
-        PARSING,
-        PARSED
-    }
+    @ProblemMethod(message = "Duplicate module %s originally defined at %s")
+    void reportDuplicateModule(ASNModule duplicate, ASNModule original);
 
-    ASNModule parse();
-
-    File getFile();
-
-    State getState();
-
-    ASNModule getModule();
-
-    ASNSymbolMap<ASNTypeAssignment> getTypeMap();
-
-    ASNSymbolMap<ASNValueAssignment> getValueMap();
-
-    ASNSymbolMap<ASNMacroDefinition> getMacroMap();
-
-    ASNAssignment use(IdToken idToken);
-
-    ASNModule useModule(IdToken idToken);
-
+    @ProblemMethod(message = "Duplicate assignment %s originally defined at %s")
+    void reportDuplicateAssignment(ASNAssignment duplicate, ASNAssignment original);
 }

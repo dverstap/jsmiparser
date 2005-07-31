@@ -29,9 +29,13 @@ public class ASNValueAssignment extends ASNAssignment {
     private ASNValue value;
 
     /** Creates a new instance of ASNValueAssignment */
-    public ASNValueAssignment(Context context, IdToken idToken) {
-        super(context, idToken);
+    public ASNValueAssignment(ASNModule module, IdToken idToken) {
+        super(module, idToken);
         setType (Type.VALUE);
+    }
+
+    public Symbol getRightHandSide() {
+        return value;
     }
 
     public void setEntityType (ASNType t)
@@ -53,5 +57,6 @@ public class ASNValueAssignment extends ASNAssignment {
     {
         return value;
     }
+
 
 }

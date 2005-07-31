@@ -13,28 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jsmiparser.util.token;
+package org.jsmiparser.phase.file;
 
-import org.jsmiparser.util.location.Location;
+import org.apache.log4j.Logger;
+import org.jsmiparser.parsetree.asn1.ASNModule;
+import org.jsmiparser.parsetree.asn1.Context;
 
-public class IntegerToken extends AbstractToken {
+import java.util.HashMap;
+import java.util.Map;
 
-    private int m_value;
+public class ASNMibParserImpl {
+    private static final Logger m_log = Logger.getLogger(ASNMibParserImpl.class);
 
-    protected IntegerToken(Location location, int value) {
-        super(location);
-        m_value = value;
+    private Map<String,ASNModule> m_moduleMap = new HashMap<String, ASNModule>();
+    private Context m_context;
+
+    public ASNMibParserImpl() {
+
     }
 
-    public int getValue() {
-        return m_value;
-    }
 
-    public Integer getObject() {
-        return m_value;
-    }
 
-    public String toString() {
-        return getLocation().toString() + Location.SEPARATOR + m_value;
-    }
 }

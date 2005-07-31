@@ -17,47 +17,30 @@
 package org.jsmiparser.parsetree.asn1;
 
 /**
- *
- * @author  Nigel Sheridan-Smith
+ * @author Nigel Sheridan-Smith
  */
 public class ASNDefinedType extends ASNType {
-    
-    private String moduleReference;
-    private String typeReference;
+
+    private ASNTypeAssignment m_typeAssignment;
     private ASNConstraint constraint;
-    
-    /** Creates a new instance of ASNDefinedType */
+
     public ASNDefinedType(Context context) {
         super(context, Enum.DEFINED);
     }
-    
-    public void setTypeReference (String n)
-    {
-        typeReference = n;
+
+    public ASNTypeAssignment getTypeAssignment() {
+        return m_typeAssignment;
     }
-    
-    public String getTypeReference ()
-    {
-        return typeReference;
+
+    public void setTypeAssignment(ASNTypeAssignment typeAssignment) {
+        m_typeAssignment = typeAssignment;
     }
-    
-    public void setModuleReference (String m)
-    {
-        moduleReference = m;
-    }
-    
-    public String getModuleReference ()
-    {
-        return moduleReference;
-    }
-    
-    public void setConstraint (ASNConstraint c)
-    {
+
+    public void setConstraint(ASNConstraint c) {
         constraint = c;
     }
-    
-    public ASNConstraint getConstraint ()
-    {
+
+    public ASNConstraint getConstraint() {
         return constraint;
     }
 }

@@ -17,14 +17,24 @@ package org.jsmiparser.parsetree.asn1;
 
 import org.jsmiparser.util.token.IdToken;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * @author davy
  */
 public abstract class AbstractNamedSymbol extends AbstractSymbol implements NamedSymbol {
     private IdToken m_idToken;
+    private List<IdToken> m_users;
 
     public AbstractNamedSymbol(Context context, IdToken idToken) {
         super(context);
+        m_idToken = idToken;
+    }
+
+    protected AbstractNamedSymbol(ASNModule module, IdToken idToken) {
+        super(module, idToken.getLocation());
         m_idToken = idToken;
     }
 
@@ -34,5 +44,28 @@ public abstract class AbstractNamedSymbol extends AbstractSymbol implements Name
 
     public IdToken getIdToken() {
         return m_idToken;
+    }
+
+    protected void doSetIdToken(IdToken idToken) {
+        // TODO put some check here?
+        m_idToken = idToken;
+    }
+
+    public void addUser(IdToken idToken) {
+        if (m_users == null) {
+            m_users = new ArrayList<IdToken>();
+        }
+        m_users.add(idToken);
+    }
+
+    public List<IdToken> getUsers() {
+        if (m_users == null) {
+            return Collections.emptyList();
+        }
+        return m_users;
+    }
+
+    public String toString() {
+        return m_idToken.toString();
     }
 }

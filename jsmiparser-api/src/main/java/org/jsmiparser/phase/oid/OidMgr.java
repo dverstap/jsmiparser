@@ -108,7 +108,7 @@ public class OidMgr {
 //            OidNode nodeRoot = node.getRoot();
 //            if (nodeRoot != root_)
 //            {
-//                resolve(id, node, nodeRoot);
+//                use(id, node, nodeRoot);
 //            }
         }
     }
@@ -129,7 +129,7 @@ public class OidMgr {
                             // error message here will only be confusing
                         }
                     } else {
-                        // error message already printed by call to resolve
+                        // error message already printed by call to use
                     }
                 } else {
                     m_pr.reportCannotResolveUnresolvedOid(id);

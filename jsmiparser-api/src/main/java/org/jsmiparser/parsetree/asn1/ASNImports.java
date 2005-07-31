@@ -17,57 +17,57 @@
 package org.jsmiparser.parsetree.asn1;
 
 import org.jsmiparser.util.token.IdToken;
+import org.jsmiparser.util.location.Location;
 
 import java.util.*;
-
 
 
 /**
  * Represents all the symbols that are imported from a module.
  *
- * @author  Nigel Sheridan-Smith
+ * @author Nigel Sheridan-Smith
  */
 public class ASNImports extends AbstractNamedSymbol {
-    
-    private List<String> symbols;
+
+    private Map<ASNAssignment, IdToken> m_assigmentMap = new LinkedHashMap<ASNAssignment, IdToken>();
     private ASNOidComponentList assignedIdentifierOid;
     private ASNDefinedValue assignedIdentifierDefined;
-    
-    /** Creates a new instance of ASNImports */
-    public ASNImports(Context context, IdToken idToken, List<String> symbols) {
-    	super(context, idToken);
-    	
-        this.symbols = symbols;
+    private ASNModule m_importedModule;
+
+    public ASNImports(Context context, IdToken idToken, ASNModule module) {
+        super(context, idToken);
+        m_importedModule = module;
     }
-    
-    public String getModuleName ()
-    {
-        return getName();
+
+    public ASNModule getImportedModule() {
+        return m_importedModule;
     }
-    
-    public List<String> getSymbols ()
-    {
-        return symbols;
+
+    public Collection<ASNAssignment> getSymbols() {
+        return m_assigmentMap.keySet();
     }
-    
-    public void setAssignedIdentifierOid (ASNOidComponentList o)
-    {
+
+    public Location getImportLocation(ASNAssignment assignment) {
+        return m_assigmentMap.get(assignment).getLocation();
+    }
+
+    public void setAssignedIdentifierOid(ASNOidComponentList o) {
         assignedIdentifierOid = o;
     }
-    
-    public ASNOidComponentList getAssignedIdentifierOid ()
-    {
+
+    public ASNOidComponentList getAssignedIdentifierOid() {
         return assignedIdentifierOid;
     }
-    
-    public void setAssignedIdentifierDefined (ASNDefinedValue d)
-    {
+
+    public void setAssignedIdentifierDefined(ASNDefinedValue d) {
         assignedIdentifierDefined = d;
     }
-    
-    public ASNDefinedValue getAssignedIdentifierDefined ()
-    {
+
+    public ASNDefinedValue getAssignedIdentifierDefined() {
         return assignedIdentifierDefined;
     }
-    
+
+    public void addAssigment(IdToken idToken, ASNAssignment assignment) {
+        m_assigmentMap.put(assignment, idToken);
+    }
 }

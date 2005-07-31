@@ -36,7 +36,7 @@ public interface OidProblemReporter {
     @ProblemMethod(message = "Can't find oid node %s")
     void reportCannotFindOidNode(String id);
 
-    @ProblemMethod(message = "Cannot resolve unresolved oid %s that has a subId")
+    @ProblemMethod(message = "Cannot use unresolved oid %s that has a subId")
     void reportCannotResolveUnresolvedOid(String id);
 
     @ProblemMethod(message = "Unresolved oid %s")

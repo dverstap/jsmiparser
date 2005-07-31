@@ -25,19 +25,18 @@ import java.util.ArrayList;
 
 
 /**
- *
- * @author  Nigel Sheridan-Smith
+ * @author Nigel Sheridan-Smith
  */
 public class ASNModule extends AbstractNamedSymbol {
-    
-	public enum Type
-	{
-		ASN1,
-		SMIv1,
-		SMIv2,
-		SPPI
-	}
-	
+
+    public enum Type {
+        ASN1,
+        SMIv1,
+        SMIv2,
+        SPPI
+    }
+
+    private ASNMib m_mib;
     private Type type;
     private boolean explicitTags;
     private boolean implicitTags;
@@ -46,133 +45,146 @@ public class ASNModule extends AbstractNamedSymbol {
     private ASNOidComponentList definitiveIdentifier;
     private ASNExports exports;
     private List<ASNImports> imports = new ArrayList<ASNImports>();
-    private List<ASNAssignment> assignments = new ArrayList<ASNAssignment>();
-    
-    
-    /** Creates a new instance of ASNModule */
-    public ASNModule(Context context, IdToken idToken)
-    {
-    	super(context, idToken);
+    private List<ASNAssignment> assignments = new ArrayList<ASNAssignment>(); // TODO
+
+
+    /**
+     * Creates a new instance of ASNModule
+     */
+    public ASNModule(ASNMib mib, IdToken idToken) {
+        super((ASNModule) null, idToken); // TODO remove cast
+        m_module = this;
+        m_mib = mib;
         type = Type.ASN1;
+
+        if (m_mib != null) { // for testing purposes
+            m_mib.addModule(this);
+        }
     }
-    
-    public void setType (Type t)
-    {
+
+    public ASNMib getMib() {
+        return m_mib;
+    }
+
+    public void setType(Type t) {
         type = t;
     }
-    
-    public Type getType ()
-    {
+
+    public Type getType() {
         return type;
     }
-    
-    public void setExplicitTags (boolean t)
-    {
+
+    public void setExplicitTags(boolean t) {
         explicitTags = t;
     }
-    
-    public boolean getExplicitTags ()
-    {
+
+    public boolean getExplicitTags() {
         return explicitTags;
     }
 
-    public void setImplicitTags (boolean t)
-    {
+    public void setImplicitTags(boolean t) {
         implicitTags = t;
     }
-    
-    public boolean getImplicitTags ()
-    {
+
+    public boolean getImplicitTags() {
         return implicitTags;
     }
 
-    public void setAutomaticTags (boolean t)
-    {
+    public void setAutomaticTags(boolean t) {
         automaticTags = t;
     }
-    
-    public boolean getAutomaticTags ()
-    {
+
+    public boolean getAutomaticTags() {
         return automaticTags;
     }
-    
-    public void setExtensibilityImplied (boolean e)
-    {
+
+    public void setExtensibilityImplied(boolean e) {
         extensibilityImplied = e;
     }
 
-    public boolean getExtensibilityImplied ()
-    {
+    public boolean getExtensibilityImplied() {
         return extensibilityImplied;
     }
-    
-    public String getModuleName ()
-    {
+
+    public String getModuleName() {
         return getName();
     }
-    
-    public void setDefinitiveIdentifier (ASNOidComponentList l)
-    {
+
+    public void setDefinitiveIdentifier(ASNOidComponentList l) {
         definitiveIdentifier = l;
     }
-    
-    public ASNOidComponentList getDefinitiveIdentifier ()
-    {
+
+    public ASNOidComponentList getDefinitiveIdentifier() {
         return definitiveIdentifier;
     }
-    
-    public void setExports (ASNExports e)
-    {
+
+    public void setExports(ASNExports e) {
         exports = e;
     }
-    
-    public ASNExports getExports ()
-    {
+
+    public ASNExports getExports() {
         return exports;
     }
-    
-    public void setImports (List<ASNImports> i)
-    {
+
+    public void setImports(List<ASNImports> i) {
         imports = i;
     }
-    
-    public List<ASNImports> getImports ()
-    {
+
+    public List<ASNImports> getImports() {
         return imports;
     }
-    
-    public void setAssignments (List<ASNAssignment> a)
-    {
+
+    public void setAssignments(List<ASNAssignment> a) {
         assignments = a;
     }
-    
-    public List<ASNAssignment> getAssignments ()
-    {
+
+    public List<ASNAssignment> getAssignments() {
         return assignments;
     }
-    
-    public ASNAssignment findAssignment(String name)
-    {
-    	for (ASNAssignment a : assignments)
-    	{
-    		if (a.getName().equals(name))
-    		{
-    			return a;
-    		}
-    	}
-    	return null;
+
+    public ASNAssignment findAssignment(String name) {
+        for (ASNAssignment a : assignments) {
+            if (a.getName().equals(name)) {
+                return a;
+            }
+        }
+        return null;
     }
-	
-	public void print(PrintWriter out)
-	{
-		out.println(getModuleName());
-		if (type.equals(Type.SPPI))
-			out.println("PIB-DEFINITIONS ::= BEGIN");
-		else
-			out.println("DEFINITIONS ::= BEGIN");
-		out.println();
-		
-		out.println("END");
-		out.flush();
-	}
+
+    public ASNTypeAssignment findTypeAssignment(String id) {
+        ASNAssignment a = findAssignment(id);
+        if (a instanceof ASNTypeAssignment) {
+            return (ASNTypeAssignment) a;
+        }
+        return null;
+    }
+
+    public ASNValueAssignment findValueAssignment(String id) {
+        ASNAssignment a = findAssignment(id);
+        if (a instanceof ASNTypeAssignment) {
+            return (ASNValueAssignment) a;
+        }
+        return null;
+    }
+
+    public ASNMacroDefinition findMacroDefinition(String id) {
+        ASNAssignment a = findAssignment(id);
+        if (a instanceof ASNTypeAssignment) {
+            return (ASNMacroDefinition) a;
+        }
+        return null;
+    }
+
+
+    public void print(PrintWriter out) {
+        out.println(getModuleName());
+        if (type.equals(Type.SPPI))
+            out.println("PIB-DEFINITIONS ::= BEGIN");
+        else
+            out.println("DEFINITIONS ::= BEGIN");
+        out.println();
+
+        out.println("END");
+        out.flush();
+    }
 }

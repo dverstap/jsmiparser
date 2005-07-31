@@ -17,37 +17,22 @@
 package org.jsmiparser.parsetree.asn1;
 
 /**
- *
- * @author  Nigel Sheridan-Smith
+ * @author Nigel Sheridan-Smith
  */
 public class ASNDefinedValue extends ASNValue {
-    
-    private String externalModule;
-    private String valueReference;
-    
-    /** Creates a new instance of ASNDefinedValue */
+
+    private ASNValueAssignment m_valueAssignment;
+
     public ASNDefinedValue(Context context) {
         super(context, Type.DEFINEDVALUE);
     }
-    
-    public void setExternalModule (String m)
-    {
-        externalModule = m;
+
+    public ASNValueAssignment getValueAssignment() {
+        return m_valueAssignment;
     }
-    
-    public String getExternalModule ()
-    {
-        return externalModule;
+
+    public void setValueAssignment(ASNValueAssignment valueAssignment) {
+        m_valueAssignment = valueAssignment;
     }
-    
-    public void setValueReference (String v)
-    {
-        valueReference = v;
-    }
-    
-    public String getValueReference ()
-    {
-        return valueReference;
-    }
-    
+
 }

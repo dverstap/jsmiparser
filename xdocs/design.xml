@@ -121,5 +121,254 @@
 
 	</section>
 
+	<section name="Parsing and Cross-referencing ASN.1">
+
+	    <p>
+		Requirements:
+	    </p>
+	    <ul>
+		<li>
+		    Support assignments with the same name in
+		    different modules. But also provide an API that is
+		    easier to use, assumes globally unique names, and
+		    reports a RuntimeException when there is
+		    problem. Also provide the ability to test this.
+		</li>
+	    </ul>
+
+	    <p>
+		While parsing a file, and encountering a reference to
+		another assignment (value, type or macro), use this
+		algorithm to build the datastructure ("resolve"):
+	    </p>
+	    <ol>
+		<li>
+		    If the reference includes a module name, look it
+		    up in that module. If that module hasn't been
+		    parsed yet, try to parse it, just like during an
+		    IMPORTS, taken all the special cases into account. If there is a cyclic dependency, it could be that 
+		</li>
+		<li>
+		    First look in the current module itself.
+		</li>
+		<li>
+		    Look through the imports. 
+		</li>
+		<li>
+		    Look through the exports. The assignment could
+		    have been predeclared.
+		</li>
+		<li>
+		    Look in the global mib. If it is found, use
+		    it. But we also have to care of the possibility
+		    that an object with the same name will be defined
+		    later in the module, so it's probably better not
+		    to do this. See the DefinedType problem for a
+		    potential solution using a temporary dummy
+		    ASNXyzAssignment that resolves later to the real
+		    thing.
+		</li>
+		<li>
+		    Create a dummy ASNAssignment: ASNValueAssignment
+		    when the first letter is lower case,
+		    ASNMacroDefinition when
+		    id.toUpperCase().equals(id) and ASNTypeAssignment
+		    otherwise). Register the dummy as unresolved (TODO
+		    in the current module? Probably not: see when
+		    actually parsing an assignment. This affects
+		    IMPORTS as well)
+		</li>
+		<li>
+		    Add the current symbol as a user of the found one.
+		</li>
+	    </ol>
+
+	    <p>
+		When parsing an assignment:
+	    </p>
+	    <ol>
+		<li>
+		    First look if there isn't an undefined
+		    ASNAssignment of the same type. It won't have an
+		    ASNModule (that <emp>could</emp> be the definition
+		    of an undefined ASNAssignment, but it's not:
+		    undefined means having no ASNType, no ASNValue or
+		    no macro token list).
+		    <ol>
+			<li>
+			    If it has only uses by symbols from the
+			    current module, then we can be sure that
+			    it belongs to this module, so use it.
+			</li>
+			<li>
+			    If there are usages by other modules as
+			    well, we can only be sure if all of those
+			    usages are located in modules that import
+			    the assignment from the this module.
+			</li>
+			<li>
+			    TODO.
+			</li>
+		    </ol>
+		</li>
+		<li>
+		    If the current module already has an assignment
+		    with the same name, this a duplicate assignment
+		    error. Continue anyway.
+		</li>
+		<li>
+
+		</li>
+	    </ol>
+
+
+	    <p>
+		While parsing EXPORTS (note that EXPORTS comes before
+		IMPORTS!):
+	    </p>
+	    <ol>
+		<li>
+		    TODO.
+		</li>
+		<li>
+		    Is it allowed to EXPORT an assignment that is
+		    not defined in the module, but that was imported? 
+		</li>
+	    </ol>
+
+	    <p>
+		While parsing IMPORTS:
+	    </p>
+	    <ol>
+		<li>
+		    TODO.
+		</li>
+		<li>
+		    TODO Question: should we immediately parse a
+		    module that is imported? Probably we
+		    should. Things to be careful about:
+		    <ul>
+			<li>
+			    Cyclic dependencies: Don't start parsing a
+			    file we are already parsing or have
+			    already parsed.
+			</li>
+			<li>
+			    We can't run out of file descriptors,
+			    unless there are so many files and modules
+			    with a straigh dependency line that is
+			    longer than the maximum number of file
+			    descriptors. Unlikely to happen.
+			</li>
+			<li>
+			    A very tricky one (or not?): while parsing
+			    an imported file
+			</li>
+		    </ul>
+		</li>
+	    </ol>
+
+
+	</section>
+
+	<section name="Ideas">
+
+	    <ul>
+		<li>
+		    Reporting errors: should they be reported ASAP?
+		    This can cause the errors to be reported in a very
+		    random way, especially if we are going to phase
+		    all the error reporting. It could also be
+		    interesting to keep the error events associated to
+		    the symbols themselves (interesting for
+		    editors?). And then in the end, report them
+		    per-symbol, in the order that they were added. Or
+		    they could be reported in the file/line/column
+		    order.
+		</li>
+	    </ul>
+
+	</section>
+
+	<section name="Problems">
+
+
+	    <p>
+		Theoretical problems:
+	    </p>
+	    <ul>
+		<li>
+		    An old issue of the Simple Times has an article
+		    that claims that SMI is a superset/subset from
+		    ASN.1. Investigate.
+		</li>
+		<li>
+		    Which version of ASN.1 is it that we are
+		    implementing? And what about verification?
+		</li>
+	    </ul>
+
+	    <p>
+		Practical problems:
+	    </p>
+	    <ul>
+		<li>
+		    It must be possible to assign (sensible) type
+		    names to anonymous types afterwards, for code
+		    generation. This generally requires access to the
+		    parent (type or ASNTypeAssignment).
+		</li>
+		<li>
+		    ASNDefinedType references: need a good,
+		    transparent solution. Ideally, we should not have
+		    a DefinedType class: the ASNType should be
+		    returned immediately, but we just cannot know
+		    which class it would be, so it cannot be
+		    instantiated. We'll need an intermediate pass
+		    then. Another problem here are the constraints:
+		    they are located in the ASNDefinedType class.
+		</li>
+		<li>
+		    Keeping track of usages, and especially their
+		    locations.
+		</li>
+	    </ul>
+
+	</section>
+
+	<section name="ASN.1 Semantic Checks">
+
+	    <ul>
+		<li>
+		    For every assignment in the module, check if an
+		    assignment with the same name was
+		    imported. Warning.
+		</li>
+		<li>
+		    ASN.1 types may not be directly composed of
+		    themselves (no recursion).
+		</li>
+	    </ul>
+
+	</section>
+
+	<section name="Wild Ideas for a Far Away Future">
+	    
+	    <ul>
+		<li>
+		    Provide semi-build-in support for macro's:
+		    maintain a registry with a parser class for each
+		    type of macro, and use that to parse whenever the
+		    macro is used. I think ANTLR has support for this,
+		    and if not, we cannot always just parse each of
+		    the tokens, put them in a TokenBuffer, and then
+		    pass that on to the parser. Lot's of issues with
+		    token definitions though.
+		</li>
+	    </ul>
+
+	</section>
+
+
     </body>
 </document>

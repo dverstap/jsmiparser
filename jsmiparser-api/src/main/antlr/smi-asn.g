@@ -290,10 +290,13 @@ obj_id_comp_lst returns [ASNOidComponentList o = new ASNOidComponentList(context
       (i=obj_id_component               {o.getOidComponents().add(i);}
       )+ R_BRACE;
 
-protected defined_value returns [ASNDefinedValue d = new ASNDefinedValue(context_)]
-    : (u:UPPER DOT                      {d.setExternalModule(u.getText());}
-      )? 
-      l:LOWER                           {d.setValueReference(l.getText());};
+protected defined_value returns [ASNDefinedValue d = null]
+:
+    (u:UPPER DOT)? l:LOWER
+    {
+        d = makeDefinedValue(u, l);
+    }
+;
 
 /* NSS 14/1/05: Checked against X.680 */
 obj_id_component returns [ASNOidComponent o = null]
@@ -311,8 +314,8 @@ tag_default returns [ASNTag.Type s=ASNTag.Type.UNKNOWN]
     | s3:AUTOMATIC_KW                   {s=ASNTag.Type.AUTOMATIC;};
 
 exports returns [ASNExports e = new ASNExports()]
-                                        {List<String> l=null;}
-    : EXPORTS_KW ( ( l=symbol_list      {e.setExports(l);}
+                                        {List<Token> l=null;}
+    : EXPORTS_KW ( ( l=symbol_list      {makeExports(l);}
                    )? | ALL_KW          {e.setAllExported(true);}
                  ) SEMI;
 
@@ -329,35 +332,32 @@ assignment  returns [ASNAssignment a = null]
 {
 	ASNType t1=null,t2=null;
 	ASNValue v=null;
-	ASNTypeAssignment ta = null;
-	ASNValueAssignment va = null;
 	ASNMacroDefinition ma = null;
 	Token m=null;
 }
 :
-	u1:UPPER ASSIGN_OP { ta = new ASNTypeAssignment(context_, idt(u1)); a = ta; }
-	t1=type            { ta.setEntityType(t1); }
+	u1:UPPER ASSIGN_OP t1=type { a = makeTypeAssignment(u1, t1); }
 |
- 	l:LOWER { va = new ASNValueAssignment(context_, idt(l)); a = va; }
-	t2=type { va.setEntityType(t2); }
-	ASSIGN_OP v=value { va.setValue(v); }
+ 	l:LOWER	t2=type	ASSIGN_OP v=value { a = makeValueAssignment(l, t2, v); }
 |
-        (u2:UPPER                       { ma = new ASNMacroDefinition(context_, idt(u2)); a = ma; }
-        | m=macroName                   { ma = new ASNMacroDefinition(context_, idt(m)); a = ma; }
-        ) "MACRO" ASSIGN_OP 
+    (u2:UPPER | m=macroName)          { a = ma = makeMacroDefinition(u2 != null ? u2 : m); }
+    "MACRO" ASSIGN_OP
             BEGIN_KW (t:~(END_KW)       { ma.getTokens().add(t.getText()); }
                      )* END_KW
 ;
 
-symbol_list returns [List<String> l = new ArrayList<String>()]
-                                        {String s1=null,s2=null;}
-    : s1=symbol                         {l.add(s1);}
+symbol_list returns [List<Token> l = new ArrayList<Token>()]
+{
+    Token s1=null,s2=null;
+}
+:   s1=symbol                         {l.add(s1);}
       (COMMA s2=symbol                  {l.add(s2);}
-      )* ;
+      )*
+;
 
 symbols_from_module returns [ASNImports i = null]
 {
-	List<String> s = null;
+	List<Token> s = null;
 	ASNOidComponentList o=null;
 	ASNDefinedValue d=null;
 }
@@ -368,11 +368,10 @@ symbols_from_module returns [ASNImports i = null]
         )? 
 ;
 
-symbol returns [String s=null]
-	{ Token st = null; }
-    : u:UPPER                           {s=u.getText();}
-    | l:LOWER                           {s=l.getText();}
-    | st=macroName                      {s=st.getText();}
+symbol returns [Token s=null]
+    : u:UPPER                           { s=u; }
+    | l:LOWER                           { s=l; }
+    | s=macroName
     ;
 
 macroName returns [Token s=null]
@@ -441,12 +440,15 @@ built_in_type returns [ASNType t = null]
     | t=setof_type
     | t=tagged_type;
 
-defined_type returns [ASNDefinedType d = new ASNDefinedType(context_)]
-                                        {ASNConstraint c=null;}
-    : (u1:UPPER                         {d.setModuleReference (u1.getText());}
-        DOT)? u2:UPPER                  {d.setTypeReference (u2.getText());}
-        (c=constraint                   {d.setConstraint (c);}
-        )? ;
+defined_type returns [ASNDefinedType d = null]
+{
+    ASNConstraint c=null;
+}
+    : (m:UPPER DOT)? t:UPPER (c=constraint)?
+{
+    d = makeDefinedType(m, t, c);
+}
+;
 
 selection_type returns [ASNSelectionType s = new ASNSelectionType(context_)]
                                         {ASNType t=null;}

@@ -15,7 +15,7 @@
  */
 package org.jsmiparser.phase;
 
-public class PhaseException extends Exception {
+public class PhaseException extends RuntimeException {
 
     public PhaseException() {
     }

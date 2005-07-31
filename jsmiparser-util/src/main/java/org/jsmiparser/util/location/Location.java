@@ -20,7 +20,7 @@ package org.jsmiparser.util.location;
  */
 public class Location {
 
-    private static final char SEPARATOR = ':';
+    public static final char SEPARATOR = ':';
     public static final int INVALID_LINE = -1;
     public static final int INVALID_COLUMN = -1;
 

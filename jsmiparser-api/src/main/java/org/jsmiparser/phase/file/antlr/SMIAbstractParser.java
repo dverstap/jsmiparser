@@ -24,7 +24,9 @@ import org.jsmiparser.parsetree.smi.SMIStatus;
 import org.jsmiparser.util.location.Location;
 import org.jsmiparser.util.location.LocationFactory;
 import org.jsmiparser.util.token.IdToken;
+import org.jsmiparser.phase.file.FileParser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,6 +40,7 @@ public abstract class SMIAbstractParser extends LLkParser implements Context {
     protected Context context_ = this;
 
     private String m_source;
+    private AntlrFileParser m_fileParser;
 
     public SMIAbstractParser(int k) {
         super(k);
@@ -55,13 +58,16 @@ public abstract class SMIAbstractParser extends LLkParser implements Context {
         super(tokenStream, k);
     }
 
-    public String getSource() {
-        return m_source;
-    }
-
-    public void setSource(String source) {
+    public void init(String source, AntlrFileParser fileParser) {
         m_source = source;
         m_locationFactory = new AntlrLocationFactory(this, source);
+
+        m_fileParser = fileParser;
+        m_fileParser.getFileParserPhase().setContext(this);
+    }
+
+    public String getSource() {
+        return m_source;
     }
 
     private Location makeLocation(Token token) {
@@ -72,13 +78,36 @@ public abstract class SMIAbstractParser extends LLkParser implements Context {
         return new IdToken(makeLocation(idToken), idToken.getText());
     }
 
+    protected List<IdToken> idt(List<Token> tokens) {
+        List<IdToken> result = new ArrayList<IdToken>(tokens.size());
+        for (Token token : tokens) {
+            result.add(idt(token));
+        }
+        return result;
+    }
+
     protected ASNModule makeModule(Token nameToken) {
-        m_module = new ASNModule(this, idt(nameToken));
+        m_module = m_fileParser.createModule(idt(nameToken));
         return m_module;
     }
 
-    protected ASNImports makeImports(List<String> symbols, Token fromModuleToken) {
-        return new ASNImports(context_, idt(fromModuleToken), symbols);
+    protected void makeExports(List<Token> tokens) {
+        for (Token token : tokens) {
+            IdToken idToken = idt(token);
+            m_fileParser.create(idToken);
+        }
+    }
+
+    protected ASNImports makeImports(List<Token> importTokens, Token fromModuleToken) {
+        IdToken moduleToken = idt(fromModuleToken);
+        FileParser importedFileParser = m_fileParser.getFileParserPhase().use(moduleToken);
+        ASNImports result = new ASNImports(context_, moduleToken, importedFileParser.getModule());
+        for (Token token : importTokens) {
+            IdToken idToken = idt(token);
+            ASNAssignment assignment = importedFileParser.use(idToken);
+            result.addAssigment(idToken, assignment);
+        }
+        return result;
     }
 
     protected ASNNamedNumber makeNamedNumber(ASNNamedNumberType nnt,
@@ -178,5 +207,49 @@ public abstract class SMIAbstractParser extends LLkParser implements Context {
 
     public ASNModule getModule() {
         return m_module;
+    }
+
+    protected ASNTypeAssignment makeTypeAssignment(Token idToken, ASNType type) {
+        ASNTypeAssignment result = m_fileParser.getTypeMap().create(idt(idToken));
+        result.setEntityType(type);
+        return result;
+    }
+
+    protected ASNValueAssignment makeValueAssignment(Token idToken, ASNType type, ASNValue value) {
+        ASNValueAssignment result = m_fileParser.getValueMap().create(idt(idToken));
+        result.setEntityType(type);
+        result.setValue(value);
+        return result;
+    }
+
+    protected ASNMacroDefinition makeMacroDefinition(Token idToken) {
+        return m_fileParser.getMacroMap().create(idt(idToken));
+    }
+
+    protected ASNDefinedType makeDefinedType(Token moduleToken, Token idToken, ASNConstraint c) {
+        ASNDefinedType result = new ASNDefinedType(context_);
+
+        if (moduleToken != null) {
+            FileParser fileParser = m_fileParser.getFileParserPhase().use(idt(moduleToken));
+            ASNTypeAssignment ta = fileParser.getTypeMap().use(idt(idToken));
+            result.setTypeAssignment(ta);
+        } else {
+            result.setTypeAssignment(m_fileParser.getTypeMap().resolve(idt(idToken)));
+        }
+        result.setConstraint(c);
+
+        return result;
+    }
+
+    protected ASNDefinedValue makeDefinedValue(Token moduleToken, Token idToken) {
+        ASNDefinedValue result = new ASNDefinedValue(context_);
+        if (moduleToken != null) {
+            FileParser fileParser = m_fileParser.getFileParserPhase().use(idt(moduleToken));
+            ASNValueAssignment va = fileParser.getValueMap().use(idt(idToken));
+            result.setValueAssignment(va);
+        } else {
+            result.setValueAssignment(m_fileParser.getValueMap().resolve(idt(idToken)));
+        }
+        return result;
     }
 }
