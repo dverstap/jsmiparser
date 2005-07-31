@@ -16,104 +16,69 @@
 
 package org.jsmiparser.parsetree.asn1;
 
+import org.jsmiparser.util.token.EnumToken;
+import org.jsmiparser.util.token.StringToken;
+import org.jsmiparser.util.token.BigIntegerToken;
+
 import java.math.BigInteger;
 
 /**
- *
- * @author  Nigel Sheridan-Smith
+ * @author Nigel Sheridan-Smith
  */
 public class ASNLiteralValue extends ASNValue {
-    
-	public enum LType
-	{
-		UNKNOWN,
-		TRUE,
-		FALSE,
-		NULL,
-		STRING,
-		PLUS_INFINITY,
-		MINUS_INFINITY,
-		NUMBER,
-		BSTRING,
-		HSTRING
-	}
-	
-    
-    private LType literalType;
-    private String stringValue;
-    private BigInteger numberValue;
-    
-    private boolean minus;
-    
-    /** Creates a new instance of ASNLiteralValue */
-    public ASNLiteralValue(Context context) {
-        super(context, Type.LITERAL);
-        setLiteralType (LType.UNKNOWN);
+
+    public enum LType {
+        UNKNOWN,
+        TRUE,
+        FALSE,
+        NULL,
+        STRING,
+        PLUS_INFINITY,
+        MINUS_INFINITY,
+        NUMBER,
+        BSTRING,
+        HSTRING
     }
-    
-    public ASNLiteralValue (Context context, LType literalType)
-    {
-        super(context, Type.LITERAL);
-        this.literalType = literalType;
+
+    private EnumToken<LType> m_literalToken;
+    private StringToken m_stringToken;
+    private LType m_stringTokenLiteralType;
+    private BigIntegerToken m_bigIntegerToken;
+
+    public ASNLiteralValue(ASNModule module, EnumToken<LType> literalToken) {
+        super(module, literalToken.getLocation(), Type.LITERAL);
+        m_literalToken = literalToken;
     }
-    
-    public ASNLiteralValue (Context context, String s)
-    {
-        super(context, Type.LITERAL);
-        setLiteralType (LType.STRING);
-        stringValue = s;
+
+    public ASNLiteralValue(ASNModule module, StringToken stringToken, LType literalType) {
+        super(module, stringToken.getLocation(), Type.LITERAL);
+        m_stringToken = stringToken;
+        m_stringTokenLiteralType = literalType;
+        assert(m_stringTokenLiteralType == LType.STRING || m_stringTokenLiteralType == LType.BSTRING || m_stringTokenLiteralType == LType.HSTRING);
     }
-    
-    public ASNLiteralValue (Context context, LType t, String s)
-    {
-        super (context, Type.LITERAL);
-        setLiteralType (t);
-        setStringValue (s);
+
+    public ASNLiteralValue(ASNModule module, BigIntegerToken token) {
+        super(module, token.getLocation(), Type.LITERAL);
+        m_bigIntegerToken = token;
     }
-    
-    public void setLiteralType (LType t)
-    {
-        literalType = t;
-    }
-    
-    public LType getLiteralType ()
-    {
-        return literalType;
-    }
-    
-    public void setStringValue (String s)
-    {
-        stringValue = s;
-    }
-    
-    public String getStringValue ()
-    {
-        return stringValue;
-    }
-    
-    public void setNumberValue (BigInteger n)
-    {
-        if (minus)
-        {
-            numberValue = n.negate();
-            
+
+    public LType getLiteralType() {
+        if (m_literalToken != null) {
+            return m_literalToken.getValue();
+        } else if (m_stringToken != null) {
+            return m_stringTokenLiteralType;
         } else {
-            numberValue = n;
+            assert(m_bigIntegerToken != null);
+            return LType.NUMBER;
         }
     }
-    
-    public BigInteger getNumberValue ()
-    {
-        return numberValue;
+
+    public String getStringValue() {
+        return m_stringToken.getValue();
     }
-    
-    public void setMinus (boolean m)
-    {
-        minus = m;
+
+    public BigInteger getNumberValue() {
+        return m_bigIntegerToken.getValue();
     }
-    
-    public boolean isMinus ()
-    {
-        return minus;
-    }
+
 }

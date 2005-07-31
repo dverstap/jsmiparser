@@ -27,7 +27,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-// TODO move to phase.parser package
 public class ASNSymbolMap<Assignment extends ASNAssignment> {
     private static final Logger m_log = Logger.getLogger(ASNSymbolMap.class);
 

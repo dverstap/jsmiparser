@@ -16,41 +16,42 @@
 
 package org.jsmiparser.parsetree.asn1;
 
+import org.jsmiparser.util.location.Location;
+
 
 /**
- *
- * @author  Nigel Sheridan-Smith
+ * @author Nigel Sheridan-Smith
  */
-public class ASNValue  extends AbstractSymbol {
-	
-	enum Type
-	{
-		UNKNOWN,
-		LITERAL,
-		DEFINEDVALUE,
-		OIDCOMPONENTLIST,
-		CHOICEVALUE,
-		SEQUENCEVALUE,
-		SEQUENCEOFVALUES,
-		IDENTIFIERLISTVALUE,
-		CHARDEFINITIONVALUE,
-		TUPLEQUADVALUE,
-		NAMEDVALUE
-	}
-    
-    private Type type_;
-    
-    
-    protected ASNValue(Context context, Type type)
-    {
-    	super(context);
-    	type_ = type;
+public class ASNValue extends AbstractSymbol {
+
+    enum Type {
+        UNKNOWN,
+        LITERAL,
+        DEFINEDVALUE,
+        OIDCOMPONENTLIST,
+        CHOICEVALUE,
+        SEQUENCEVALUE,
+        SEQUENCEOFVALUES,
+        IDENTIFIERLISTVALUE,
+        CHARDEFINITIONVALUE,
+        TUPLEQUADVALUE,
+        NAMEDVALUE
     }
-    
-	/**
-	 * @return Returns the type.
-	 */
-	public Type getType() {
-		return type_;
-	}
+
+    private Type m_type;
+
+    // TODO delete
+    protected ASNValue(Context context, Type type) {
+        super(context);
+        m_type = type;
+    }
+
+    protected ASNValue(ASNModule module, Location location, Type type) {
+        super(module, location);
+        m_type = type;
+    }
+
+    public Type getType() {
+        return m_type;
+    }
 }

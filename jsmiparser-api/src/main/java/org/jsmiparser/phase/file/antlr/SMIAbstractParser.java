@@ -24,6 +24,9 @@ import org.jsmiparser.parsetree.smi.SMIStatus;
 import org.jsmiparser.util.location.Location;
 import org.jsmiparser.util.location.LocationFactory;
 import org.jsmiparser.util.token.IdToken;
+import org.jsmiparser.util.token.EnumToken;
+import org.jsmiparser.util.token.StringToken;
+import org.jsmiparser.util.token.BigIntegerToken;
 import org.jsmiparser.phase.file.FileParser;
 
 import java.util.ArrayList;
@@ -72,6 +75,14 @@ public abstract class SMIAbstractParser extends LLkParser implements Context {
 
     private Location makeLocation(Token token) {
         return new Location(m_source, token.getLine(), token.getColumn());
+    }
+
+    protected BigIntegerToken it(Token minusToken, Token intToken) {
+        return new BigIntegerToken(makeLocation(intToken), minusToken != null, intToken.getText());
+    }
+
+    protected StringToken st(Token token) {
+        return new StringToken(makeLocation(token), token.getText());
     }
 
     protected IdToken idt(Token idToken) {
@@ -251,5 +262,18 @@ public abstract class SMIAbstractParser extends LLkParser implements Context {
             result.setValueAssignment(m_fileParser.getValueMap().resolve(idt(idToken)));
         }
         return result;
+    }
+
+    protected ASNLiteralValue makeConstantLiteralValue(ASNLiteralValue.LType ltype, Token token) {
+        EnumToken<ASNLiteralValue.LType> enumToken = new EnumToken<ASNLiteralValue.LType>(makeLocation(token), ltype);
+        return new ASNLiteralValue(m_module, enumToken);
+    }
+
+    protected ASNLiteralValue makeStringLiteralValue(ASNLiteralValue.LType ltype, Token token) {
+        return new ASNLiteralValue(m_module, st(token), ltype);
+    }
+
+    protected ASNLiteralValue makeIntegerLiteralValue(Token minusToken, Token intToken) {
+        return new ASNLiteralValue(m_module, it(minusToken, intToken));
     }
 }

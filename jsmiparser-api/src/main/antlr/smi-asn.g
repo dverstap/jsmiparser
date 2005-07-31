@@ -405,10 +405,10 @@ type returns [ASNType t = null]
     : t=built_in_type | t=defined_type | t=selection_type | t=macros_type | t=smi_type;
 
 value returns [ASNValue v = null]
-    : (TRUE_KW) => TRUE_KW              {v = new ASNLiteralValue(context_, ASNLiteralValue.LType.TRUE);}
-     | (FALSE_KW) => FALSE_KW           {v = new ASNLiteralValue(context_, ASNLiteralValue.LType.FALSE);}
-     | (NULL_KW) => NULL_KW             {v = new ASNLiteralValue(context_, ASNLiteralValue.LType.NULL);}
-     | (C_STRING) => s1:C_STRING        {v = new ASNLiteralValue(context_, s1.getText());}
+    : (t:TRUE_KW) => TRUE_KW              {v = makeConstantLiteralValue(ASNLiteralValue.LType.TRUE, t);}
+     | (f:FALSE_KW) => FALSE_KW           {v = makeConstantLiteralValue(ASNLiteralValue.LType.FALSE, f);}
+     | (n:NULL_KW) => NULL_KW             {v = makeConstantLiteralValue(ASNLiteralValue.LType.NULL, n);}
+     | (C_STRING) => s1:C_STRING          {v = makeStringLiteralValue(ASNLiteralValue.LType.STRING, s1);}
      | (defined_value) => v=defined_value 
      | (signed_number) => v=signed_number
      | (choice_value) => v=choice_value 
@@ -416,8 +416,8 @@ value returns [ASNValue v = null]
      | (sequenceof_value) => v=sequenceof_value 
      | (cstr_value) => v=cstr_value 
      | (obj_id_comp_lst) => v=obj_id_comp_lst 
-     | (PLUS_INFINITY_KW) => s5:PLUS_INFINITY_KW    {v = new ASNLiteralValue(context_, ASNLiteralValue.LType.PLUS_INFINITY);} 
-     | (MINUS_INFINITY_KW) => s6:MINUS_INFINITY_KW  {v = new ASNLiteralValue(context_, ASNLiteralValue.LType.MINUS_INFINITY);}; 
+     | (p:PLUS_INFINITY_KW) => s5:PLUS_INFINITY_KW    {v = makeConstantLiteralValue(ASNLiteralValue.LType.PLUS_INFINITY, p);}
+     | (m:MINUS_INFINITY_KW) => s6:MINUS_INFINITY_KW  {v = makeConstantLiteralValue(ASNLiteralValue.LType.MINUS_INFINITY, m);};
 
 built_in_type returns [ASNType t = null]
     : t=any_type 
@@ -1162,9 +1162,12 @@ namedNumber[ASNNamedNumberType nnt] returns [ASNNamedNumber n = null]
 	}
 ;
 
-signed_number returns [ASNLiteralValue v = new ASNLiteralValue(context_, ASNLiteralValue.LType.NUMBER)]
-    : (m:MINUS                          {v.setMinus(true);}
-      )? n:NUMBER                       {v.setNumberValue(new BigInteger(n.getText()));};                      
+signed_number returns [ASNLiteralValue v = null]
+:
+    (m:MINUS)? n:NUMBER
+{
+    v = makeIntegerLiteralValue(m, n);
+};
 
 element_set_specs returns [ASNElementSetRange e = new ASNElementSetRange()]
                                         {ASNConstraintElement e1=null,e2=null;}
@@ -1293,8 +1296,8 @@ sequenceof_value returns [ASNSequenceOfValue v = new ASNSequenceOfValue(context_
                  )* R_BRACE;
 
 cstr_value returns [ASNValue v = null]
-    : (H_STRING) => h:H_STRING          {v = new ASNLiteralValue(context_, ASNLiteralValue.LType.HSTRING, h.getText());}
-          | (B_STRING) => b:B_STRING    {v = new ASNLiteralValue(context_, ASNLiteralValue.LType.BSTRING, b.getText());}
+    : (H_STRING) => h:H_STRING          {v = makeStringLiteralValue(ASNLiteralValue.LType.HSTRING, h);}
+          | (B_STRING) => b:B_STRING    {v = makeStringLiteralValue(ASNLiteralValue.LType.BSTRING, b);}
           | L_BRACE 
             ( (id_list) => 
                 v=id_list              
