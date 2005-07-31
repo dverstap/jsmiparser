@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jsmiparser.parsetree.asn1;
+package org.jsmiparser.phase.file;
 
 import org.apache.log4j.Logger;
+import org.jsmiparser.parsetree.asn1.ASNAssignment;
+import org.jsmiparser.parsetree.asn1.ASNImports;
+import org.jsmiparser.parsetree.asn1.ASNModule;
 import org.jsmiparser.util.token.IdToken;
-import org.jsmiparser.phase.file.FileParserProblemReporter;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Collection;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 // TODO move to phase.parser package
 public class ASNSymbolMap<Assignment extends ASNAssignment> {
