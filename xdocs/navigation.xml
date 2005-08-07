@@ -30,6 +30,8 @@
     <menu name="Documentation">
       <item  name="Design"
 	     href="/design.html"/>
+      <item  name="Errors"
+	     href="/error.html"/>
     </menu>
 
   </body>
