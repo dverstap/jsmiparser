@@ -129,4 +129,19 @@ public class SmiDefaultParserTest extends TestCase {
         }
     }
 
+
+    public void testCyclicDeps() throws URISyntaxException {
+        URL mibURL = getClass().getClassLoader().getResource("cyclic_deps.txt");
+        File mibFile = new File(mibURL.toURI());
+
+        ProblemEventHandler problemEventHandler = new DefaultProblemEventHandler();
+        SmiDefaultParser parser = new SmiDefaultParser(problemEventHandler);
+        parser.init();
+        FileParserOptions options = (FileParserOptions) parser.getLexerPhase().getOptions();
+        options.addFile(mibFile);
+
+        SmiMib mib = parser.parse();
+
+    }
+
 }

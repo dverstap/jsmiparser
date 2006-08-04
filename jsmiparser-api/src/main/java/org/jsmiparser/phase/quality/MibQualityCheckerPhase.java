@@ -15,20 +15,6 @@
  */
 package org.jsmiparser.phase.quality;
 
-import edu.uci.ics.jung.graph.Vertex;
-import edu.uci.ics.jung.graph.Edge;
-import edu.uci.ics.jung.graph.impl.DirectedSparseEdge;
-import edu.uci.ics.jung.graph.impl.DirectedSparseGraph;
-import edu.uci.ics.jung.graph.impl.DirectedSparseVertex;
-import edu.uci.ics.jung.visualization.*;
-import edu.uci.ics.jung.visualization.Renderer;
-import edu.uci.ics.jung.visualization.SpringLayout;
-import edu.uci.ics.jung.visualization.contrib.TreeLayout;
-import edu.uci.ics.jung.visualization.contrib.DAGLayout;
-import edu.uci.ics.jung.utils.UserDataContainer.CopyAction;
-import edu.uci.ics.jung.utils.UserDataContainer.CopyAction.Shared;
-import edu.uci.ics.jung.utils.UserDataContainer;
-import edu.uci.ics.jung.io.GraphMLFile;
 import org.apache.log4j.Logger;
 import org.jsmiparser.phase.AbstractPhase;
 import org.jsmiparser.phase.PhaseException;
@@ -37,20 +23,8 @@ import org.jsmiparser.smi.SmiMib;
 import org.jsmiparser.smi.SmiModule;
 import org.jsmiparser.util.problem.ProblemReporterFactory;
 
-import javax.swing.*;
-import javax.imageio.ImageIO;
-import java.util.HashMap;
-import java.util.Map;
-import java.io.File;
-import java.io.PrintStream;
-import java.io.FileOutputStream;
-import java.io.FileNotFoundException;
-import java.awt.image.RenderedImage;
-import java.awt.image.BufferedImage;
-import java.awt.color.ColorSpace;
-import java.awt.*;
-
-import samples.graph.BasicRenderer;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class MibQualityCheckerPhase extends AbstractPhase {
@@ -64,11 +38,36 @@ public class MibQualityCheckerPhase extends AbstractPhase {
         SmiMib mib = (SmiMib) input;
 
         // TODO scary: runs out of memory with max heap size 64m
-        //checkDependencyCycles(mib);
+        for (SmiModule module : mib.getModules()) {
+            checkDependencyCycles(module, module, new HashSet<SmiModule>());
+        }
 
         return mib;
     }
 
+    private void checkDependencyCycles(SmiModule root, SmiModule module, Set<SmiModule> visited) {
+        //Stack<SmiModule> trail = new Stack<SmiModule>();
+        //trail.push(module);
+
+        for (SmiImports imports : module.getImports()) {
+            SmiModule importedModule = imports.getImportedModule();
+            if (!visited.contains(importedModule)) {
+                visited.add(importedModule);
+                if (importedModule == root) {
+                    System.err.println("cyclic dependency with " + root.getId() + " via import in " + module.getId());
+                } else {
+                    checkDependencyCycles(root, importedModule, visited);
+                }
+            }
+        }
+
+    }
+
+    private void checkDependencyCycles(SmiModule root, SmiImports imports) {
+        //To change body of created methods use File | Settings | File Templates.
+    }
+
+/*
     private void checkDependencyCycles(SmiMib mib) {
 
         Map<SmiModule, Vertex> vertexMap = new HashMap<SmiModule, Vertex>();
@@ -94,6 +93,7 @@ public class MibQualityCheckerPhase extends AbstractPhase {
                 }
             }
         }
+*/
 
 /*
         try {
@@ -132,6 +132,5 @@ public class MibQualityCheckerPhase extends AbstractPhase {
         }
 */
 
-    }
-
 }
+
