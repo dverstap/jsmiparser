@@ -15,40 +15,51 @@
  */
 package org.jsmiparser.smi;
 
+import org.jsmiparser.util.location.Location;
+import org.jsmiparser.util.token.BigIntegerToken;
+import org.jsmiparser.util.token.IdToken;
+
 import java.math.BigInteger;
 
 public class SmiEnumValue {
 
-	private SmiType type_;
-	private String id_;
-	private BigInteger value_;
+	private SmiType m_type;
+	private IdToken m_idToken;
+	private BigIntegerToken m_valueToken;
 	
-	public SmiEnumValue(SmiType type, String id, BigInteger value) {
+	public SmiEnumValue(SmiType type, IdToken id, BigIntegerToken value) {
 		super();
-		type_ = type;
-		id_ = id;
-		value_ = value;
+		m_type = type;
+		m_idToken = id;
+		m_valueToken = value;
 	}
+
+    public Location getLocation() {
+        return m_idToken.getLocation();
+    }
 
 	public String getId() {
-		return id_;
-	}
-	
-	public void setId(String id) {
-		id_ = id;
-	}
-	
-	public BigInteger getValue() {
-		return value_;
-	}
-	
-	public void setValue(BigInteger value) {
-		value_ = value;
+		return m_idToken.getId();
 	}
 
-	public String getCodeId() {
-		return type_.getModule().getMib().getCodeNamingStrategy().getEnumValueId(this);
+    public BigInteger getValue() {
+		return m_valueToken.getValue();
 	}
-	
+
+    public String getCodeId() {
+		return m_type.getModule().getMib().getCodeNamingStrategy().getEnumValueId(this);
+	}
+
+    public SmiType getType() {
+        return m_type;
+    }
+
+    public IdToken getIdToken() {
+        return m_idToken;
+    }
+
+    public BigIntegerToken getValueToken() {
+        return m_valueToken;
+    }
 
 }

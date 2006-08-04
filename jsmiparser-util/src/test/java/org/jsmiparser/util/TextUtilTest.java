@@ -22,4 +22,12 @@ public class TextUtilTest extends TestCase {
     public void testKeyWordMap() {
         assertEquals(53, TextUtil.keyWordMap_.size());
     }
+
+    public void testDeleteChar() {
+
+        assertEquals("", TextUtil.deleteChar("aa", 'a'));
+        assertEquals("aa", TextUtil.deleteChar("aa", 'b'));
+        assertEquals("IFMIB", TextUtil.deleteChar("IF-MIB", '-'));
+
+    }
 }

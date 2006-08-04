@@ -38,8 +38,8 @@ public class SmiColumn extends SmiAttribute {
 		row_ = row;
 		row.getColumns().add(this);
 	}
-	
-	@Override
+
+    @Override
 	public SmiClass getSmiClass() {
 		return row_;
 	}

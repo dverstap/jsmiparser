@@ -18,7 +18,7 @@ package org.jsmiparser.smi;
 import org.apache.log4j.Logger;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public abstract class SmiSymbolContainer {
@@ -26,14 +26,14 @@ public abstract class SmiSymbolContainer {
 	
 	private SmiSymbolContainer parent_;
 	
-	protected Map<String, SmiType> typeMap_ = new HashMap<String, SmiType>();
-	protected Map<String, SmiSymbol> symbolMap_ = new HashMap<String, SmiSymbol>();
-	protected Map<String, SmiClass> classMap_ = new HashMap<String, SmiClass>();
-	protected Map<String, SmiAttribute> attributeMap_ = new HashMap<String, SmiAttribute>();
-	protected Map<String, SmiScalar> scalarMap_ = new HashMap<String, SmiScalar>();
-	protected Map<String, SmiTable> tableMap_ = new HashMap<String, SmiTable>();
-	protected Map<String, SmiRow> rowMap_ = new HashMap<String, SmiRow>();
-	protected Map<String, SmiColumn> columnMap_ = new HashMap<String, SmiColumn>();
+	Map<String, SmiType> m_typeMap = new LinkedHashMap<String, SmiType>();
+	Map<String, SmiSymbol> m_symbolMap = new LinkedHashMap<String, SmiSymbol>();
+	Map<String, SmiClass> m_classMap = new LinkedHashMap<String, SmiClass>();
+	Map<String, SmiAttribute> m_attributeMap = new LinkedHashMap<String, SmiAttribute>();
+	Map<String, SmiScalar> m_scalarMap = new LinkedHashMap<String, SmiScalar>();
+	Map<String, SmiTable> m_tableMap = new LinkedHashMap<String, SmiTable>();
+	Map<String, SmiRow> m_rowMap = new LinkedHashMap<String, SmiRow>();
+	Map<String, SmiColumn> m_columnMap = new LinkedHashMap<String, SmiColumn>();
 	
 	
 	
@@ -44,67 +44,67 @@ public abstract class SmiSymbolContainer {
 	}
 	
 	public SmiType findType(String id) {
-		return typeMap_.get(id);
+		return m_typeMap.get(id);
 	}
 	
 	public Collection<SmiType> getTypes() {
-		return typeMap_.values();
+		return m_typeMap.values();
 	}
 
 	public Collection<SmiSymbol> getSymbols() {
-		return symbolMap_.values();
+		return m_symbolMap.values();
 	}
 	
 	public SmiSymbol findSymbol(String id) {
-		return symbolMap_.get(id);
+		return m_symbolMap.get(id);
 	}
 	
 	public SmiClass findClass(String id) {
-		return classMap_.get(id);
+		return m_classMap.get(id);
 	}
 	
 	public Collection<SmiClass> getClasses() {
-		return classMap_.values();
+		return m_classMap.values();
 	}
 	
 	public SmiAttribute findAttribute(String id) {
-		return attributeMap_.get(id);
+		return m_attributeMap.get(id);
 	}
 
 	public Collection<SmiAttribute> getAttributes() {
-		return attributeMap_.values();
+		return m_attributeMap.values();
 	}
 	
 	public SmiScalar findScalar(String id) {
-		return scalarMap_.get(id);
+		return m_scalarMap.get(id);
 	}
 	
 	public Collection<SmiScalar> getScalars() {
-		return scalarMap_.values();
+		return m_scalarMap.values();
 	}
-	
+
 	public SmiTable findTable(String id) {
-		return tableMap_.get(id);
+		return m_tableMap.get(id);
 	}
 	
 	public Collection<SmiTable> getTables() {
-		return tableMap_.values();
+		return m_tableMap.values();
 	}
 	
 	public SmiRow findRow(String id) {
-		return rowMap_.get(id);
+		return m_rowMap.get(id);
 	}
 	
 	public Collection<SmiRow> getRows() {
-		return rowMap_.values();
+		return m_rowMap.values();
 	}
 	
 	public SmiColumn findColumn(String id) {
-		return columnMap_.get(id);
+		return m_columnMap.get(id);
 	}
-	public Collection<SmiColumn> getColumns()
-	{
-		return columnMap_.values();
-	}
+
+    public Collection<SmiColumn> getColumns() {
+        return m_columnMap.values();
+    }
 
 }

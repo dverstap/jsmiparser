@@ -15,41 +15,30 @@
  */
 package org.jsmiparser.smi;
 
-import org.jsmiparser.util.token.IdToken;
-
 import java.util.List;
 import java.util.Set;
 
-public abstract class SmiClass extends SmiSymbol {
+public interface SmiClass {
 
-	public SmiClass(IdToken idToken, SmiModule module) {
-		super(idToken, module);
-	}
-	
-	abstract public List<? extends SmiClass> getParentClasses();
-	abstract public List<? extends SmiClass> getChildClasses();
-	
-	public SmiAttribute findAttribute(String id)
-	{
-		for (SmiAttribute a : getAttributes()) {
-			if (a.getId().equals(id)) {
-				return a;
-			}
-		}
-		return null;
-	}
-	public abstract List<? extends SmiAttribute> getAttributes();
-	
-	/**
-	 * @return All attributes, including the ones from the (indirect) parent classes.
-	 */
-	public abstract Set<? extends SmiAttribute> getAllAttributes();
+    String getId();
 
-	public String getCodeId() {
-		return getModule().getMib().getCodeNamingStrategy().getClassId(this);
-	}
+    String getCodeId();
 
-	public abstract boolean isRowClass();
-	public abstract boolean isScalarsClass();
-	
+    List<? extends SmiClass> getParentClasses();
+
+    List<? extends SmiClass> getChildClasses();
+
+    SmiAttribute findAttribute(String id);
+
+    List<? extends SmiAttribute> getAttributes();
+
+    /**
+     * @return All attributes, including the ones from the (indirect) parent classes.
+     */
+    Set<? extends SmiAttribute> getAllAttributes();
+
+    boolean isRowClass();
+
+    boolean isScalarsClass();
+
 }

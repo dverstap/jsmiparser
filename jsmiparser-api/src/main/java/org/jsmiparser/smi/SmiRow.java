@@ -17,13 +17,9 @@ package org.jsmiparser.smi;
 
 import org.jsmiparser.util.token.IdToken;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-public class SmiRow extends SmiClass {
+public class SmiRow extends SmiObjectType implements SmiClass {
 
 	private SmiTable table_;
 	private List<SmiRow> parentRows_ = new ArrayList<SmiRow>();
@@ -66,27 +62,35 @@ public class SmiRow extends SmiClass {
 		return indexes_;
 	}
 
-	@Override
 	public List<? extends SmiClass> getParentClasses() {
 		return parentRows_;
 	}
 
-	@Override
 	public List<? extends SmiClass> getChildClasses() {
 		return childRows_;
 	}
 
-	@Override
-	public List<? extends SmiAttribute> getAttributes() {
+    public SmiAttribute findAttribute(String id) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+	public List<SmiColumn> getAttributes() {
 		return columns_;
 	}
 
-	@Override
-	public Set<? extends SmiAttribute> getAllAttributes() {
+	public Set<SmiColumn> getAllAttributes() {
 		return getAllColumns();
 	}
 
-	private Set<SmiColumn> getAllColumns() {
+    public boolean isRowClass() {
+        return true;
+    }
+
+    public boolean isScalarsClass() {
+        return false;
+    }
+
+    private Set<SmiColumn> getAllColumns() {
 		Set<SmiColumn> result = new LinkedHashSet<SmiColumn>();
 		addAllColumns(result);
 		return result;
@@ -120,16 +124,6 @@ public class SmiRow extends SmiClass {
 		SmiIndex index = new SmiIndex(this, col, isImplied);
 		indexes_.add(index);
 		return index;
-	}
-
-	@Override
-	public boolean isRowClass() {
-		return true;
-	}
-
-	@Override
-	public boolean isScalarsClass() {
-		return false;
 	}
 
 	public boolean hasSameIndexes(SmiRow other) {

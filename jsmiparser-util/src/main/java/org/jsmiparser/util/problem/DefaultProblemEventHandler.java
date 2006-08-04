@@ -56,6 +56,7 @@ public class DefaultProblemEventHandler extends AbstractProblemEventHandler {
     }
 
     private void print(PrintStream stream, String sev, Location location, String localizedMessage) {
-        stream.println(sev + ":" + location + ":" + localizedMessage);
+        String loc = location != null ? location.toString() : null;
+        stream.println(sev + ": file://" + loc + " :" + localizedMessage);
     }
 }

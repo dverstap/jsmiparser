@@ -25,9 +25,9 @@ package org.jsmiparser.smi;
  *
  */
 public enum SmiPrimitiveType {
-	
+
 	// Basic ASN.1 type:
-	ENUM(SmiVarBindField.INTEGER_VALUE, ""),
+	ENUM(SmiVarBindField.INTEGER_VALUE, ""),     // TODO this probably needs to be removed
 	
 	// From the SimpleSyntax choice:
 	INTEGER(SmiVarBindField.INTEGER_VALUE, "Int"),

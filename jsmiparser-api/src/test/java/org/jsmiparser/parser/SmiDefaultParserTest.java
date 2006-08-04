@@ -16,39 +16,68 @@
 package org.jsmiparser.parser;
 
 import junit.framework.TestCase;
-import org.jsmiparser.phase.PhaseException;
 import org.jsmiparser.phase.file.FileParserOptions;
 import org.jsmiparser.smi.SmiMib;
-import org.jsmiparser.smi.SmiType;
+import org.jsmiparser.smi.SmiModule;
+import org.jsmiparser.smi.SmiOidValue;
+import org.jsmiparser.smi.SmiSymbol;
+import org.jsmiparser.smi.SmiTable;
+import org.jsmiparser.smi.SmiRow;
+import org.jsmiparser.smi.SmiAttribute;
 import org.jsmiparser.util.problem.DefaultProblemEventHandler;
 import org.jsmiparser.util.problem.ProblemEventHandler;
 
 import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 public class SmiDefaultParserTest extends TestCase {
 
-    public void testParser() throws PhaseException {
+    public void testLibSmi() throws URISyntaxException {
+        URL mibsURL = getClass().getClassLoader().getResource("libsmi-0.4.5/mibs");
+        File mibsDir = new File(mibsURL.toURI());
 
         ProblemEventHandler problemEventHandler = new DefaultProblemEventHandler();
         SmiDefaultParser parser = new SmiDefaultParser(problemEventHandler);
         parser.init();
-        FileParserOptions options = (FileParserOptions) parser.getFileParserPhase().getOptions();
-        initFileParserOptions(options);
+        FileParserOptions options = (FileParserOptions) parser.getLexerPhase().getOptions();
+        initFileParserOptions(options, mibsDir, "iana", "ietf", "site", "tubs");
 
         SmiMib mib = parser.parse();
         assertNotNull(mib);
-        assertEquals(216, mib.getModules().size());
+        //showOverview(mib);
 
-        assertEquals(1522, mib.getTypes().size());
+        //XStream xStream = new XStream();
+        //xStream.toXML(mib, System.out);
 
-        // TODO: none of the node conversions are implemented yet
-        assertEquals(0, mib.getTables().size());
+        assertEquals(254, mib.getModules().size());
+        assertEquals(1815, mib.getTypes().size());
+        assertEquals(1238, mib.getTables().size());
+        assertEquals(1238, mib.getRows().size());
+        assertEquals(12233, mib.getAttributes().size());
+        assertEquals(0, mib.getScalars().size());
+        assertEquals(0, mib.getColumns().size());
 
+
+        SmiTable ifTable = mib.findTable("ifTable");
+        assertNotNull(ifTable);
+        assertEquals("1.3.6.1.2.1.2.2", ifTable.getOid());
+
+        SmiRow ifEntry = mib.findRow("ifEntry");
+        assertNotNull(ifEntry);
+        assertEquals("1.3.6.1.2.1.2.2.1", ifEntry.getOid());
+
+        SmiAttribute ifAdminStatus = mib.findAttribute("ifAdminStatus");
+        assertNotNull(ifAdminStatus);
+        assertEquals("1.3.6.1.2.1.2.2.1.7", ifAdminStatus.getOid());
+
+        /*
         SmiType ifIndexType = mib.findType("InterfaceIndex");
         assertNotNull(ifIndexType);
         assertEquals(79, ifIndexType.getLocation().getLine());
         assertEquals(1, ifIndexType.getLocation().getColumn());
         //TODO assertEquals(SmiVarBindField.INTEGER_VALUE, ifIndexType.getVarBindField());
+    */
 
         //SmiMib mib2 = parser.parse();
         //assertEquals(mib1, mib2);
@@ -63,22 +92,22 @@ public class SmiDefaultParserTest extends TestCase {
 
     }
 
-    private void initFileParserOptions(FileParserOptions options) {
-        String mibsVar = System.getenv("MIBS");
-        assertNotNull(mibsVar);
-        String[] mibDirs = mibsVar.split(":");
-        parseDirs(mibDirs, options);
-
-        mibsVar = System.getenv("ASN1_MIBS");
-        if (mibsVar != null) {
-            mibDirs = mibsVar.split(":");
-            // TODO parseDirs(mibDirs, options);
+    private void showOverview(SmiMib mib) {
+        for (SmiModule module : mib.getModules()) {
+            for (SmiSymbol symbol : module.getSymbols()) {
+                String msg = module.getId() + ": " + symbol.getId() + ": " + symbol.getClass().getSimpleName();
+                if (symbol instanceof SmiOidValue) {
+                    SmiOidValue oidValue = (SmiOidValue) symbol;
+                    msg += ": " + oidValue.getOid();
+                }
+                System.out.println(msg);
+            }
         }
     }
 
-    private void parseDirs(String[] mibDirs, FileParserOptions options) {
-        for (String d : mibDirs) {
-            File dir = new File(d);
+    private void initFileParserOptions(FileParserOptions options, File mibsDir, String... subDirNames) {
+        for (String subDirName : subDirNames) {
+            File dir = new File(mibsDir, subDirName);
             assertTrue(dir.toString(), dir.exists());
             assertTrue(dir.toString(), dir.isDirectory());
 
@@ -88,9 +117,12 @@ public class SmiDefaultParserTest extends TestCase {
                 File file = files[i];
 
                 if (file.isFile()
+                        && !file.getName().equals("RFC1158-MIB") // obsoleted by RFC-1213
+                        && !file.getName().contains("TOTAL")
+                        && !file.getName().endsWith("tree")
                         && !file.getName().startsWith("Makefile")
                         && !file.getName().endsWith("~")) {
-                        //&& !file.getName().endsWith("-orig")) { // TODO parsing -orig should give more errors!
+                    //&& !file.getName().endsWith("-orig")) { // TODO parsing -orig should give more errors!
                     options.addFile(file);
                 }
             }

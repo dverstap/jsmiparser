@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 // TODO rename to SmiModuleClass
-public class SmiScalarsClass extends SmiClass {
+public class SmiScalarsClass extends SmiSymbol implements SmiClass {
 
 	private static final Logger log = Logger.getLogger(SmiScalarsClass.class);
 	
@@ -42,23 +42,31 @@ public class SmiScalarsClass extends SmiClass {
 		return scalars_;
 	}
 
-	@Override
-	public List<? extends SmiClass> getParentClasses() {
+    public String getId() {
+        return super.getId();
+    }
+
+    public String getCodeId() {
+        return super.getCodeId();
+    }
+
+	public List<SmiScalarsClass> getParentClasses() {
 		return parentScalarsClasses_;
 	}
 
-	@Override
-	public List<? extends SmiClass> getChildClasses() {
+	public List<SmiScalarsClass> getChildClasses() {
 		return childScalarsClasses_;
 	}
 
-	@Override
-	public List<? extends SmiAttribute> getAttributes() {
+    public SmiAttribute findAttribute(String id) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+	public List<SmiScalar> getAttributes() {
 		return scalars_;
 	}
 
-	@Override
-	public Set<? extends SmiAttribute> getAllAttributes() {
+	public Set<SmiScalar> getAllAttributes() {
 		return getAllScalars();
 	}
 
@@ -86,12 +94,10 @@ public class SmiScalarsClass extends SmiClass {
 		return parentScalarsClasses_;
 	}
 
-	@Override
 	public boolean isRowClass() {
 		return false;
 	}
 
-	@Override
 	public boolean isScalarsClass() {
 		return true;
 	}

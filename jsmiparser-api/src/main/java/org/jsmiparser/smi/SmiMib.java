@@ -23,31 +23,31 @@ import java.util.Map;
 
 public class SmiMib extends SmiSymbolContainer {
 
-	private Map<String, SmiModule> moduleMap_ = new HashMap<String, SmiModule>();
+	private Map<String, SmiModule> m_moduleMap = new HashMap<String, SmiModule>();
 	
-	private SmiCodeNamingStrategy codeNamingStrategy_;
+	private SmiCodeNamingStrategy m_codeNamingStrategy;
 	
 	public SmiMib(SmiCodeNamingStrategy codeNamingStrategy) {
 		super(null);
 		assert(codeNamingStrategy != null);
-		codeNamingStrategy_ = codeNamingStrategy;
+		m_codeNamingStrategy = codeNamingStrategy;
 	}
 	
 	public SmiModule findModule(String id) {
-		return moduleMap_.get(id);
+		return m_moduleMap.get(id);
 	}
 	
 	public Collection<SmiModule> getModules() {
-		return moduleMap_.values();
+		return m_moduleMap.values();
 		
 	}
 	
 	public SmiCodeNamingStrategy getCodeNamingStrategy() {
-		return codeNamingStrategy_;
+		return m_codeNamingStrategy;
 	}
 
 	public void setCodeNamingStrategy(SmiCodeNamingStrategy codeNamingStrategy) {
-		codeNamingStrategy_ = codeNamingStrategy;
+		m_codeNamingStrategy = codeNamingStrategy;
 	}
 
 	public SmiModule createModule(IdToken idToken) {
@@ -60,7 +60,7 @@ public class SmiMib extends SmiSymbolContainer {
 	}
 	
 	public void determineInheritanceRelations() {
-		for (SmiRow row : rowMap_.values()) {
+		for (SmiRow row : m_rowMap.values()) {
 			if (row.getAugments() != null) {
 				row.addParentRow(row.getAugments());
 			} else if (row.getIndexes().size() == 1) {
@@ -81,7 +81,18 @@ public class SmiMib extends SmiSymbolContainer {
 
 	void addModule(String id, SmiModule module) {
 		// TODO unique id check
-		moduleMap_.put(id, module);		
+		m_moduleMap.put(id, module);
 	}
 
+    public void fillTables() {
+        for (SmiModule module : m_moduleMap.values()) {
+            m_typeMap.putAll(module.m_typeMap);
+            m_attributeMap.putAll(module.m_attributeMap);
+            m_rowMap.putAll(module.m_rowMap);
+            m_tableMap.putAll(module.m_tableMap);
+            m_scalarMap.putAll(module.m_scalarMap);
+            m_columnMap.putAll(module.m_columnMap);
+            m_classMap.putAll(module.m_classMap);
+        }
+    }
 }

@@ -15,47 +15,65 @@
  */
 package org.jsmiparser.smi;
 
-import org.jsmiparser.util.token.IdToken;
 import org.jsmiparser.util.location.Location;
+import org.jsmiparser.util.token.IdToken;
 
-public abstract class SmiSymbol {
+import java.util.ArrayList;
+import java.util.List;
+
+public class SmiSymbol {
 
     private IdToken m_idToken;
-    private SmiModule module_;
+    private SmiModule m_module;
+    private List<IdToken> m_users = new ArrayList<IdToken>();
 
 
     public SmiSymbol(IdToken idToken, SmiModule module) {
         super();
         m_idToken = idToken;
-        module_ = module;
+        m_module = module;
     }
 
 
     public String getId() {
-        return m_idToken.getId();
+        return m_idToken != null ? m_idToken.getId() : null;
     }
 
     public IdToken getIdToken() {
         return m_idToken;
     }
 
-    public abstract String getCodeId();
+    public void setIdToken(IdToken idToken) {
+        m_idToken = idToken;
+    }
+
+    //  TODO should be abstract
+    public String getCodeId() {
+        return null;
+    }
 
     public String getFullCodeId() {
-        return module_.getMib().getCodeNamingStrategy().getFullCodeId(this);
+        return m_module.getMib().getCodeNamingStrategy().getFullCodeId(this);
     }
 
     public SmiModule getModule() {
-        return module_;
+        return m_module;
     }
 
     public Location getLocation() {
-        return m_idToken.getLocation();
+        return m_idToken != null ? m_idToken.getLocation() : null;
     }
 
-    public String getUcId()
-    {
+    public String getUcId() {
         return SmiUtil.ucFirst(getId());
+    }
+
+    public List<IdToken> getUsers() {
+        return m_users;
+    }
+
+    public void addUser(IdToken idToken) {
+        m_users.add(idToken);
     }
 
 }

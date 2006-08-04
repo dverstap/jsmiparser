@@ -17,7 +17,7 @@ package org.jsmiparser.smi;
 
 import org.jsmiparser.util.token.IdToken;
 
-public class SmiTable extends SmiSymbol {
+public class SmiTable extends SmiObjectType {
 
     SmiRow row_;
 

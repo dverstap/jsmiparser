@@ -105,16 +105,18 @@ public class ProblemInvocationHandler <T> implements InvocationHandler {
                 }
             }
 
+
             for (int i = 0; i < paramTypes.length; i++) {
                 Class c = paramTypes[i];
                 if (Location.class.equals(c)) {
                     if (m_locationParameterIndex >= 0) {
-                        throw new IllegalArgumentException(getMethodName(m_method) + " has more than one " + Location.class.getSimpleName() + " parameter");
+                        //throw new IllegalArgumentException(getMethodName(m_method) + " has more than one " + Location.class.getSimpleName() + " parameter");
                     } else {
                         m_locationParameterIndex = i;
                     }
                 }
             }
+
         }
 
 

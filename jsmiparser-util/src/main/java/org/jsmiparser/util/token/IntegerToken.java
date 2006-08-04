@@ -21,7 +21,7 @@ public class IntegerToken extends AbstractToken {
 
     private int m_value;
 
-    protected IntegerToken(Location location, int value) {
+    public IntegerToken(Location location, int value) {
         super(location);
         m_value = value;
     }

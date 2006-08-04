@@ -17,52 +17,17 @@ package org.jsmiparser.smi;
 
 import org.jsmiparser.util.token.IdToken;
 
-import java.math.BigInteger;
+public class SmiAttribute extends SmiObjectType {
 
-public abstract class SmiAttribute extends SmiSymbol {
-	
-	private SmiType type_;
-	private String oid_;
-	private SmiSingleAttributeEnum singleAttributeEnum_;
-	private SmiPrimitiveType primitiveType_;
-
-
-	public SmiAttribute(IdToken idToken, SmiModule module) {
+    public SmiAttribute(IdToken idToken, SmiModule module) {
 		super(idToken, module);
 	}
 
-	public abstract SmiClass getSmiClass();
+	public SmiClass getSmiClass() {
+        return null; // TODO
+    }
 
-	public SmiPrimitiveType getPrimitiveType() {
-		if (type_ != null) {
-			return type_.getPrimitiveType();
-		}
-		else {
-			return primitiveType_;
-		}
-	}
-	
-	public void setPrimitiveType(SmiPrimitiveType primitiveType) {
-		primitiveType_ = primitiveType;
-	}
-
-	public SmiType getType() {
-		return type_;
-	}
-
-	public void setType(SmiType type) {
-		type_ = type;
-	}
-
-	public String getOid() {
-		return oid_;
-	}
-
-	public void setOid(String oid) {
-		oid_ = oid;
-	}
-
-	public String getCodeConstantId() {
+    public String getCodeConstantId() {
 		return getModule().getMib().getCodeNamingStrategy().getCodeConstantId(this);
 	}
 	
@@ -71,27 +36,14 @@ public abstract class SmiAttribute extends SmiSymbol {
 	}
 
 	public String getCodeOid() {
-		return oid_;
+		return getOid();
 	}
 
 	public String getCodeId() {
 		return getModule().getMib().getCodeNamingStrategy().getAttributeId(this);
 	}
-	
-	public SmiSingleAttributeEnum getSingleAttributeEnum() {
-		return singleAttributeEnum_;
-	}
 
-	public SmiEnumValue addEnumValue(String id, BigInteger value) {
-		if (singleAttributeEnum_ == null) {
-			singleAttributeEnum_ = getModule().createSingleAttributeEnum(this);
-			singleAttributeEnum_.setPrimitiveType(SmiPrimitiveType.ENUM);
-		}
-		type_ = singleAttributeEnum_;
-		return singleAttributeEnum_.addEnumValue(id, value);
-	}
-	
-	public String getRequestMethodId() {
+    public String getRequestMethodId() {
 		return getModule().getMib().getCodeNamingStrategy().getRequestMethodId(this);
 	}
 

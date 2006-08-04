@@ -119,4 +119,18 @@ public class TextUtil {
         return "/" + pkg.getName().replace('.', '/');
     }
 
+    public static String deleteChar(String str, char c) {
+        if (str.indexOf(c) < 0) {
+            return str;
+        }
+        
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) != c) {
+                sb.append(str.charAt(i));
+            }
+        }
+
+        return sb.toString();
+    }
 }

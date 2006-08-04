@@ -16,9 +16,9 @@
 package org.jsmiparser.phase.oid;
 
 import org.apache.log4j.Logger;
-import org.jsmiparser.parsetree.asn1.ASNMib;
 import org.jsmiparser.phase.AbstractPhase;
 import org.jsmiparser.phase.PhaseException;
+import org.jsmiparser.smi.SmiMib;
 import org.jsmiparser.util.problem.ProblemReporterFactory;
 
 public class OidResolverPhase extends AbstractPhase {
@@ -32,8 +32,8 @@ public class OidResolverPhase extends AbstractPhase {
         return null;
     }
 
-    public ASNMib process(Object input) throws PhaseException {
-        ASNMib mib = (ASNMib) input;
+    public SmiMib process(Object input) throws PhaseException {
+        SmiMib mib = (SmiMib) input;
         // TODO
         return mib;
     }
