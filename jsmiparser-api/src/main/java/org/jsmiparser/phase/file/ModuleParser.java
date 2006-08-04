@@ -19,7 +19,6 @@ import antlr.RecognitionException;
 import antlr.Token;
 import antlr.TokenStreamException;
 import org.apache.log4j.Logger;
-import org.jsmiparser.parsetree.asn1.ASNAssignment;
 import org.jsmiparser.phase.PhaseException;
 import org.jsmiparser.phase.file.antlr.SMIParser;
 import org.jsmiparser.phase.lexer.LexerModule;
@@ -109,43 +108,23 @@ public class ModuleParser extends IdSymbolImpl {
         return m_macroMap;
     }
 
-    public SmiSymbol create(IdToken idToken) {
-        SmiSymbol result = null;
-        switch (ASNAssignment.determineType(idToken)) {
-            case MACRODEF:
-                result = m_macroMap.create(idToken);
-                break;
-            case TYPE:
-                result = m_typeMap.create(idToken);
-                break;
-            case VALUE:
-                result = m_valueMap.create(idToken);
-                break;
-        }
-        return result;
-    }
-
     /**
      * Called by other module parsers to imports symbols from this module
-     *
-     * @param idToken
-     * @return
      */
     public SmiSymbol use(IdToken idToken) {
         if (m_typeMap == null) {
             m_log.debug(idToken + " used from " + m_module.getIdToken());
         }
         SmiSymbol result = null;
-        switch (ASNAssignment.determineType(idToken)) {
-            case MACRODEF:
+        String id = idToken.getId();
+        if (Character.isLowerCase(id.charAt(0))) {
+            result = m_valueMap.use(idToken);
+        } else {
+            if (id.toUpperCase().equals(id)) {
                 result = m_macroMap.use(idToken);
-                break;
-            case TYPE:
+            } else {
                 result = m_typeMap.use(idToken);
-                break;
-            case VALUE:
-                result = m_valueMap.use(idToken);
-                break;
+            }
         }
         return result;
     }

@@ -15,7 +15,6 @@
  */
 package org.jsmiparser.phase.file;
 
-import org.jsmiparser.parsetree.asn1.ASNModule;
 import org.jsmiparser.smi.SmiSymbol;
 import org.jsmiparser.util.problem.annotations.ProblemMethod;
 import org.jsmiparser.util.token.IdToken;
@@ -25,9 +24,6 @@ public interface FileParserProblemReporter {
 
     @ProblemMethod(message = "Cannot find file for module %s")
     void reportCannotFindModuleFile(IdToken moduleToken);
-
-    @ProblemMethod(message = "Duplicate module %s originally defined at %s")
-    void reportDuplicateModule(ASNModule duplicate, ASNModule original);
 
     @ProblemMethod(message = "Duplicate assignment %s originally defined at %s")
     void reportDuplicateAssignment(SmiSymbol duplicate, SmiSymbol original);
