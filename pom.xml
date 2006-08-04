@@ -5,8 +5,25 @@
     <groupId>org.jsmiparser</groupId>
     <artifactId>jsmiparser</artifactId>
     <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1-SNAPSHOT</version>
     <name>Java SMI Parser</name>
+    <url>http://jsmiparser.berlios.de</url>
+
+    <developers>
+        <developer>
+            <id>stappend</id>
+            <name>Davy Verstappen</name>
+            <email>davy@jsmiparser.org</email>
+            <timezone>+1</timezone>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>Apache License 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
 
     <modules>
         <module>jsmiparser-util</module>
@@ -14,9 +31,13 @@
     </modules>
 
     <scm>
-        <connection>scm:svn://svn.berlios.de/svnroot/repos/jsmiparser/experimental-smi-parser</connection>
-        <developerConnection>scm:svn+ssh://svn.berlios.de/svnroot/repos/jsmiparser/experimental-smi-parser</developerConnection>
+        <connection>scm:svn://svn.berlios.de/svnroot/repos/jsmiparser/trunk</connection>
+        <developerConnection>scm:svn+ssh://svn.berlios.de/svnroot/repos/jsmiparser/trunk</developerConnection>
     </scm>
+
+    <issueManagement>
+        <url>http://developer.berlios.de/bugs/?group_id=4221</url>
+    </issueManagement>
 
     <build>
         <plugins>
