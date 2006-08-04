@@ -179,6 +179,7 @@ public class ModuleParser extends IdSymbolImpl {
             throw new PhaseException(getId(), e);
         } finally {
             m_state = State.PARSED;
+            m_lexerModule.clear(); // release memory early
         }
     }
 

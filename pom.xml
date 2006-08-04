@@ -31,8 +31,9 @@
     </modules>
 
     <scm>
-        <connection>scm:svn://svn.berlios.de/svnroot/repos/jsmiparser/trunk</connection>
-        <developerConnection>scm:svn+ssh://svn.berlios.de/svnroot/repos/jsmiparser/trunk</developerConnection>
+        <connection>scm:svn:http://svn.berlios.de/svnroot/repos/jsmiparser/trunk</connection>
+        <developerConnection>scm:svn:https://svn.berlios.de/svnroot/repos/jsmiparser/trunk</developerConnection>
+        <url>http://svn.berlios.de/viewcvs/jsmiparser</url>
     </scm>
 
     <issueManagement>

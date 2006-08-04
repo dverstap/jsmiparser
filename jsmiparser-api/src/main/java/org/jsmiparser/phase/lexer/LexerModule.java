@@ -47,4 +47,8 @@ public class LexerModule extends IdSymbolImpl {
     public void add(Token token) {
         m_tokens.add(token);
     }
+
+    public void clear() {
+        m_tokens.clear();
+    }
 }
