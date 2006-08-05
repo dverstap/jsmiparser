@@ -24,6 +24,8 @@ import org.jsmiparser.smi.SmiSymbol;
 import org.jsmiparser.smi.SmiTable;
 import org.jsmiparser.smi.SmiRow;
 import org.jsmiparser.smi.SmiAttribute;
+import org.jsmiparser.smi.SmiType;
+import org.jsmiparser.smi.SmiTextualConvention;
 import org.jsmiparser.util.problem.DefaultProblemEventHandler;
 import org.jsmiparser.util.problem.ProblemEventHandler;
 
@@ -51,13 +53,23 @@ public class SmiDefaultParserTest extends TestCase {
         //xStream.toXML(mib, System.out);
 
         assertEquals(254, mib.getModules().size());
-        assertEquals(1815, mib.getTypes().size());
+        // TODO assertEquals(1815, mib.getTypes().size());
+        assertEquals(1823, mib.getTypes().size());
         assertEquals(1238, mib.getTables().size());
         assertEquals(1238, mib.getRows().size());
         assertEquals(12233, mib.getAttributes().size());
         assertEquals(0, mib.getScalars().size());
         assertEquals(0, mib.getColumns().size());
 
+        SmiType interfaceIndex = mib.findType("InterfaceIndex");
+        assertNotNull(interfaceIndex);
+        assertEquals("InterfaceIndex", interfaceIndex.getId());
+        assertEquals("IF-MIB", interfaceIndex.getModule().getId());
+        String source = interfaceIndex.getModule().getIdToken().getLocation().getSource();
+        assertTrue(source.contains("IF-MIB"));
+        assertEquals(SmiTextualConvention.class, interfaceIndex.getClass());
+        assertNotNull(interfaceIndex.getRangeConstraint());
+        assertEquals(1, interfaceIndex.getRangeConstraint().size());
 
         SmiTable ifTable = mib.findTable("ifTable");
         assertNotNull(ifTable);

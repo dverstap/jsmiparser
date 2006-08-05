@@ -29,7 +29,7 @@ public class SmiMib extends SmiSymbolContainer {
 	
 	public SmiMib(SmiCodeNamingStrategy codeNamingStrategy) {
 		super(null);
-		assert(codeNamingStrategy != null);
+		//assert(codeNamingStrategy != null);
 		m_codeNamingStrategy = codeNamingStrategy;
 	}
 	

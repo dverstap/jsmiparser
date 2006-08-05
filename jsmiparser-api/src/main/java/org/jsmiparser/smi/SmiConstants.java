@@ -17,8 +17,13 @@
 package org.jsmiparser.smi;
 
 import org.jsmiparser.util.token.IdToken;
+import org.jsmiparser.util.location.Location;
 
 public class SmiConstants {
+
+
+    public static final SmiMib JSMIPARSER_HARDCODED_MIB = new SmiMib(null);
+    public static final SmiModule JSMIPARSER_HARDCODED_MODULE = new SmiModule(JSMIPARSER_HARDCODED_MIB, new IdToken(null, "JSMIPARSER_HARDCODED_MIB"));
 
     public static final SmiType OBJECT_IDENTIFIER_TYPE = newType("OBJECT IDENTIFIER");
     public static final SmiType OCTET_STRING_TYPE = newType("OCTET STRING");
@@ -33,6 +38,7 @@ public class SmiConstants {
     public static final SmiType TIME_TICKS_TYPE = newType("TimeTicks");
 
     private static SmiType newType(String id) {
-        return new SmiType(new IdToken(null, id), null);
+        return new SmiType(new IdToken(new Location("JSMIPARSER_HARDCODED_MIB"), id), JSMIPARSER_HARDCODED_MODULE);
     }
+    
 }

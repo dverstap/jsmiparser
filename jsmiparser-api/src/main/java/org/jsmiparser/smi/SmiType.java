@@ -154,4 +154,6 @@ public class SmiType extends SmiSymbol {
         // TODO set primitive type
         m_elementType = elementType;
     }
+
+    
 }

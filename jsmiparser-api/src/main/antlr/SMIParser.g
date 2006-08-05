@@ -403,7 +403,7 @@ assignment returns [SmiSymbol s = null]
 	u:UPPER ASSIGN_OP s=type_assignment[m_mp.idt(u)]
 	| l:LOWER s=value_assignment[m_mp.idt(l)]
 	| macroName "MACRO" ASSIGN_OP BEGIN_KW ( ~(END_KW) )* END_KW
-	| s=defined_integer_type_kw ASSIGN_OP leaf_type
+	| s=defined_integer_type_kw[null] ASSIGN_OP leaf_type[null]
 	)
 	{
 	    if (s != null) {
@@ -415,58 +415,58 @@ assignment returns [SmiSymbol s = null]
 type_assignment[IdToken idToken] returns [SmiType t = null]
 :
 	t=textualconvention_macro[idToken]
-	| t=leaf_type		{ if (t != null) { t.setIdToken(idToken); } }
-	| t=sequence_type	{ t.setIdToken(idToken); }
+	| t=leaf_type[idToken]
+	| t=sequence_type[idToken]
 ;
 
 // valid type for a leaf node (scalar or column)
-leaf_type returns [SmiType t = null]
+leaf_type[IdToken idToken] returns [SmiType t = null]
 :
     ( L_BRACKET APPLICATION_KW NUMBER R_BRACKET IMPLICIT_KW )? // only used for ApplicationSyntax types
     (
-	t=integer_type
-	| t=oid_type
-	| t=octet_string_type
-	| t=bits_type
-	| t=choice_type
-	| t=defined_type
+	t=integer_type[idToken]
+	| t=oid_type[idToken]
+	| t=octet_string_type[idToken]
+	| t=bits_type[idToken]
+	| t=choice_type[idToken]
+	| t=defined_type[idToken]
 	)
 ;
 
-integer_type returns [SmiType t = null]
+integer_type[IdToken idToken] returns [SmiType t = null]
 :
-	t=integer_type_kw
-	(t=named_number_list[t] | t=range_constrained_type[t])?
+	t=integer_type_kw[idToken]
+	(t=named_number_list[idToken, t] | t=range_constrained_type[idToken, t])?
 ;
 
-range_constrained_type[SmiType baseType] returns [SmiType t = null]
+range_constrained_type[IdToken idToken, SmiType baseType] returns [SmiType t = null]
 {
 	List<SmiRange> rc = null;
 }
 :
 	rc=range_constraint
 {
-	t = m_mp.createType(t);
+	t = m_mp.createType(idToken, baseType);
 	t.setRangeConstraint(rc);
 }
 ;
 
 // TODO should get these SmiType objects from the imports
-integer_type_kw returns [SmiType t = null]
+integer_type_kw[IdToken idToken] returns [SmiType t = null]
 :
-	INTEGER_KW	{ t = SmiConstants.INTEGER_TYPE; }
-	| t=defined_integer_type_kw
+	INTEGER_KW	{ t = m_mp.createType(idToken, SmiConstants.INTEGER_TYPE); }
+	| t=defined_integer_type_kw[idToken]
 ;
 
-defined_integer_type_kw returns [SmiType t = null]
+defined_integer_type_kw[IdToken idToken] returns [SmiType t = null]
 :
-	"Integer32"	{ t = SmiConstants.INTEGER_32_TYPE; }
-	| "Counter"	{ t = SmiConstants.COUNTER_TYPE; }
-	| "Counter32"	{ t = SmiConstants.COUNTER_32_TYPE; }
-	| "Gauge"	{ t = SmiConstants.GAUGE_TYPE; }
-	| "Gauge32"	{ t = SmiConstants.GAUGE_32_TYPE; }
-	| "Counter64"	{ t = SmiConstants.COUNTER_64_TYPE; }
-	| "TimeTicks"	{ t = SmiConstants.TIME_TICKS_TYPE; }
+	"Integer32"	{ t = m_mp.createType(idToken, SmiConstants.INTEGER_32_TYPE); }
+	| "Counter"	{ t = m_mp.createType(idToken, SmiConstants.COUNTER_TYPE); }
+	| "Counter32"	{ t = m_mp.createType(idToken, SmiConstants.COUNTER_32_TYPE); }
+	| "Gauge"	{ t = m_mp.createType(idToken, SmiConstants.GAUGE_TYPE); }
+	| "Gauge32"	{ t = m_mp.createType(idToken, SmiConstants.GAUGE_32_TYPE); }
+	| "Counter64"	{ t = m_mp.createType(idToken, SmiConstants.COUNTER_64_TYPE); }
+	| "TimeTicks"	{ t = m_mp.createType(idToken, SmiConstants.TIME_TICKS_TYPE); }
 ;
 
 integer_type_id returns [IdToken result = null]
@@ -485,60 +485,63 @@ integer_type_id returns [IdToken result = null]
 }
 ;
 
-oid_type returns [SmiType t = null]
+oid_type[IdToken idToken] returns [SmiType t = null]
 :
 	OBJECT_KW IDENTIFIER_KW
 {
-	t = SmiConstants.OBJECT_IDENTIFIER_TYPE;
+	t = m_mp.createType(idToken, SmiConstants.OBJECT_IDENTIFIER_TYPE);
 }
 ;
 
-octet_string_type returns [SmiType t = null]
+octet_string_type[IdToken idToken] returns [SmiType t = null]
 :
-	OCTET_KW STRING_KW { t = SmiConstants.OCTET_STRING_TYPE; }
-	(t=size_constrained_type[t])?
+	OCTET_KW STRING_KW { t = m_mp.createType(idToken, SmiConstants.OCTET_STRING_TYPE); }
+	(t=size_constrained_type[idToken, t])?
 ;
 
-size_constrained_type[SmiType baseType] returns [SmiType t = null]
+size_constrained_type[IdToken idToken, SmiType baseType] returns [SmiType t = null]
 {
 	List<SmiRange> sc = null;
 }
 :
 	sc=size_constraint
 {
-	t = m_mp.createType(baseType);
+	t = m_mp.createType(idToken, baseType);
 	t.setSizeConstraint(sc);
 }
 ;
 
-bits_type returns [SmiType t = null]
+bits_type[IdToken idToken] returns [SmiType t = null]
 :
-	"BITS" 			{ t= SmiConstants.BITS_TYPE; }
-	(t=named_number_list[t])?
+	"BITS" 			{ t = m_mp.createType(idToken, SmiConstants.BITS_TYPE); }
+	(t=named_number_list[idToken, t])?
 ;
 
 // only used for ObjectSyntax, SimpleSyntax and ApplicationSyntax
-choice_type returns [SmiType t = null]
+choice_type[IdToken idToken] returns [SmiProtocolType t = null]
 :
     "CHOICE" L_BRACE ( ~(R_BRACE) )* R_BRACE
+    {
+        return m_mp.createProtocolType(idToken);
+    }
 ;
 
-defined_type returns [SmiType t = null]
+defined_type[IdToken idToken] returns [SmiType t = null]
 :
 	(mt:UPPER DOT)? tt:UPPER 	{ t = m_mp.getDefinedType(mt, tt); }
-	(t=named_number_list[t] | t=constrained_type[t])?
+	(t=named_number_list[idToken, t] | t=constrained_type[idToken, t])?
 ;
 
-constrained_type[SmiType baseType] returns [SmiType t = null]
+constrained_type[IdToken idToken, SmiType baseType] returns [SmiType t = null]
 :
-	t = size_constrained_type[baseType]
-	| t = range_constrained_type[baseType]
+	t = size_constrained_type[idToken, baseType]
+	| t = range_constrained_type[idToken, baseType]
 ;
 
 
-sequence_type returns [SmiType t = null]
+sequence_type[IdToken idToken] returns [SmiType t = null]
 :
-	SEQUENCE_KW	{ t = m_mp.createSequenceType(); }
+	SEQUENCE_KW	{ t = m_mp.createSequenceType(idToken); }
 	L_BRACE
 		sequence_field[t]
 		(COMMA sequence_field[t])*
@@ -552,7 +555,7 @@ sequence_field[SmiType sequenceType]
 }
 :
 	l: LOWER	{ col = m_mp.useColumn(l); }
-	fieldType=leaf_type
+	fieldType=leaf_type[null]
 {
 	m_mp.addField(sequenceType, col, fieldType);
 }
@@ -737,7 +740,7 @@ objecttype_macro[IdToken idToken] returns [SmiObjectType ot = null]
 }
 :
 	"OBJECT-TYPE" "SYNTAX"
-		( type=leaf_type {  }
+		( type=leaf_type[null] {  }
 		  | sequenceOfType = sequenceof_type )
 	("UNITS" C_STRING)? // TODO only on SmiAttribute
 	( ("ACCESS" objecttype_access_v1)
@@ -776,27 +779,27 @@ objecttype_access_v2
 }
 ;
 
-status_all
+status_all returns [StatusAll status = null]
 :
 	l:LOWER
 {
-	StatusAll.find(l.getText());
+	status = StatusAll.find(l.getText());
 }
 ;
 
-status_v1
+status_v1 returns [StatusV1 status = null]
 :
 	l:LOWER
 {
-	StatusV1.find(l.getText());
+	status = StatusV1.find(l.getText());
 }
 ;
 
-status_v2
+status_v2 returns [StatusV2 status = null]
 :
 	l:LOWER
 {
-	StatusV2.find(l.getText());
+	status = StatusV2.find(l.getText());
 }
 ;
 
@@ -856,13 +859,20 @@ notificationtype_macro
 ;
 
 textualconvention_macro[IdToken idToken] returns [SmiTextualConvention tc=null]
+{
+    SmiType type;
+    StatusV2 status;
+}
 :
-	"TEXTUAL-CONVENTION"	{ tc = m_mp.createTextualConvention(idToken); }
-	("DISPLAY-HINT" C_STRING)?
-	"STATUS" status_v2 
-	"DESCRIPTION" C_STRING 
-	("REFERENCE" C_STRING)? 
-	"SYNTAX" leaf_type
+	"TEXTUAL-CONVENTION"
+	("DISPLAY-HINT" displayHint:C_STRING)?
+	"STATUS" status=status_v2
+	"DESCRIPTION" description:C_STRING
+	("REFERENCE" reference:C_STRING)?
+	"SYNTAX" type=leaf_type[null]
+	{
+	    tc = m_mp.createTextualConvention(idToken, displayHint, status, description, reference, type);
+	}
 ;
 
 
@@ -921,8 +931,8 @@ modulecompliance_macro_compliance_group
 modulecompliance_macro_compliance_object
 :
 	"OBJECT" LOWER
-	("SYNTAX" leaf_type)? 
-	("WRITE-SYNTAX" leaf_type)?
+	("SYNTAX" leaf_type[null])?
+	("WRITE-SYNTAX" leaf_type[null])?
 	("MIN-ACCESS" modulecompliance_access)? 
 	"DESCRIPTION" C_STRING
 ;
@@ -964,8 +974,8 @@ agentcapabilities_macro_module
 agentcapabilities_macro_variation
 :
 	"VARIATION" LOWER
-	("SYNTAX" leaf_type)?
-	("WRITE-SYNTAX" leaf_type)?
+	("SYNTAX" leaf_type[null])?
+	("WRITE-SYNTAX" leaf_type[null])?
 	("ACCESS" agentcapabilities_access)? 
 	("CREATION-REQUIRES" L_BRACE LOWER (COMMA LOWER)* R_BRACE)? 
 	("DEFVAL" L_BRACE leaf_value R_BRACE)?
@@ -991,9 +1001,9 @@ traptype_macro
 	("REFERENCE" C_STRING)?
 ;
 
-named_number_list[SmiType baseType] returns [SmiType t = null]
+named_number_list[IdToken idToken, SmiType baseType] returns [SmiType t = null]
 :
-	L_BRACE		{ t = m_mp.createType(baseType); }
+	L_BRACE		{ t = m_mp.createType(idToken, baseType); }
 		named_number[t]
 		(COMMA named_number[t])*
 	R_BRACE

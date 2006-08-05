@@ -24,16 +24,16 @@ import java.util.Map;
 
 public class SmiModule extends SmiSymbolContainer {
 
-    private SmiMib mib_;
+    private SmiMib m_mib;
     private IdToken m_idToken;
 
-    private SmiScalarsClass scalarsClass_;
+    private SmiScalarsClass m_scalarsClass;
     private List<SmiImports> m_imports = new ArrayList<SmiImports>();
     private List<SmiSymbol> m_symbols = new ArrayList<SmiSymbol>();
 
     public SmiModule(SmiMib mib, IdToken idToken) {
         super(mib);
-        mib_ = mib;
+        m_mib = mib;
 
         /*
         m_typeMap = new ContextMap<String, SmiType>(mib.m_typeMap);
@@ -48,18 +48,21 @@ public class SmiModule extends SmiSymbolContainer {
         if (idToken != null) {
             setIdToken(idToken);
 
-            String classId = mib_.getCodeNamingStrategy().getModuleId(this) + "Scalars"; //TextUtil.makeTypeName(id);
-            IdToken classIdToken = new IdToken(idToken.getLocation(), classId);
-            // TODO move to ConceptualModelBuilderPhase
-            scalarsClass_ = new SmiScalarsClass(classIdToken, this);
-            m_classMap.put(classId, scalarsClass_);
+            // TODO  remove this ScalarsClass thing
+            if (m_mib.getCodeNamingStrategy() != null) {
+                String classId = m_mib.getCodeNamingStrategy().getModuleId(this) + "Scalars"; //TextUtil.makeTypeName(id);
+                IdToken classIdToken = new IdToken(idToken.getLocation(), classId);
+                // TODO move to ConceptualModelBuilderPhase
+                m_scalarsClass = new SmiScalarsClass(classIdToken, this);
+                m_classMap.put(classId, m_scalarsClass);
+            }
         }
     }
 
     public void setIdToken(IdToken id) {
         assert(m_idToken == null);
         m_idToken = id;
-        mib_.addModule(id.getId(), this);
+        m_mib.addModule(id.getId(), this);
     }
 
     public IdToken getIdToken() {
@@ -81,11 +84,11 @@ public class SmiModule extends SmiSymbolContainer {
     }
 
     public SmiMib getMib() {
-        return mib_;
+        return m_mib;
     }
 
     public SmiScalarsClass getScalarsClass() {
-        return scalarsClass_;
+        return m_scalarsClass;
     }
 
     public SmiType createType(IdToken idToken) {
@@ -94,11 +97,13 @@ public class SmiModule extends SmiSymbolContainer {
         return type;
     }
 
+/*
     public SmiTextualConvention createTextualConvention(IdToken idToken) {
         SmiTextualConvention tc = new SmiTextualConvention(idToken, this);
         m_typeMap.put(idToken.getId(), tc);
         return tc;
     }
+*/
 
     public SmiSingleAttributeEnum createSingleAttributeEnum(SmiAttribute attribute) {
         SmiSingleAttributeEnum result = new SmiSingleAttributeEnum(attribute);
@@ -107,7 +112,7 @@ public class SmiModule extends SmiSymbolContainer {
     }
 
     public SmiScalar createScalar(IdToken idToken) {
-        SmiScalar scalar = new SmiScalar(idToken, scalarsClass_);
+        SmiScalar scalar = new SmiScalar(idToken, m_scalarsClass);
         m_scalarMap.put(idToken.getId(), scalar);
         m_attributeMap.put(idToken.getId(), scalar);
         return scalar;

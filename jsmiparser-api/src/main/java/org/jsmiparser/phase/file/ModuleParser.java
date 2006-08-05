@@ -29,6 +29,7 @@ import org.jsmiparser.smi.SmiMacro;
 import org.jsmiparser.smi.SmiModule;
 import org.jsmiparser.smi.SmiOidMacro;
 import org.jsmiparser.smi.SmiOidValue;
+import org.jsmiparser.smi.SmiProtocolType;
 import org.jsmiparser.smi.SmiRange;
 import org.jsmiparser.smi.SmiRow;
 import org.jsmiparser.smi.SmiSymbol;
@@ -36,6 +37,7 @@ import org.jsmiparser.smi.SmiTable;
 import org.jsmiparser.smi.SmiTextualConvention;
 import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.SmiValue;
+import org.jsmiparser.smi.StatusV2;
 import org.jsmiparser.util.location.Location;
 import org.jsmiparser.util.symbol.IdSymbolImpl;
 import org.jsmiparser.util.token.BigIntegerToken;
@@ -236,6 +238,21 @@ public class ModuleParser extends IdSymbolImpl {
         return null;
     }
 
+    public String getCStr(Token t) {
+        String text = t.getText();
+        if (!(text.startsWith("\"") && text.endsWith("\""))) {
+            throw new IllegalArgumentException(t.getText());
+        }
+        return text.substring(1, text.length()-1);
+    }
+
+    public String getOptCStr(Token t) {
+        if (t != null) {
+            return getCStr(t);
+        }
+        return null;
+    }
+
     public IntegerToken intt(Token t) {
         int value = Integer.parseInt(t.getText());
         return new IntegerToken(makeLocation(t), value);
@@ -344,12 +361,20 @@ public class ModuleParser extends IdSymbolImpl {
         return result;
     }
 
-    public SmiTextualConvention createTextualConvention(IdToken idToken) {
-        return new SmiTextualConvention(idToken, m_module);
+    public SmiTextualConvention createTextualConvention(IdToken idToken, Token displayHint, StatusV2 status, Token description, Token reference, SmiType type) {
+        SmiTextualConvention result = new SmiTextualConvention(idToken, m_module, getOptCStr(displayHint), status, getCStr(description), getOptCStr(reference));
+
+        result.setBaseType(type);
+        result.setPrimitiveType(type.getPrimitiveType());
+        result.setRangeConstraint(type.getRangeConstraint());
+        result.setSizeConstraint(type.getSizeConstraint());
+        result.setPrimitiveType(type.getPrimitiveType());
+
+        return result;
     }
 
-    public SmiType createSequenceType() {
-        return new SmiType(null, m_module);
+    public SmiType createSequenceType(IdToken idToken) {
+        return new SmiType(idToken, m_module);
     }
 
     public SmiType getDefinedType(Token moduleToken, Token typeToken) {
@@ -360,10 +385,33 @@ public class ModuleParser extends IdSymbolImpl {
         return mp.useType(idt(typeToken));
     }
 
+/*
     public SmiType createType(SmiType baseType) {
         SmiType result = new SmiType(null, m_module);
         result.setBaseType(baseType);
         return result;
+    }
+*/
+
+    public SmiType createType(IdToken idToken, SmiType baseType) {
+        SmiType result;
+       /* if (baseType == null) {
+            result = new SmiType(idToken, m_module);
+        } else */
+        if (baseType == null) {
+            throw new IllegalArgumentException();
+        }
+        if (idToken == null) {
+            result = baseType;
+        } else {
+            result = new SmiType(idToken, m_module);
+            result.setBaseType(baseType);
+        }
+        return result;
+    }
+
+    public SmiProtocolType createProtocolType(IdToken idToken) {
+        return new SmiProtocolType(idToken, m_module);
     }
 
     public SmiAttribute useColumn(Token idToken) {

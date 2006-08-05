@@ -30,10 +30,30 @@ public class SmiSymbol {
 
     public SmiSymbol(IdToken idToken, SmiModule module) {
         super();
+
+/* TODO
+        if (idToken == null) {
+            throw new IllegalArgumentException();
+        }
+*/
+
+        if (module == null) {
+            throw new IllegalArgumentException();
+        }
+
         m_idToken = idToken;
         m_module = module;
     }
 
+    public SmiSymbol(SmiModule module) {
+        super();
+
+        if (module == null) {
+            throw new IllegalArgumentException();
+        }
+
+        m_module = module;
+    }
 
     public String getId() {
         return m_idToken != null ? m_idToken.getId() : null;
@@ -76,4 +96,31 @@ public class SmiSymbol {
         m_users.add(idToken);
     }
 
+    @Override
+    public String toString() {
+        return m_module.getId() + ": " + getId();
+    }
+
+    @Override
+    public int hashCode() {
+        if (m_idToken != null) {
+            return m_idToken.getId().hashCode();
+        }
+        return super.hashCode();
+    }
+
+    /**
+     * @param obj
+     * @return equality by SmiSymbol identifier and SmiModule
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (m_idToken != null) {
+            if (obj instanceof SmiSymbol) {
+                SmiSymbol other = (SmiSymbol) obj;
+                return this.m_module.equals(other.m_module) && other.getId().equals(this.getId());
+            }
+        }
+        return super.equals(obj);
+    }
 }
