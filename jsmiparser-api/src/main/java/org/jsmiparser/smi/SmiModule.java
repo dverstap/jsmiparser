@@ -200,4 +200,9 @@ public class SmiModule extends SmiSymbolContainer {
         }
     }
 
+    public void addSymbol(SmiSymbol symbol) {
+        m_symbols.add(symbol);
+        m_symbolMap.put(symbol.getId(), symbol);
+    }
+    
 }

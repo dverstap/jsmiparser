@@ -24,6 +24,7 @@ import org.jsmiparser.phase.file.antlr.SMIParser;
 import org.jsmiparser.phase.lexer.LexerModule;
 import org.jsmiparser.phase.oid.OidNode;
 import org.jsmiparser.smi.SmiAttribute;
+import org.jsmiparser.smi.SmiConstants;
 import org.jsmiparser.smi.SmiImports;
 import org.jsmiparser.smi.SmiMacro;
 import org.jsmiparser.smi.SmiModule;
@@ -47,7 +48,10 @@ import org.jsmiparser.util.token.IdToken;
 import org.jsmiparser.util.token.IntegerToken;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ModuleParser extends IdSymbolImpl {
 
@@ -182,6 +186,7 @@ public class ModuleParser extends IdSymbolImpl {
         } finally {
             m_state = State.PARSED;
             m_lexerModule.clear(); // release memory early
+            m_log.debug("Finished parsing :" + m_lexerModule.getSource());
         }
     }
 
@@ -243,7 +248,7 @@ public class ModuleParser extends IdSymbolImpl {
         if (!(text.startsWith("\"") && text.endsWith("\""))) {
             throw new IllegalArgumentException(t.getText());
         }
-        return text.substring(1, text.length()-1);
+        return text.substring(1, text.length() - 1);
     }
 
     public String getOptCStr(Token t) {
@@ -275,11 +280,19 @@ public class ModuleParser extends IdSymbolImpl {
 
         // TODO check module imported twice
 
+        Set<String> macroNames = new HashSet<String>(Arrays.asList(SmiConstants.MACRO_NAMES));
+
         ModuleParser importedModuleParser = getParserPhase().use(moduleToken);
+        // TODO this isn't true when there are cyclic deps: assert(importedModuleParser.getState() == State.PARSED);
         SmiImports result = new SmiImports(m_module, moduleToken, importedModuleParser.getModule());
         for (IdToken idToken : importedTokenList) {
-            SmiSymbol symbol = importedModuleParser.use(idToken);
-
+            //SmiSymbol symbol = importedModuleParser.use(idToken);
+            SmiSymbol symbol = importedModuleParser.getModule().findSymbol(idToken.getId());
+            if (symbol == null) {
+                if (!macroNames.contains(idToken.getId())) {
+                    System.out.println("couldn't resolve " + idToken + " from " + importedModuleParser.getModule().getId());
+                }
+            }
             // TODO check duplicate
             result.addSymbol(idToken, symbol);
         }
@@ -378,6 +391,8 @@ public class ModuleParser extends IdSymbolImpl {
     }
 
     public SmiType getDefinedType(Token moduleToken, Token typeToken) {
+        SmiType result = m_module.findType(typeToken.getText());
+
         ModuleParser mp = this;
         if (moduleToken != null) {
             mp = getParserPhase().use(idt(moduleToken));
@@ -395,9 +410,9 @@ public class ModuleParser extends IdSymbolImpl {
 
     public SmiType createType(IdToken idToken, SmiType baseType) {
         SmiType result;
-       /* if (baseType == null) {
-            result = new SmiType(idToken, m_module);
-        } else */
+        /* if (baseType == null) {
+          result = new SmiType(idToken, m_module);
+      } else */
         if (baseType == null) {
             throw new IllegalArgumentException();
         }
@@ -453,7 +468,7 @@ public class ModuleParser extends IdSymbolImpl {
 
     public void addSymbol(SmiSymbol symbol) {
         if (symbol != null) {
-            m_module.getSymbols().add(symbol);
+            m_module.addSymbol(symbol);
         }
     }
 

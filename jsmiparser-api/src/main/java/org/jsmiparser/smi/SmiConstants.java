@@ -37,6 +37,20 @@ public class SmiConstants {
     public static final SmiType COUNTER_64_TYPE = newType("Counter64");
     public static final SmiType TIME_TICKS_TYPE = newType("TimeTicks");
 
+    public static final String[] MACRO_NAMES = {
+            "AGENT-CAPABILITIES",
+            "MODULE-COMPLIANCE",
+            "MODULE-IDENTITY",
+            "NOTIFICATION-GROUP",
+            "NOTIFICATION-TYPE",
+            "OBJECT-GROUP",
+            "OBJECT-IDENTITY",
+            "OBJECT-TYPE",
+            "TEXTUAL-CONVENTION",
+            "TRAP-TYPE"
+//            ""
+    };
+
     private static SmiType newType(String id) {
         return new SmiType(new IdToken(new Location("JSMIPARSER_HARDCODED_MIB"), id), JSMIPARSER_HARDCODED_MODULE);
     }

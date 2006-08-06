@@ -169,6 +169,13 @@ public class IFParseTest extends TestCase {
         assertNotNull(ifEntry);
         assertEquals("1.3.6.1.2.1.2.2.1", ifEntry.getOid());
 
+        SmiAttribute ifIndex = mib.findAttribute("ifIndex");
+        assertNotNull(ifIndex);
+        assertEquals("1.3.6.1.2.1.2.2.1.1", ifIndex.getOid());
+// TODO
+//        assertEquals(SmiTextualConvention.class, ifIndex.getType().getClass());
+//        assertSame(interfaceIndex, ifIndex.getType());
+
         SmiAttribute ifAdminStatus = mib.findAttribute("ifAdminStatus");
         assertNotNull(ifAdminStatus);
         assertEquals("1.3.6.1.2.1.2.2.1.7", ifAdminStatus.getOid());
