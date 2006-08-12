@@ -30,7 +30,7 @@ public interface SmiCodeNamingStrategy {
 
 	String getAttributeId(SmiAttribute attribute);
 
-	String getEnumValueId(SmiEnumValue value);
+	String getEnumValueId(SmiNamedNumber value);
 
 	String getClassId(SmiClass cl);
 

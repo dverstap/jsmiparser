@@ -143,7 +143,7 @@ public class SmiJavaCodeNamingStrategy implements SmiCodeNamingStrategy {
 		return attribute.getId();
 	}
 
-	public String getEnumValueId(SmiEnumValue ev) {
+	public String getEnumValueId(SmiNamedNumber ev) {
 		return makeConstant(ev.getId());
 	}
 

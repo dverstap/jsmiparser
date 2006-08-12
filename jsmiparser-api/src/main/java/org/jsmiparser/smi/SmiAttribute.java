@@ -55,8 +55,4 @@ public class SmiAttribute extends SmiObjectType {
 		return getModule().getMib().getCodeNamingStrategy().getSetterMethodId(this);
 	}
 
-
-
-
-	
 }

@@ -28,8 +28,10 @@ import org.jsmiparser.smi.SmiConstants;
 import org.jsmiparser.smi.SmiImports;
 import org.jsmiparser.smi.SmiMacro;
 import org.jsmiparser.smi.SmiModule;
+import org.jsmiparser.smi.SmiNamedNumber;
 import org.jsmiparser.smi.SmiOidMacro;
 import org.jsmiparser.smi.SmiOidValue;
+import org.jsmiparser.smi.SmiPrimitiveType;
 import org.jsmiparser.smi.SmiProtocolType;
 import org.jsmiparser.smi.SmiRange;
 import org.jsmiparser.smi.SmiRow;
@@ -39,6 +41,7 @@ import org.jsmiparser.smi.SmiTextualConvention;
 import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.SmiValue;
 import org.jsmiparser.smi.StatusV2;
+import org.jsmiparser.smi.SmiReferencedType;
 import org.jsmiparser.util.location.Location;
 import org.jsmiparser.util.symbol.IdSymbolImpl;
 import org.jsmiparser.util.token.BigIntegerToken;
@@ -56,6 +59,7 @@ import java.util.Set;
 public class ModuleParser extends IdSymbolImpl {
 
     private static final Logger m_log = Logger.getLogger(ModuleParser.class);
+
 
     enum State {
         UNPARSED,
@@ -377,10 +381,12 @@ public class ModuleParser extends IdSymbolImpl {
     public SmiTextualConvention createTextualConvention(IdToken idToken, Token displayHint, StatusV2 status, Token description, Token reference, SmiType type) {
         SmiTextualConvention result = new SmiTextualConvention(idToken, m_module, getOptCStr(displayHint), status, getCStr(description), getOptCStr(reference));
 
-        result.setBaseType(type);
+        result.setBaseType(type.getBaseType());
         result.setPrimitiveType(type.getPrimitiveType());
-        result.setRangeConstraint(type.getRangeConstraint());
-        result.setSizeConstraint(type.getSizeConstraint());
+        result.setEnumValues(type.getEnumValues());
+        result.setBitFields(type.getBitFields());
+        result.setRangeConstraints(type.getRangeConstraints());
+        result.setSizeConstraints(type.getSizeConstraints());
         result.setPrimitiveType(type.getPrimitiveType());
 
         return result;
@@ -424,6 +430,81 @@ public class ModuleParser extends IdSymbolImpl {
         }
         return result;
     }
+
+    // TODO investigate idea: instead of using the hardcoded SmiConstants here, use SmiReferencedType for everything,
+    // and resolve references to INTEGER, BITS, ... during the XRef phase
+    public SmiType createIntegerType(IdToken idToken, IdToken intToken, List<SmiNamedNumber> namedNumbers, List<SmiRange> rangeConstraints) {
+        if (idToken == null && intToken.getId().equals("INTEGER") && namedNumbers == null && rangeConstraints == null) {
+            return SmiConstants.INTEGER_TYPE;
+        } else {
+            SmiType type = new SmiType(idToken, m_module);
+            // TODO based on intToken type.setPrimitiveType(SmiPrimitiveType.BITS);
+            if (intToken.getId().equals("INTEGER")) {
+                type.setBaseType(SmiConstants.INTEGER_TYPE);
+            } else {
+                type.setBaseType(new SmiReferencedType(intToken, m_module));
+            }
+            type.setEnumValues(namedNumbers);
+            type.setRangeConstraints(rangeConstraints);
+            return type;
+        }
+
+
+
+/*
+        if (idToken != null || namedNumbers != null || rangeConstraints != null) {
+            SmiType type = new SmiType(idToken, m_module);
+            // TODO based on intToken type.setPrimitiveType(SmiPrimitiveType.BITS);
+            if (intToken.getId().equals("INTEGER")) {
+                type.setBaseType(SmiConstants.INTEGER_TYPE);
+            } else {
+                type.setBaseType(new SmiReferencedType(intToken, m_module));
+            }
+            type.setEnumValues(namedNumbers);
+            type.setRangeConstraints(rangeConstraints);
+            return type;
+        }
+        return SmiConstants.INTEGER_TYPE;
+*/
+    }
+
+    public SmiType createBitsType(IdToken idToken, List<SmiNamedNumber> namedNumbers) {
+        if (idToken != null || namedNumbers != null) {
+            SmiType type = new SmiType(idToken, m_module);
+            type.setPrimitiveType(SmiPrimitiveType.BITS);
+            type.setBaseType(SmiConstants.BITS_TYPE);
+            type.setBitFields(namedNumbers);
+            return type;
+        }
+        return SmiConstants.BITS_TYPE;
+    }
+
+    public SmiType createOctetStringType(IdToken idToken, List<SmiRange> sizeConstraints) {
+        if (idToken != null || sizeConstraints != null) {
+            SmiType type = new SmiType(idToken, m_module);
+            type.setPrimitiveType(SmiPrimitiveType.OCTET_STRING);
+            type.setBaseType(SmiConstants.OCTET_STRING_TYPE);
+            type.setSizeConstraints(sizeConstraints);
+            return type;
+        }
+        return SmiConstants.OCTET_STRING_TYPE;
+
+    }
+
+    public SmiType createDefinedType(Token moduleToken, Token idToken,
+                                     List<SmiNamedNumber> namedNumbers,
+                                     List<SmiRange> sizeConstraints,
+                                     List<SmiRange> rangeConstraints) {
+        SmiReferencedType type = new SmiReferencedType(idt(idToken), m_module);
+        if (moduleToken != null) {
+            type.setReferencedModuleToken(idt(moduleToken));
+        }
+        type.setNamedNumbers(namedNumbers);
+        type.setSizeConstraints(sizeConstraints);
+        type.setRangeConstraints(rangeConstraints);
+        return type;
+    }
+
 
     public SmiProtocolType createProtocolType(IdToken idToken) {
         return new SmiProtocolType(idToken, m_module);

@@ -26,12 +26,15 @@ import org.jsmiparser.smi.SmiRow;
 import org.jsmiparser.smi.SmiAttribute;
 import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.SmiTextualConvention;
+import org.jsmiparser.smi.SmiPrimitiveType;
+import org.jsmiparser.smi.SmiRange;
 import org.jsmiparser.util.problem.DefaultProblemEventHandler;
 import org.jsmiparser.util.problem.ProblemEventHandler;
 
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
 
 public class SmiDefaultParserTest extends TestCase {
 
@@ -61,6 +64,25 @@ public class SmiDefaultParserTest extends TestCase {
         assertEquals(0, mib.getScalars().size());
         assertEquals(0, mib.getColumns().size());
 
+        checkBridgeMib(mib);
+        checkIfMib(mib);
+
+        //SmiMib mib2 = parser.parse();
+        //assertEquals(mib1, mib2);
+
+        /*
+        int errorCount = problemEventHandler.getSeverityCount(ProblemSeverity.ERROR);
+
+        MibMerger mibMerger = new MibMerger(problemReporterFactory);
+        SmiMib mib3 = mibMerger.merge(mib1, mib2);
+        assertEquals(errorCount, problemEventHandler.getErrorCount());
+        */
+
+    }
+
+
+    private void checkIfMib(SmiMib mib) {
+
         SmiType interfaceIndex = mib.findType("InterfaceIndex");
         assertNotNull(interfaceIndex);
         assertEquals("InterfaceIndex", interfaceIndex.getId());
@@ -68,8 +90,8 @@ public class SmiDefaultParserTest extends TestCase {
         String source = interfaceIndex.getModule().getIdToken().getLocation().getSource();
         assertTrue(source.contains("IF-MIB"));
         assertEquals(SmiTextualConvention.class, interfaceIndex.getClass());
-        assertNotNull(interfaceIndex.getRangeConstraint());
-        assertEquals(1, interfaceIndex.getRangeConstraint().size());
+        assertNotNull(interfaceIndex.getRangeConstraints());
+        assertEquals(1, interfaceIndex.getRangeConstraints().size());
 
         SmiTable ifTable = mib.findTable("ifTable");
         assertNotNull(ifTable);
@@ -84,23 +106,41 @@ public class SmiDefaultParserTest extends TestCase {
         assertEquals("1.3.6.1.2.1.2.2.1.7", ifAdminStatus.getOid());
 
         /*
-        SmiType ifIndexType = mib.findType("InterfaceIndex");
-        assertNotNull(ifIndexType);
-        assertEquals(79, ifIndexType.getLocation().getLine());
-        assertEquals(1, ifIndexType.getLocation().getColumn());
-        //TODO assertEquals(SmiVarBindField.INTEGER_VALUE, ifIndexType.getVarBindField());
-    */
+            SmiType ifIndexType = mib.findType("InterfaceIndex");
+            assertNotNull(ifIndexType);
+            assertEquals(79, ifIndexType.getLocation().getLine());
+            assertEquals(1, ifIndexType.getLocation().getColumn());
+            //TODO assertEquals(SmiVarBindField.INTEGER_VALUE, ifIndexType.getVarBindField());
+        */}
 
-        //SmiMib mib2 = parser.parse();
-        //assertEquals(mib1, mib2);
+    private void checkBridgeMib(SmiMib mib) {
+        SmiType integer32 = mib.findType("Integer32");
+        assertNotNull(integer32);
+        assertEquals(SmiPrimitiveType.INTEGER_32, integer32.getPrimitiveType());
+        assertEquals(1, integer32.getRangeConstraints().size());
+        assertEquals(-2147483648, integer32.getRangeConstraints().get(0).getMinValue().intValue());
+        assertEquals(2147483647, integer32.getRangeConstraints().get(0).getMaxValue().intValue());
+        assertNull(integer32.getSizeConstraints());
+        assertNull(integer32.getEnumValues());
+        assertNull(integer32.getBitFields());
+        assertNull(integer32.getFields());
 
-        /*
-        int errorCount = problemEventHandler.getSeverityCount(ProblemSeverity.ERROR);
+        SmiModule bridgeMib = mib.findModule("BRIDGE-MIB");
+        assertNotNull(bridgeMib);
 
-        MibMerger mibMerger = new MibMerger(problemReporterFactory);
-        SmiMib mib3 = mibMerger.merge(mib1, mib2);
-        assertEquals(errorCount, problemEventHandler.getErrorCount());
-        */
+        SmiTextualConvention timeout = mib.findTextualConvention("Timeout");
+        assertNotNull(timeout);
+        assertEquals(integer32, timeout.getBaseType());
+        assertEquals(SmiPrimitiveType.INTEGER_32, timeout.getPrimitiveType());
+
+        SmiAttribute dot1dStpBridgeMaxAge = mib.findAttribute("dot1dStpBridgeMaxAge");
+        assertNotNull(dot1dStpBridgeMaxAge);
+        assertEquals(integer32, dot1dStpBridgeMaxAge.getType().getBaseType());
+        assertEquals(SmiPrimitiveType.INTEGER_32, dot1dStpBridgeMaxAge.getType().getPrimitiveType());
+        List<SmiRange> dot1dStpBridgeMaxAgeRangeConstraints = dot1dStpBridgeMaxAge.getType().getRangeConstraints();
+        assertEquals(1, dot1dStpBridgeMaxAgeRangeConstraints.size());
+        assertEquals(600, dot1dStpBridgeMaxAgeRangeConstraints.get(0).getMinValue().intValue());
+        assertEquals(4000, dot1dStpBridgeMaxAgeRangeConstraints.get(0).getMaxValue().intValue());
 
     }
 

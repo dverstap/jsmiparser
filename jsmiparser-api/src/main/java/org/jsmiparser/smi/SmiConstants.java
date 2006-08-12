@@ -25,17 +25,18 @@ public class SmiConstants {
     public static final SmiMib JSMIPARSER_HARDCODED_MIB = new SmiMib(null);
     public static final SmiModule JSMIPARSER_HARDCODED_MODULE = new SmiModule(JSMIPARSER_HARDCODED_MIB, new IdToken(null, "JSMIPARSER_HARDCODED_MIB"));
 
-    public static final SmiType OBJECT_IDENTIFIER_TYPE = newType("OBJECT IDENTIFIER");
-    public static final SmiType OCTET_STRING_TYPE = newType("OCTET STRING");
-    public static final SmiType BITS_TYPE = newType("BITS");
-    public static final SmiType INTEGER_TYPE = newType("INTEGER");
-    public static final SmiType INTEGER_32_TYPE = newType("Integer32");
-    public static final SmiType COUNTER_TYPE = newType("Counter");
-    public static final SmiType COUNTER_32_TYPE = newType("Counter32");
-    public static final SmiType GAUGE_TYPE = newType("Gauge");
-    public static final SmiType GAUGE_32_TYPE = newType("Gauge32");
-    public static final SmiType COUNTER_64_TYPE = newType("Counter64");
-    public static final SmiType TIME_TICKS_TYPE = newType("TimeTicks");
+    public static final SmiType OBJECT_IDENTIFIER_TYPE = newType("OBJECT IDENTIFIER", SmiPrimitiveType.OBJECT_IDENTIFIER);
+    public static final SmiType OCTET_STRING_TYPE = newType("OCTET STRING", SmiPrimitiveType.OCTET_STRING);
+    public static final SmiType BITS_TYPE = newType("BITS", SmiPrimitiveType.BITS);
+    public static final SmiType INTEGER_TYPE = newType("INTEGER", SmiPrimitiveType.INTEGER);
+
+//    public static final SmiType INTEGER_32_TYPE = newType("Integer32");
+//    public static final SmiType COUNTER_TYPE = newType("Counter");
+//    public static final SmiType COUNTER_32_TYPE = newType("Counter32");
+//    public static final SmiType GAUGE_TYPE = newType("Gauge");
+//    public static final SmiType GAUGE_32_TYPE = newType("Gauge32");
+//    public static final SmiType COUNTER_64_TYPE = newType("Counter64");
+//    public static final SmiType TIME_TICKS_TYPE = newType("TimeTicks");
 
     public static final String[] MACRO_NAMES = {
             "AGENT-CAPABILITIES",
@@ -51,8 +52,10 @@ public class SmiConstants {
 //            ""
     };
 
-    private static SmiType newType(String id) {
-        return new SmiType(new IdToken(new Location("JSMIPARSER_HARDCODED_MIB"), id), JSMIPARSER_HARDCODED_MODULE);
+    private static SmiType newType(String id, SmiPrimitiveType primitiveType) {
+        SmiType type = new SmiType(new IdToken(new Location("JSMIPARSER_HARDCODED_MIB"), id), JSMIPARSER_HARDCODED_MODULE);
+        type.setPrimitiveType(primitiveType);
+        return type;
     }
     
 }

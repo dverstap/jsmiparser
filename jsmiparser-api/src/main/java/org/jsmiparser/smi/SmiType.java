@@ -15,7 +15,6 @@
  */
 package org.jsmiparser.smi;
 
-import org.jsmiparser.util.token.BigIntegerToken;
 import org.jsmiparser.util.token.IdToken;
 
 import java.util.ArrayList;
@@ -28,16 +27,25 @@ public class SmiType extends SmiSymbol {
 
     private SmiType m_baseType;
     private SmiPrimitiveType m_primitiveType;
-    private List<SmiEnumValue> m_enumValues = new ArrayList<SmiEnumValue>();
-    private List<SmiRange> m_rangeConstraint;
-    private List<SmiRange> m_sizeConstraint;
+    private List<SmiNamedNumber> m_enumValues;
+    private List<SmiNamedNumber> m_bitFields;
+    private List<SmiRange> m_rangeConstraints;
+    private List<SmiRange> m_sizeConstraints;
     private List<SmiField> m_fields;
     private SmiType m_elementType;
 
     public SmiType(IdToken idToken, SmiModule module) {
         super(idToken, module);
+
+        if (idToken != null && idToken.getId().equals("Integer32")) {
+            m_primitiveType = SmiPrimitiveType.INTEGER_32;
+        }
     }
 
+    /**
+     * The base type from which this type is derived (by giving it named numbers, constraints, a name...).
+     * All types have a base type, except INTEGER, OCTET STRING, OBJECT IDENTIFIER and BITS. // TODO unit test this
+     */
     public SmiType getBaseType() {
         return m_baseType;
     }
@@ -47,9 +55,26 @@ public class SmiType extends SmiSymbol {
     }
 
     public SmiPrimitiveType getPrimitiveType() {
-        if (!m_enumValues.isEmpty()) {
+        if (m_enumValues != null) {
             return SmiPrimitiveType.ENUM;
         }
+        if (m_bitFields != null) {
+            return SmiPrimitiveType.BITS;
+        }
+/*
+        if (m_baseType != null) {
+            if (m_primitiveType != null) {
+                if (m_primitiveType != m_baseType.getPrimitiveType()) {
+                    throw new IllegalStateException();
+                }
+            }
+            return m_baseType.getPrimitiveType();
+        }
+*/
+        if (m_primitiveType == null && m_baseType != null) {
+            return m_baseType.getPrimitiveType();
+        }
+
         return m_primitiveType;
     }
 
@@ -62,24 +87,42 @@ public class SmiType extends SmiSymbol {
         return m_primitiveType.getVarBindField();
     }
 
-    public List<SmiEnumValue> getEnumValues() {
+    public List<SmiNamedNumber> getEnumValues() {
         return m_enumValues;
+    }
+
+    public void setEnumValues(List<SmiNamedNumber> enumValues) {
+        if (enumValues != null) {
+            setType(enumValues);
+        }
+        m_enumValues = enumValues;
+    }
+
+    private void setType(List<SmiNamedNumber> enumValues) {
+        for (SmiNamedNumber namedNumber : enumValues) {
+            namedNumber.setType(this);
+        }
+    }
+
+    public List<SmiNamedNumber> getBitFields() {
+        return m_bitFields;
+    }
+
+    public void setBitFields(List<SmiNamedNumber> bitFields) {
+        if (bitFields != null) {
+            setType(bitFields);
+        }
+        m_bitFields = bitFields;
     }
 
     public String getCodeId() {
         return getModule().getMib().getCodeNamingStrategy().getTypeId(this);
     }
 
-    public SmiEnumValue addEnumValue(IdToken idToken, BigIntegerToken valueToken) {
-        SmiEnumValue ev = new SmiEnumValue(this, idToken, valueToken);
-        m_enumValues.add(ev);
-        return ev;
-    }
-
-    public SmiEnumValue getBiggestEnumValue() {
+    public SmiNamedNumber getBiggestEnumValue() {
         int currentBiggest = Integer.MIN_VALUE;
-        SmiEnumValue result = null;
-        for (SmiEnumValue ev : m_enumValues) {
+        SmiNamedNumber result = null;
+        for (SmiNamedNumber ev : m_enumValues) {
             if (ev.getValue().intValue() > currentBiggest) {
                 currentBiggest = ev.getValue().intValue();
                 result = ev;
@@ -88,11 +131,11 @@ public class SmiType extends SmiSymbol {
         return result;
     }
 
-    public SmiEnumValue getSmallestEnumValue() {
+    public SmiNamedNumber getSmallestEnumValue() {
         int currentSmallest = Integer.MAX_VALUE;
-        SmiEnumValue result = null;
+        SmiNamedNumber result = null;
 
-        for (SmiEnumValue ev : m_enumValues) {
+        for (SmiNamedNumber ev : m_enumValues) {
             if (ev.getValue().intValue() < currentSmallest) {
                 currentSmallest = ev.getValue().intValue();
                 result = ev;
@@ -101,8 +144,8 @@ public class SmiType extends SmiSymbol {
         return result;
     }
 
-    public SmiEnumValue findEnumValue(int i) {
-        for (SmiEnumValue ev : m_enumValues) {
+    public SmiNamedNumber findEnumValue(int i) {
+        for (SmiNamedNumber ev : m_enumValues) {
             if (ev.getValue().intValue() == i) {
                 return ev;
             }
@@ -110,8 +153,8 @@ public class SmiType extends SmiSymbol {
         return null;
     }
 
-    public SmiEnumValue findEnumValue(String id) {
-        for (SmiEnumValue ev : m_enumValues) {
+    public SmiNamedNumber findEnumValue(String id) {
+        for (SmiNamedNumber ev : m_enumValues) {
             if (ev.getId().equals(id)) {
                 return ev;
             }
@@ -119,20 +162,20 @@ public class SmiType extends SmiSymbol {
         return null;
     }
 
-    public List<SmiRange> getRangeConstraint() {
-        return m_rangeConstraint;
+    public List<SmiRange> getRangeConstraints() {
+        return m_rangeConstraints;
     }
 
-    public void setRangeConstraint(List<SmiRange> rangeConstraint) {
-        m_rangeConstraint = rangeConstraint;
+    public void setRangeConstraints(List<SmiRange> rangeConstraints) {
+        m_rangeConstraints = rangeConstraints;
     }
 
-    public List<SmiRange> getSizeConstraint() {
-        return m_sizeConstraint;
+    public List<SmiRange> getSizeConstraints() {
+        return m_sizeConstraints;
     }
 
-    public void setSizeConstraint(List<SmiRange> sizeConstraint) {
-        m_sizeConstraint = sizeConstraint;
+    public void setSizeConstraints(List<SmiRange> sizeConstraints) {
+        m_sizeConstraints = sizeConstraints;
     }
 
     public void addField(SmiAttribute col, SmiType fieldType) {
@@ -155,5 +198,16 @@ public class SmiType extends SmiSymbol {
         m_elementType = elementType;
     }
 
-    
+
+    public SmiType resolveThis() {
+        if (m_baseType != null) {
+            m_baseType = m_baseType.resolveThis();
+        }
+        return this;
+    }
+
+    public void resolveReferences() {
+        resolveThis();
+    }
+
 }

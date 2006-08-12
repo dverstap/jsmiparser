@@ -21,6 +21,8 @@ import org.jsmiparser.util.problem.ProblemReporterFactory;
 import org.jsmiparser.smi.SmiMib;
 import org.jsmiparser.smi.SmiTable;
 import org.jsmiparser.smi.SmiModule;
+import org.jsmiparser.smi.SmiAttribute;
+import org.jsmiparser.smi.SmiType;
 
 public class XRefPhase implements Phase {
 
@@ -42,6 +44,18 @@ public class XRefPhase implements Phase {
         }
 
         mib.fillTables();
+
+        for (SmiModule module : mib.getModules()) {
+            for (SmiType type : module.getTypes()) {
+                type.resolveReferences();
+            }
+        }
+
+        for (SmiModule module : mib.getModules()) {
+            for (SmiAttribute attribute : module.getAttributes()) {
+                attribute.resolveReferences();
+            }
+        }
 
         // TODO
         return mib;

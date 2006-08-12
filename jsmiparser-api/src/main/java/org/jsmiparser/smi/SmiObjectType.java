@@ -20,8 +20,8 @@ import org.jsmiparser.util.token.IdToken;
 
 public class SmiObjectType extends SmiOidMacro {
 
-    protected SmiType type_;
-    private SmiPrimitiveType primitiveType_;
+    protected SmiType m_type;
+    private SmiPrimitiveType m_primitiveType;
 
     public SmiObjectType(IdToken idToken, SmiModule module) {
         super(idToken, module);
@@ -29,23 +29,27 @@ public class SmiObjectType extends SmiOidMacro {
 
 
     public SmiPrimitiveType getPrimitiveType() {
-		if (type_ != null) {
-			return type_.getPrimitiveType();
+		if (m_type != null) {
+			return m_type.getPrimitiveType();
 		}
 		else {
-			return primitiveType_;
+			return m_primitiveType;
 		}
 	}
 
     public void setPrimitiveType(SmiPrimitiveType primitiveType) {
-		primitiveType_ = primitiveType;
+		m_primitiveType = primitiveType;
 	}
 
     public SmiType getType() {
-		return type_;
+		return m_type;
 	}
 
     public void setType(SmiType type) {
-		type_ = type;
+		m_type = type;
 	}
+
+    public void resolveReferences() {
+        m_type = m_type.resolveThis();
+    }
 }

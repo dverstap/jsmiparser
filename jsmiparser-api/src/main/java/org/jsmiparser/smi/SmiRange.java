@@ -17,7 +17,10 @@
 package org.jsmiparser.smi;
 
 import org.jsmiparser.util.token.Token;
+import org.jsmiparser.util.token.BigIntegerToken;
 import org.jsmiparser.util.location.Location;
+
+import java.math.BigInteger;
 
 /**
  * TODO the whole range specification stuff is pretty bad.
@@ -61,6 +64,14 @@ public class SmiRange {
         } else {
             return m_beginToken.getLocation();
         }
+    }
+
+    public BigInteger getMinValue() {
+        return ((BigIntegerToken) m_beginToken).getValue();
+    }
+
+    public BigInteger getMaxValue() {
+        return ((BigIntegerToken) m_endToken).getValue();
     }
 
 }

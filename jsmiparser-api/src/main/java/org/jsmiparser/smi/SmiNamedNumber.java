@@ -21,15 +21,18 @@ import org.jsmiparser.util.token.IdToken;
 
 import java.math.BigInteger;
 
-public class SmiEnumValue {
+/**
+ * Used to represent enum values and bit fields.
+ */
+public class SmiNamedNumber {
 
 	private SmiType m_type;
 	private IdToken m_idToken;
 	private BigIntegerToken m_valueToken;
-	
-	public SmiEnumValue(SmiType type, IdToken id, BigIntegerToken value) {
+
+    public SmiNamedNumber(IdToken id, BigIntegerToken value) {
 		super();
-		m_type = type;
+//		m_type = type;
 		m_idToken = id;
 		m_valueToken = value;
 	}
@@ -52,6 +55,10 @@ public class SmiEnumValue {
 
     public SmiType getType() {
         return m_type;
+    }
+
+    public void setType(SmiType type) {
+        m_type = type;
     }
 
     public IdToken getIdToken() {

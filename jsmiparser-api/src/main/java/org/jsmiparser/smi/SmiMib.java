@@ -95,4 +95,12 @@ public class SmiMib extends SmiSymbolContainer {
             m_classMap.putAll(module.m_classMap);
         }
     }
+
+    public SmiTextualConvention findTextualConvention(String id) {
+        SmiType type = findType(id);
+        if (type instanceof SmiTextualConvention) {
+            return (SmiTextualConvention) type;
+        }
+        return null;
+    }
 }

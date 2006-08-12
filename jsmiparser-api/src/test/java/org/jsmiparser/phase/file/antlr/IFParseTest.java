@@ -34,8 +34,9 @@ import org.jsmiparser.smi.SmiTextualConvention;
 import org.jsmiparser.smi.SmiTable;
 import org.jsmiparser.smi.SmiRow;
 import org.jsmiparser.smi.SmiAttribute;
-import org.jsmiparser.smi.SmiConstants;
 import org.jsmiparser.smi.StatusV2;
+import org.jsmiparser.smi.SmiPrimitiveType;
+import org.jsmiparser.smi.SmiConstants;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
@@ -144,6 +145,9 @@ public class IFParseTest extends TestCase {
         //XStream xStream = new XStream();
         //xStream.toXML(mib, System.out);
 
+        SmiType integer32 = mib.findType("Integer32");
+        assertEquals("SNMPv2-SMI", integer32.getModule().getId());
+
         SmiTextualConvention interfaceIndex = (SmiTextualConvention) mib.findType("InterfaceIndex");
         assertNotNull(interfaceIndex);
         assertEquals("InterfaceIndex", interfaceIndex.getId());
@@ -151,10 +155,12 @@ public class IFParseTest extends TestCase {
         String source = interfaceIndex.getModule().getIdToken().getLocation().getSource();
         assertTrue(source.contains("IF-MIB"));
         assertEquals(SmiTextualConvention.class, interfaceIndex.getClass());
-        assertNotNull(interfaceIndex.getRangeConstraint());
-        assertEquals(1, interfaceIndex.getRangeConstraint().size());
-        assertSame(SmiConstants.INTEGER_32_TYPE, interfaceIndex.getBaseType());
-        assertNull(interfaceIndex.getBaseType().getBaseType());
+        assertNotNull(interfaceIndex.getRangeConstraints());
+        assertEquals(1, interfaceIndex.getRangeConstraints().size());
+        assertSame(integer32, interfaceIndex.getBaseType());
+        assertEquals(SmiPrimitiveType.INTEGER_32, interfaceIndex.getPrimitiveType());
+        assertEquals(SmiConstants.INTEGER_TYPE, interfaceIndex.getBaseType().getBaseType());
+        assertNull(interfaceIndex.getBaseType().getBaseType().getBaseType());
         assertEquals("d", interfaceIndex.getDisplayHint());
         assertEquals(StatusV2.CURRENT, interfaceIndex.getStatusV2());
         assertTrue(interfaceIndex.getDescription().startsWith("A unique value"));

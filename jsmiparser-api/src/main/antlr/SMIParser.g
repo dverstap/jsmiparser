@@ -398,17 +398,21 @@ macroName returns [IdToken result = null]
 
 
 assignment returns [SmiSymbol s = null]
+{
+    IdToken intToken = null;
+    SmiType type = null;
+}
 :
     (
 	u:UPPER ASSIGN_OP s=type_assignment[m_mp.idt(u)]
 	| l:LOWER s=value_assignment[m_mp.idt(l)]
 	| macroName "MACRO" ASSIGN_OP BEGIN_KW ( ~(END_KW) )* END_KW
-	| s=defined_integer_type_kw[null] ASSIGN_OP leaf_type[null]
+	| intToken=defined_integer_type_kw[null] ASSIGN_OP s=leaf_type[intToken]
 	)
 	{
-	    if (s != null) {
-	        m_mp.addSymbol(s);
-	    }
+	    //if (s != null) {
+	    m_mp.addSymbol(s);
+	    //}
 	}
 ;
 
@@ -434,11 +438,24 @@ leaf_type[IdToken idToken] returns [SmiType t = null]
 ;
 
 integer_type[IdToken idToken] returns [SmiType t = null]
+{
+    IdToken intToken; // TODO need to turn this into SmiPrimitiveTypeIdToken
+    List<SmiNamedNumber> namedNumbers = null;
+    List<SmiRange> rangeConstraints = null;
+}
 :
-	t=integer_type_kw[idToken]
-	(t=named_number_list[idToken, t] | t=range_constrained_type[idToken, t])?
+	intToken=integer_type_kw[idToken]
+	(namedNumbers=named_number_list | rangeConstraints=range_constraint)?
+	{
+	    // this ensures that if there are no modifiers, then a single constant SmiType object
+	    // will be returned
+	    if (t == null) {
+	        t = m_mp.createIntegerType(idToken, intToken, namedNumbers, rangeConstraints);
+	    }
+	}
 ;
 
+/*
 range_constrained_type[IdToken idToken, SmiType baseType] returns [SmiType t = null]
 {
 	List<SmiRange> rc = null;
@@ -450,25 +467,28 @@ range_constrained_type[IdToken idToken, SmiType baseType] returns [SmiType t = n
 	t.setRangeConstraint(rc);
 }
 ;
+*/
 
 // TODO should get these SmiType objects from the imports
-integer_type_kw[IdToken idToken] returns [SmiType t = null]
+// TODO should return SmiPrimitiveTypeIdToken here
+integer_type_kw[IdToken idToken] returns [IdToken t = null]
 :
-	INTEGER_KW	{ t = m_mp.createType(idToken, SmiConstants.INTEGER_TYPE); }
+	i:INTEGER_KW	{ t = m_mp.idt(i); }
 	| t=defined_integer_type_kw[idToken]
 ;
 
-defined_integer_type_kw[IdToken idToken] returns [SmiType t = null]
+defined_integer_type_kw[IdToken idToken] returns [IdToken t = null]
 :
-	"Integer32"	{ t = m_mp.createType(idToken, SmiConstants.INTEGER_32_TYPE); }
-	| "Counter"	{ t = m_mp.createType(idToken, SmiConstants.COUNTER_TYPE); }
-	| "Counter32"	{ t = m_mp.createType(idToken, SmiConstants.COUNTER_32_TYPE); }
-	| "Gauge"	{ t = m_mp.createType(idToken, SmiConstants.GAUGE_TYPE); }
-	| "Gauge32"	{ t = m_mp.createType(idToken, SmiConstants.GAUGE_32_TYPE); }
-	| "Counter64"	{ t = m_mp.createType(idToken, SmiConstants.COUNTER_64_TYPE); }
-	| "TimeTicks"	{ t = m_mp.createType(idToken, SmiConstants.TIME_TICKS_TYPE); }
+	i32:"Integer32"	  { return m_mp.idt(i32); }
+	| c:"Counter"	  { return m_mp.idt(c);   }
+	| c32:"Counter32" { return m_mp.idt(c32); }
+	| g:"Gauge"       { return m_mp.idt(g);   }
+	| g32:"Gauge32"   { return m_mp.idt(g32); }
+	| c64:"Counter64" { return m_mp.idt(c64); }
+	| tt:"TimeTicks"  { return m_mp.idt(tt);  }
 ;
 
+// TODO clear up duplication with integer_type_id
 integer_type_id returns [IdToken result = null]
 :
 (
@@ -493,12 +513,18 @@ oid_type[IdToken idToken] returns [SmiType t = null]
 }
 ;
 
-octet_string_type[IdToken idToken] returns [SmiType t = null]
+octet_string_type[IdToken idToken] returns [SmiType type = null]
+{
+    List<SmiRange> sizeConstraints = null;
+}
 :
-	OCTET_KW STRING_KW { t = m_mp.createType(idToken, SmiConstants.OCTET_STRING_TYPE); }
-	(t=size_constrained_type[idToken, t])?
+	OCTET_KW STRING_KW (sizeConstraints=size_constraint)?
+	{
+	    type = m_mp.createOctetStringType(idToken, sizeConstraints);
+	}
 ;
 
+/*
 size_constrained_type[IdToken idToken, SmiType baseType] returns [SmiType t = null]
 {
 	List<SmiRange> sc = null;
@@ -510,11 +536,17 @@ size_constrained_type[IdToken idToken, SmiType baseType] returns [SmiType t = nu
 	t.setSizeConstraint(sc);
 }
 ;
+*/
 
-bits_type[IdToken idToken] returns [SmiType t = null]
+bits_type[IdToken idToken] returns [SmiType type = null]
+{
+    List<SmiNamedNumber> namedNumbers = null;
+}
 :
-	"BITS" 			{ t = m_mp.createType(idToken, SmiConstants.BITS_TYPE); }
-	(t=named_number_list[idToken, t])?
+	"BITS" (namedNumbers=named_number_list)?
+	{
+        type = m_mp.createBitsType(idToken, namedNumbers);
+	}
 ;
 
 // only used for ObjectSyntax, SimpleSyntax and ApplicationSyntax
@@ -526,18 +558,27 @@ choice_type[IdToken idToken] returns [SmiProtocolType t = null]
     }
 ;
 
-defined_type[IdToken idToken] returns [SmiType t = null]
+defined_type[IdToken idToken] returns [SmiType type = null]
+{
+    List<SmiNamedNumber> namedNumbers = null;
+    List<SmiRange> sizeConstraints = null;
+    List<SmiRange> rangeConstraints = null;
+}
 :
-	(mt:UPPER DOT)? tt:UPPER 	{ t = m_mp.getDefinedType(mt, tt); }
-	(t=named_number_list[idToken, t] | t=constrained_type[idToken, t])?
+	(mt:UPPER DOT)? tt:UPPER 	{ type = m_mp.getDefinedType(mt, tt); }
+	(namedNumbers=named_number_list | sizeConstraints=size_constraint | rangeConstraints=range_constraint)?
+	{
+	    type = m_mp.createDefinedType(mt, tt, namedNumbers, sizeConstraints, rangeConstraints);
+	}
 ;
 
+/*
 constrained_type[IdToken idToken, SmiType baseType] returns [SmiType t = null]
 :
 	t = size_constrained_type[idToken, baseType]
 	| t = range_constrained_type[idToken, baseType]
 ;
-
+*/
 
 sequence_type[IdToken idToken] returns [SmiType t = null]
 :
@@ -569,31 +610,22 @@ sequenceof_type returns [SmiType t = null]
 }
 ;
 
-
-/* SMI v2: Sub-typing - defined in RFC 1902 section 7.1 and appendix C and RFC 1904 */
-/* not needed anymore
-constraint[SmiType baseType] returns [SmiType t = null]
+// for strings
+// TODO rename to size_constraints
+size_constraint returns [List<SmiRange> rc = null]
 :
-	t=range_constraint[baseType]
-	| t=size_constraint[baseType]
+	L_PAREN "SIZE"
+		rc=range_constraint
+	R_PAREN
 ;
-*/
-
 
 // for integers
+// TODO rename to range_constraints
 range_constraint returns [List<SmiRange> rc = null]
 :
 	L_PAREN		{ rc = new ArrayList<SmiRange>(); }
 		range[rc]
 		(BAR range[rc])*
-	R_PAREN
-;
-
-// for strings
-size_constraint returns [List<SmiRange> rc = null]
-:
-	L_PAREN "SIZE"
-		rc=range_constraint
 	R_PAREN
 ;
 
@@ -1001,15 +1033,15 @@ traptype_macro
 	("REFERENCE" C_STRING)?
 ;
 
-named_number_list[IdToken idToken, SmiType baseType] returns [SmiType t = null]
+named_number_list returns [List<SmiNamedNumber> l = new ArrayList<SmiNamedNumber>()]
 :
-	L_BRACE		{ t = m_mp.createType(idToken, baseType); }
-		named_number[t]
-		(COMMA named_number[t])*
+	L_BRACE
+		named_number[l]
+		(COMMA named_number[l])*
 	R_BRACE
 ;
 
-named_number[SmiType t]
+named_number[List<SmiNamedNumber> l]
 {
 	IdToken it = null;
 	BigIntegerToken bit = null;
@@ -1017,7 +1049,7 @@ named_number[SmiType t]
 :
 	it=lower L_PAREN bit=signed_number R_PAREN
 {
-	t.addEnumValue(it, bit);
+	l.add(new SmiNamedNumber(it, bit));
 }
 ;
 
