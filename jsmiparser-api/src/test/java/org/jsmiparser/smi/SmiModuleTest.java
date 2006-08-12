@@ -20,15 +20,15 @@ import org.jsmiparser.util.token.IdToken;
 import org.jsmiparser.util.location.Location;
 
 public class SmiModuleTest extends TestCase {
-    private SmiMib mib_ = new SmiMib(new SmiJavaCodeNamingStrategy("test"));
-    private SmiModule module_ = new SmiModule(mib_, new IdToken(new Location("IF-MIBsource", 1, 0), "IF-MIB"));
+    private SmiMib m_mib = new SmiMib(new SmiJavaCodeNamingStrategy("test"));
+    private SmiModule m_module = new SmiModule(m_mib, new IdToken(new Location("IF-MIBsource", 1, 0), "IF-MIB"));
 
     public void testGetJavaId() {
-        assertEquals("IfMib", module_.getCodeId());
+        assertEquals("IfMib", m_module.getCodeId());
     }
 
     public void testMakeClassName() {
-        assertEquals("IfMibScalars", module_.getScalarsClass().getId());
+        assertEquals("IfMibScalars", m_module.getScalarsClass().getId());
     }
 
 

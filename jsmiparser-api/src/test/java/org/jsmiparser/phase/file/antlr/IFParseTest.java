@@ -113,78 +113,12 @@ public class IFParseTest extends TestCase {
 
     private LexerModule createLexerModule() throws TokenStreamException {
         List<LexerModule> lmList = new ArrayList<LexerModule>();
-        InputStream is = new BufferedInputStream(this.getClass().getResourceAsStream("/IF-MIB"));
+        InputStream is = new BufferedInputStream(this.getClass().getResourceAsStream("/libsmi-0.4.5/mibs/ietf/IF-MIB"));
         SMILexer lexer = new SMILexer(is);
-        LexerPhase.lex(lexer, "/IF-MIB", lmList);
+        LexerPhase.lex(lexer, "/libsmi-0.4.5/mibs/ietf/IF-MIB", lmList);
 
         assertEquals(1, lmList.size());
         return lmList.get(0);
     }
 
-    public void test() throws URISyntaxException {
-
-        ProblemEventHandler problemEventHandler = new DefaultProblemEventHandler();
-        SmiDefaultParser parser = new SmiDefaultParser(problemEventHandler);
-        parser.init();
-
-        FileParserOptions options = (FileParserOptions) parser.getLexerPhase().getOptions();
-        URL mibsURL = getClass().getClassLoader().getResource("libsmi-0.4.5/mibs");
-        File mibsDir = new File(mibsURL.toURI());
-        options.addFile(new File(mibsDir, "ietf/IF-MIB"));
-        options.addFile(new File(mibsDir, "ietf/SNMPv2-SMI"));
-        options.addFile(new File(mibsDir, "ietf/SNMPv2-TC"));
-        options.addFile(new File(mibsDir, "ietf/SNMPv2-CONF"));
-        options.addFile(new File(mibsDir, "ietf/SNMPv2-MIB"));
-        options.addFile(new File(mibsDir, "iana/IANAifType-MIB"));
-//        options.addFile(new File(mibsDir, "ietf/"));
-
-        SmiMib mib = parser.parse();
-        assertNotNull(mib);
-        //showOverview(mib);
-
-        //XStream xStream = new XStream();
-        //xStream.toXML(mib, System.out);
-
-        SmiType integer32 = mib.findType("Integer32");
-        assertEquals("SNMPv2-SMI", integer32.getModule().getId());
-
-        SmiTextualConvention interfaceIndex = (SmiTextualConvention) mib.findType("InterfaceIndex");
-        assertNotNull(interfaceIndex);
-        assertEquals("InterfaceIndex", interfaceIndex.getId());
-        assertEquals("IF-MIB", interfaceIndex.getModule().getId());
-        String source = interfaceIndex.getModule().getIdToken().getLocation().getSource();
-        assertTrue(source.contains("IF-MIB"));
-        assertEquals(SmiTextualConvention.class, interfaceIndex.getClass());
-        assertNotNull(interfaceIndex.getRangeConstraints());
-        assertEquals(1, interfaceIndex.getRangeConstraints().size());
-        assertSame(integer32, interfaceIndex.getBaseType());
-        assertEquals(SmiPrimitiveType.INTEGER_32, interfaceIndex.getPrimitiveType());
-        assertEquals(SmiConstants.INTEGER_TYPE, interfaceIndex.getBaseType().getBaseType());
-        assertNull(interfaceIndex.getBaseType().getBaseType().getBaseType());
-        assertEquals("d", interfaceIndex.getDisplayHint());
-        assertEquals(StatusV2.CURRENT, interfaceIndex.getStatusV2());
-        assertTrue(interfaceIndex.getDescription().startsWith("A unique value"));
-        assertFalse(interfaceIndex.getDescription().endsWith("\""));
-        assertNull(interfaceIndex.getReference());
-
-        SmiTable ifTable = mib.findTable("ifTable");
-        assertNotNull(ifTable);
-        assertEquals("1.3.6.1.2.1.2.2", ifTable.getOid());
-
-        SmiRow ifEntry = mib.findRow("ifEntry");
-        assertNotNull(ifEntry);
-        assertEquals("1.3.6.1.2.1.2.2.1", ifEntry.getOid());
-
-        SmiAttribute ifIndex = mib.findAttribute("ifIndex");
-        assertNotNull(ifIndex);
-        assertEquals("1.3.6.1.2.1.2.2.1.1", ifIndex.getOid());
-// TODO
-//        assertEquals(SmiTextualConvention.class, ifIndex.getType().getClass());
-//        assertSame(interfaceIndex, ifIndex.getType());
-
-        SmiAttribute ifAdminStatus = mib.findAttribute("ifAdminStatus");
-        assertNotNull(ifAdminStatus);
-        assertEquals("1.3.6.1.2.1.2.2.1.7", ifAdminStatus.getOid());
-
-    }
 }

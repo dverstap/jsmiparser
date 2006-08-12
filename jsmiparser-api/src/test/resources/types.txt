@@ -1,0 +1,12 @@
+JSMI-TYPES-TEST-MIB DEFINITIONS ::= BEGIN
+
+MyINTEGER ::= INTEGER
+
+MyINTEGERFromMinus3To4 ::= INTEGER (-3..4)
+
+MyInteger32 ::= Integer32
+
+MyInteger32FromMinus5To6 ::= Integer32 (-5..6)
+
+END
+

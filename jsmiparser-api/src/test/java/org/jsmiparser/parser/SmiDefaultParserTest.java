@@ -64,7 +64,7 @@ public class SmiDefaultParserTest extends TestCase {
         assertEquals(0, mib.getScalars().size());
         assertEquals(0, mib.getColumns().size());
 
-        checkBridgeMib(mib);
+        //checkBridgeMib(mib);
         checkIfMib(mib);
 
         //SmiMib mib2 = parser.parse();
@@ -113,37 +113,6 @@ public class SmiDefaultParserTest extends TestCase {
             //TODO assertEquals(SmiVarBindField.INTEGER_VALUE, ifIndexType.getVarBindField());
         */}
 
-    private void checkBridgeMib(SmiMib mib) {
-        SmiType integer32 = mib.findType("Integer32");
-        assertNotNull(integer32);
-        assertEquals(SmiPrimitiveType.INTEGER_32, integer32.getPrimitiveType());
-        assertEquals(1, integer32.getRangeConstraints().size());
-        assertEquals(-2147483648, integer32.getRangeConstraints().get(0).getMinValue().intValue());
-        assertEquals(2147483647, integer32.getRangeConstraints().get(0).getMaxValue().intValue());
-        assertNull(integer32.getSizeConstraints());
-        assertNull(integer32.getEnumValues());
-        assertNull(integer32.getBitFields());
-        assertNull(integer32.getFields());
-
-        SmiModule bridgeMib = mib.findModule("BRIDGE-MIB");
-        assertNotNull(bridgeMib);
-
-        SmiTextualConvention timeout = mib.findTextualConvention("Timeout");
-        assertNotNull(timeout);
-        assertEquals(integer32, timeout.getBaseType());
-        assertEquals(SmiPrimitiveType.INTEGER_32, timeout.getPrimitiveType());
-        assertNull(timeout.getRangeConstraints());
-
-        SmiAttribute dot1dStpBridgeMaxAge = mib.findAttribute("dot1dStpBridgeMaxAge");
-        assertNotNull(dot1dStpBridgeMaxAge);
-        assertSame(integer32, dot1dStpBridgeMaxAge.getType().getBaseType());
-        assertEquals(SmiPrimitiveType.INTEGER_32, dot1dStpBridgeMaxAge.getType().getPrimitiveType());
-        List<SmiRange> dot1dStpBridgeMaxAgeRangeConstraints = dot1dStpBridgeMaxAge.getType().getRangeConstraints();
-        assertEquals(1, dot1dStpBridgeMaxAgeRangeConstraints.size());
-        assertEquals(600, dot1dStpBridgeMaxAgeRangeConstraints.get(0).getMinValue().intValue());
-        assertEquals(4000, dot1dStpBridgeMaxAgeRangeConstraints.get(0).getMaxValue().intValue());
-
-    }
 
     private void showOverview(SmiMib mib) {
         for (SmiModule module : mib.getModules()) {
