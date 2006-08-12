@@ -132,10 +132,11 @@ public class SmiDefaultParserTest extends TestCase {
         assertNotNull(timeout);
         assertEquals(integer32, timeout.getBaseType());
         assertEquals(SmiPrimitiveType.INTEGER_32, timeout.getPrimitiveType());
+        assertNull(timeout.getRangeConstraints());
 
         SmiAttribute dot1dStpBridgeMaxAge = mib.findAttribute("dot1dStpBridgeMaxAge");
         assertNotNull(dot1dStpBridgeMaxAge);
-        assertEquals(integer32, dot1dStpBridgeMaxAge.getType().getBaseType());
+        assertSame(integer32, dot1dStpBridgeMaxAge.getType().getBaseType());
         assertEquals(SmiPrimitiveType.INTEGER_32, dot1dStpBridgeMaxAge.getType().getPrimitiveType());
         List<SmiRange> dot1dStpBridgeMaxAgeRangeConstraints = dot1dStpBridgeMaxAge.getType().getRangeConstraints();
         assertEquals(1, dot1dStpBridgeMaxAgeRangeConstraints.size());
