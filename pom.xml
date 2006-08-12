@@ -40,12 +40,12 @@
         <url>http://developer.berlios.de/bugs/?group_id=4221</url>
     </issueManagement>
 
-      <distributionManagement>
+    <distributionManagement>
         <site>
-          <id>shell.berlios</id>
-          <url>scp://shell.berlios.de:/home/groups/jsmiparser/htdocs/</url> <!-- note the trailing slash is significant!!! -->
+            <id>shell.berlios</id>
+            <url>scp://shell.berlios.de:/home/groups/jsmiparser/htdocs/</url>
+            <!-- note the trailing slash is significant!!! -->
         </site>
-
     </distributionManagement>
 
     <build>
@@ -62,20 +62,20 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
             </plugin>
-<!--
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-clover-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>pre-site</phase>
-                        <goals>
-                            <goal>instrument</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
--->
+            <!--
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-clover-plugin</artifactId>
+                            <executions>
+                                <execution>
+                                    <phase>pre-site</phase>
+                                    <goals>
+                                        <goal>instrument</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+            -->
         </plugins>
     </build>
 
@@ -91,15 +91,15 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
             </plugin>
-<!--
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-clover-plugin</artifactId>
-                <configuration>
-                    <jdk>1.5</jdk>
-                </configuration>
-            </plugin>
--->
+            <!--
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-clover-plugin</artifactId>
+                            <configuration>
+                                <jdk>1.5</jdk>
+                            </configuration>
+                        </plugin>
+            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
