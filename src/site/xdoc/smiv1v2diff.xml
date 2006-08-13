@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+<!--
+    <properties>
+        <author email="nospam.AT.foo.DOT.com">Jon S. Stevens</author>
+        <author email="mrsmith.AT.foo.DOT.com">Mr. Smith</author>
+        <title></title>
+    </properties>
+    <meta name="keyword" content="jakarta, java"/>
+-->
+    <body>
+        <section name="SMIv1/v2 Differences">
+
+            <p>
+               There are differences in the ObjectType macro: some
+               fields are optional in V1, and mandatory in V2. TODO
+               specify.
+            </p>
+
+            <table>
+                <th>
+                    <td>OBJECT- TYPE (V1)</td>
+                    <td>OBJECT- TYPE (V2)</td>
+                    <td>OBJECT- IDENTITY</td>
+                    <td>NOTIFICATION- TYPE</td>
+                    <td>TEXTUAL- CONVENTION</td>
+                    <td>OBJECT- GROUP</td>
+                    <td>NOTIFICATION- GROUP</td>
+                    <td>MODULE- COMPLIANCE</td>
+                    <td>AGENT- CAPABILITIES</td>
+                    <td>TRAP- TYPE</td>
+                </th>
+                <tr>
+                    <td>Access</td>
+                </tr>
+                <tr>
+                    <td>read-only</td>
+		    <td>x</td>
+		    <td>x</td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td>x</td>
+		    <td>x</td>
+		    <td></td>
+                </tr>
+                <tr>
+                    <td>read-write</td>
+		    <td>x</td>
+		    <td>x</td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td>x</td>
+		    <td>x</td>
+		    <td></td>
+                </tr>
+                <tr>
+                    <td>write-only</td>
+		    <td>x</td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td>x</td>
+		    <td></td>
+                </tr>
+                <tr>
+                    <td>not-accessible</td>
+		    <td>x</td>
+		    <td>x</td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td>x</td>
+		    <td></td>
+		    <td></td>
+                </tr>
+                <tr>
+                    <td>accessible-for-notify</td>
+		    <td></td>
+		    <td>x</td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td>x</td>
+		    <td>x</td>
+		    <td></td>
+                </tr>
+                <tr>
+                    <td>read-create</td>
+		    <td></td>
+		    <td>x</td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td>x</td>
+		    <td></td>
+                </tr>
+                <tr>
+                    <td>not-implemented</td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td>x</td>
+		    <td></td>
+                </tr>
+
+                <tr>
+                    <td>Status</td>
+                </tr>
+                <tr>
+                    <td>mandatory</td>
+		    <td>x</td>
+		    <td>x</td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+                </tr>
+                <tr>
+                    <td>optional</td>
+		    <td>x</td>
+		    <td>x</td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+                </tr>
+                <tr>
+                    <td>obsolete</td>
+		    <td>x</td>
+		    <td>x</td>
+		    <td>x</td>
+		    <td>x</td>
+		    <td>x</td>
+		    <td>x</td>
+		    <td>x</td>
+		    <td>x</td>
+		    <td>x</td>
+		    <td></td>
+                </tr>
+                <tr>
+                    <td>deprecated</td>
+		    <td>x</td>
+		    <td>x</td>
+		    <td>x</td>
+		    <td>x</td>
+		    <td>x</td>
+		    <td>x</td>
+		    <td>x</td>
+		    <td>x</td>
+		    <td></td>
+		    <td></td>
+                </tr>
+                <tr>
+                    <td>current</td>
+		    <td></td>
+		    <td>x</td>
+		    <td>x</td>
+		    <td>x</td>
+		    <td>x</td>
+		    <td>x</td>
+		    <td>x</td>
+		    <td>x</td>
+		    <td>x</td>
+		    <td></td>
+                </tr>
+            </table>
+
+	    Notes:
+	    <ul>
+	      <li>
+		In AGENT-CAPABILITIES, not-implemented is used only
+		for notifications.
+	      </li>
+	      <li>
+		In AGENT-CAPABILITIES, write-only is meant for
+		backward compatibility only.
+	      </li>
+	    </ul>
+        </section>
+
+    </body>
+</document>

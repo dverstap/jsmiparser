@@ -7,7 +7,7 @@
     <packaging>pom</packaging>
     <version>0.1-SNAPSHOT</version>
     <name>Java SMI Parser</name>
-    <url>http://jsmiparser.berlios.de</url>
+    <url>http://www.jsmiparser.org</url>
 
     <developers>
         <developer>
@@ -108,6 +108,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
+                    <aggregate>true</aggregate>
                     <minmemory>128m</minmemory>
                     <maxmemory>512</maxmemory>
                 </configuration>
