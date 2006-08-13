@@ -102,9 +102,88 @@ TCMyCounterFromMinus100To100 ::= TEXTUAL-CONVENTION
          DESCRIPTION  "TCMyCounterFromMinus100To100 Desc"
          SYNTAX       Counter (-100..100)
 
--- TODO Part 3 Object types with references to everything from part 1
+-- Part 3 Object types with references to everything from part 1
+
+myINTEGER OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION "myINTEGER Desc"
+    ::= { 3456 }
+
+myINTEGERFromMinus3To4 OBJECT-TYPE
+    SYNTAX      INTEGER (-3..4)
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION "myINTEGERFromMinus3To4 Desc"
+    ::= { 3456 }
+
+myInteger32 OBJECT-TYPE
+    SYNTAX      Integer32
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION "myInteger32 Desc"
+    ::= { 3456 }
+
+myInteger32FromMinus5To6 OBJECT-TYPE
+         SYNTAX      Integer32 (-5..6)
+         MAX-ACCESS  not-accessible
+         STATUS      current
+         DESCRIPTION "myInteger32FromMinus5To6 Desc"
+         ::= { 3456 }
+
+myEnum OBJECT-TYPE
+    SYNTAX      INTEGER {
+                    zero(0),
+                    one(1),
+                    fiftySeven(57)
+                }
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION "myEnum Desc"
+    ::= { 3456 }
+
+myBits OBJECT-TYPE
+         SYNTAX     BITS {
+                        zero(0),
+                        one(1),
+                        fiftySeven(57)
+                    }
+         MAX-ACCESS  not-accessible
+         STATUS      current
+         DESCRIPTION "myBits Desc"
+         ::= { 3456 }
+
+
+myOctetString OBJECT-TYPE
+         SYNTAX      OCTET STRING
+         MAX-ACCESS  not-accessible
+         STATUS      current
+         DESCRIPTION "myOctetString Desc"
+         ::= { 3456 }
+
+myOctetStringBetweenSize9And5 OBJECT-TYPE
+    SYNTAX      OCTET STRING (SIZE (9..5))
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION "myOctetStringBetweenSize9And5 Desc"
+    ::= { 3456 }
+
+myCounter OBJECT-TYPE
+         SYNTAX      Counter
+         MAX-ACCESS  not-accessible
+         STATUS      current
+         DESCRIPTION "myCounter Desc"
+         ::= { 3456 }
+
+
+myCounterFromMinus100To100 OBJECT-TYPE
+         SYNTAX      Counter (-100..100)
+         MAX-ACCESS  not-accessible
+         STATUS      current
+         DESCRIPTION "myCounterFromMinus100To100 Desc"
+         ::= { 3456 }
 
 -- TODO Part 4 Object types with references to everything from part 2
-
 
 END

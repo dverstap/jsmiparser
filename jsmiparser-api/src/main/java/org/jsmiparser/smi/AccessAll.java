@@ -15,6 +15,10 @@
  */
 package org.jsmiparser.smi;
 
+import java.util.Set;
+import java.util.EnumSet;
+
+// TODO add an interface with isWritable, isReadable etc methods, implemented by all three AccessX classes
 public enum AccessAll {
     READ_ONLY,
     READ_WRITE,
@@ -24,10 +28,14 @@ public enum AccessAll {
     READ_CREATE,
     NOT_IMPLEMENTED;
 
+    //private Set<MacroType> m_supportedMacroTypes = EnumSet.noneOf(MacroType.class);
     private String m_keyword;
 
-    private AccessAll() {
+    private AccessAll(MacroType... macroTypes) {
         m_keyword = name().toLowerCase().replace('_', '-');
+//        for (MacroType macroType : macroTypes) {
+//            m_supportedMacroTypes.add(macroType);
+//        }
     }
 
     public String toString() {
@@ -37,4 +45,19 @@ public enum AccessAll {
     public AccessAll find(String keyword) {
         return Util.find(AccessAll.class, keyword);
     }
+
+/*
+    public AccessAll find(String keyword, MacroType macroType) {
+        AccessAll result = Util.find(AccessAll.class, keyword);
+        if (result.isSupportedBy(macroType)) {
+            return result;
+        }
+        throw new IllegalArgumentException("Access " + result + " is not supported by macro " + macroType);
+    }
+
+    public boolean isSupportedBy(MacroType macroType) {
+        return m_supportedMacroTypes.contains(macroType);
+    }
+*/
+
 }

@@ -444,7 +444,7 @@ public class ModuleParser extends IdSymbolImpl {
     public SmiType createIntegerType(IdToken idToken, IntKeywordToken intToken, List<SmiNamedNumber> namedNumbers, List<SmiRange> rangeConstraints) {
         if (idToken == null && intToken.getPrimitiveType() == SmiPrimitiveType.INTEGER && namedNumbers == null && rangeConstraints == null) {
             return SmiConstants.INTEGER_TYPE;
-        } else {
+        } else if (idToken != null || namedNumbers != null || rangeConstraints != null) {
             SmiType type = new SmiType(idToken, m_module);
             if (idToken instanceof IntKeywordToken) {
                 IntKeywordToken intKeywordToken = (IntKeywordToken) idToken;
@@ -461,6 +461,7 @@ public class ModuleParser extends IdSymbolImpl {
             type.setRangeConstraints(rangeConstraints);
             return type;
         }
+        return new SmiReferencedType(intToken, m_module);
     }
 
     public SmiType createBitsType(IdToken idToken, List<SmiNamedNumber> namedNumbers) {

@@ -711,16 +711,19 @@ objecttype_macro[IdToken idToken] returns [SmiObjectType ot = null]
 	SmiRow row = null;
 	SmiTable table = null;
 	boolean isRow = false;
+	StatusAll status = null;
+	ObjectTypeAccessV1 accessV1 = null;
+	ObjectTypeAccessV2 accessV2 = null;
 }
 :
 	"OBJECT-TYPE" "SYNTAX"
 		( type=leaf_type[null] {  }
 		  | sequenceOfType = sequenceof_type )
 	("UNITS" C_STRING)? // TODO only on SmiAttribute
-	( ("ACCESS" objecttype_access_v1)
-		| ("MAX-ACCESS"  objecttype_access_v2) )? 
-	"STATUS" status_all
-	( "DESCRIPTION" C_STRING )? /* TODO optional only for SMIv1 */
+	( ("ACCESS" accessV1=objecttype_access_v1)
+		| ("MAX-ACCESS"  accessV2=objecttype_access_v2) )?
+	"STATUS" status=status_all
+	( "DESCRIPTION" desc:C_STRING )? /* TODO optional only for SMIv1 */
 	( "REFERENCE" C_STRING )? 	  
 	( ("INDEX" objecttype_macro_index
           | "AUGMENTS" objecttype_macro_augments) { isRow = true; } )?
@@ -728,28 +731,32 @@ objecttype_macro[IdToken idToken] returns [SmiObjectType ot = null]
 
 	{
 	    if (sequenceOfType != null) {
-	        ot = table = m_mp.createTable(idToken, type);
+	        ot = table = m_mp.createTable(idToken, sequenceOfType);
 	    } else if (isRow) {
 	        ot = row = m_mp.createRow(idToken, type);
 	    } else {
 	        ot = attr = m_mp.createVariable(idToken, type);
 	    }
+	    ot.setAccessV1(accessV1);
+	    ot.setAccessV2(accessV2);
+	    ot.setStatus(status);
+	    ot.setDescription(m_mp.getOptCStr(desc));
 	}
 ;
 
-objecttype_access_v1
+objecttype_access_v1 returns [ObjectTypeAccessV1 result = null]
 :
 	l:LOWER
 {
-	ObjectTypeAccessV1.find(l.getText());
+	result = ObjectTypeAccessV1.find(l.getText());
 }
 ;
 
-objecttype_access_v2
+objecttype_access_v2 returns [ObjectTypeAccessV2 result = null]
 :
 	l:LOWER
 {
-	ObjectTypeAccessV2.find(l.getText());
+	result = ObjectTypeAccessV2.find(l.getText());
 }
 ;
 

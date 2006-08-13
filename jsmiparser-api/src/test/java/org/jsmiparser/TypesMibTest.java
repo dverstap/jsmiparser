@@ -15,12 +15,14 @@
  */
 package org.jsmiparser;
 
-import org.jsmiparser.smi.SmiType;
-import org.jsmiparser.smi.SmiPrimitiveType;
+import org.jsmiparser.smi.ObjectTypeAccessV2;
 import org.jsmiparser.smi.SmiConstants;
 import org.jsmiparser.smi.SmiNamedNumber;
+import org.jsmiparser.smi.SmiObjectType;
+import org.jsmiparser.smi.SmiPrimitiveType;
 import org.jsmiparser.smi.SmiRange;
 import org.jsmiparser.smi.SmiTextualConvention;
+import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.StatusV2;
 
 import java.util.List;
@@ -28,10 +30,8 @@ import java.util.List;
 public class TypesMibTest extends MibTestCase {
 
     public String[] getResources() {
-        return new String[] { "types.txt" };
+        return new String[]{"types.txt"};
     }
-
-
 
     // TODO need to add lots of new tests here
 
@@ -46,6 +46,26 @@ public class TypesMibTest extends MibTestCase {
         assertEquals("255a", tc.getDisplayHint());
         assertEquals(StatusV2.DEPRECATED, tc.getStatusV2());
         checkMyINTEGER(tc);
+    }
+
+    public void testOTMyINTEGER() {
+        SmiObjectType ot = getMib().findAttribute("myINTEGER");
+        assertEquals(ot.getId() + " Desc", ot.getDescription());
+        assertEquals(ObjectTypeAccessV2.NOT_ACCESSIBLE, ot.getMaxAccess());
+        assertEquals(StatusV2.CURRENT, ot.getStatusV2());
+
+        // this one is an exception, because it refers to the INTEGER type directly:
+        // checkMyInteger(ot.getType())
+
+        SmiType type = ot.getType();
+        assertSame(SmiConstants.INTEGER_TYPE, type);
+        assertSame(SmiPrimitiveType.INTEGER, type.getPrimitiveType());
+
+        assertNull(type.getEnumValues());
+        assertNull(type.getBitFields());
+        assertNull(type.getFields());
+        assertNull(type.getRangeConstraints());
+        assertNull(type.getSizeConstraints());
     }
 
     private void checkMyINTEGER(SmiType type) {
@@ -70,6 +90,15 @@ public class TypesMibTest extends MibTestCase {
         assertEquals("255a", tc.getDisplayHint());
         assertEquals(StatusV2.DEPRECATED, tc.getStatusV2());
         checkMyINTEGERFromMinus3To4(tc);
+    }
+
+    public void testOTMyINTEGERFromMinus3To4() {
+        SmiObjectType ot = getMib().findAttribute("myINTEGERFromMinus3To4");
+        assertEquals(ot.getId() + " Desc", ot.getDescription());
+        assertEquals(ObjectTypeAccessV2.NOT_ACCESSIBLE, ot.getMaxAccess());
+        assertEquals(StatusV2.CURRENT, ot.getStatusV2());
+
+        checkMyINTEGERFromMinus3To4(ot.getType());
     }
 
     private void checkMyINTEGERFromMinus3To4(SmiType type) {
@@ -99,6 +128,22 @@ public class TypesMibTest extends MibTestCase {
         checkMyInteger32(tc);
     }
 
+    public void testOTMyInteger32() {
+        SmiObjectType ot = getMib().findAttribute("myInteger32");
+        assertEquals(ot.getId() + " Desc", ot.getDescription());
+        assertEquals(ObjectTypeAccessV2.NOT_ACCESSIBLE, ot.getMaxAccess());
+        assertEquals(StatusV2.CURRENT, ot.getStatusV2());
+
+        SmiType type = ot.getType();
+        assertSame(getInteger32(), type);
+        assertSame(SmiPrimitiveType.INTEGER_32, type.getPrimitiveType());
+        assertNull(type.getEnumValues());
+        assertNull(type.getBitFields());
+        assertNull(type.getFields());
+        assertEquals(1, type.getRangeConstraints().size());
+        assertNull(type.getSizeConstraints());
+    }
+
     private void checkMyInteger32(SmiType type) {
         assertSame(getInteger32(), type.getBaseType());
         assertSame(SmiPrimitiveType.INTEGER_32, type.getPrimitiveType());
@@ -120,6 +165,15 @@ public class TypesMibTest extends MibTestCase {
         assertEquals("255a", tc.getDisplayHint());
         assertEquals(StatusV2.DEPRECATED, tc.getStatusV2());
         checkMyInteger32FromMinus5To6(tc);
+    }
+
+    public void testOTMyInteger32FromMinus5To6() {
+        SmiObjectType ot = getMib().findAttribute("myInteger32FromMinus5To6");
+        assertEquals(ot.getId() + " Desc", ot.getDescription());
+        assertEquals(ObjectTypeAccessV2.NOT_ACCESSIBLE, ot.getMaxAccess());
+        assertEquals(StatusV2.CURRENT, ot.getStatusV2());
+
+        checkMyInteger32FromMinus5To6(ot.getType());
     }
 
     private void checkMyInteger32FromMinus5To6(SmiType type) {
@@ -148,6 +202,14 @@ public class TypesMibTest extends MibTestCase {
         checkMyEnum(tc);
     }
 
+    public void testOTMyEnum() {
+        SmiObjectType ot = getMib().findAttribute("myEnum");
+        assertEquals(ot.getId() + " Desc", ot.getDescription());
+        assertEquals(ObjectTypeAccessV2.NOT_ACCESSIBLE, ot.getMaxAccess());
+        assertEquals(StatusV2.CURRENT, ot.getStatusV2());
+
+        checkMyEnum(ot.getType());
+    }
 
     private void checkMyEnum(SmiType type) {
         assertSame(SmiConstants.INTEGER_TYPE, type.getBaseType());
@@ -178,6 +240,15 @@ public class TypesMibTest extends MibTestCase {
         assertEquals("255a", tc.getDisplayHint());
         assertEquals(StatusV2.DEPRECATED, tc.getStatusV2());
         checkMyBits(tc);
+    }
+
+    public void testOTMyBits() {
+        SmiObjectType ot = getMib().findAttribute("myBits");
+        assertEquals(ot.getId() + " Desc", ot.getDescription());
+        assertEquals(ObjectTypeAccessV2.NOT_ACCESSIBLE, ot.getMaxAccess());
+        assertEquals(StatusV2.CURRENT, ot.getStatusV2());
+
+        checkMyBits(ot.getType());
     }
 
     private void checkMyBits(SmiType type) {
@@ -211,6 +282,23 @@ public class TypesMibTest extends MibTestCase {
         checkMyOctetString(tc);
     }
 
+    public void testOTMyOctetString() {
+        SmiObjectType ot = getMib().findAttribute("myOctetString");
+        assertEquals(ot.getId() + " Desc", ot.getDescription());
+        assertEquals(ObjectTypeAccessV2.NOT_ACCESSIBLE, ot.getMaxAccess());
+        assertEquals(StatusV2.CURRENT, ot.getStatusV2());
+
+        SmiType type = ot.getType();
+        assertSame(SmiConstants.OCTET_STRING_TYPE, type);
+        assertSame(SmiPrimitiveType.OCTET_STRING, type.getPrimitiveType());
+
+        assertNull(type.getEnumValues());
+        assertNull(type.getBitFields());
+        assertNull(type.getFields());
+        assertNull(type.getRangeConstraints());
+        assertNull(type.getSizeConstraints());
+    }
+
     private void checkMyOctetString(SmiType type) {
         assertSame(SmiConstants.OCTET_STRING_TYPE, type.getBaseType());
         assertSame(SmiPrimitiveType.OCTET_STRING, type.getPrimitiveType());
@@ -237,6 +325,15 @@ public class TypesMibTest extends MibTestCase {
         assertEquals("255a", tc.getDisplayHint());
         assertEquals(StatusV2.DEPRECATED, tc.getStatusV2());
         checkMyOctetStringBetweenSize9And5(tc);
+    }
+
+    public void testOTMyOctetStringBetweenSize9And5() {
+        SmiObjectType ot = getMib().findAttribute("myOctetStringBetweenSize9And5");
+        assertEquals(ot.getId() + " Desc", ot.getDescription());
+        assertEquals(ObjectTypeAccessV2.NOT_ACCESSIBLE, ot.getMaxAccess());
+        assertEquals(StatusV2.CURRENT, ot.getStatusV2());
+
+        checkMyOctetStringBetweenSize9And5(ot.getType());
     }
 
     private void checkMyOctetStringBetweenSize9And5(SmiType type) {
@@ -267,6 +364,22 @@ public class TypesMibTest extends MibTestCase {
         checkMyCounter(tc);
     }
 
+    public void testOTMyCounter() {
+        SmiObjectType ot = getMib().findAttribute("myCounter");
+        assertEquals(ot.getId() + " Desc", ot.getDescription());
+        assertEquals(ObjectTypeAccessV2.NOT_ACCESSIBLE, ot.getMaxAccess());
+        assertEquals(StatusV2.CURRENT, ot.getStatusV2());
+
+        SmiType type = ot.getType();
+        assertSame(getCounter(), type);
+        assertSame(SmiPrimitiveType.COUNTER_32, type.getPrimitiveType());
+        assertNull(type.getEnumValues());
+        assertNull(type.getBitFields());
+        assertNull(type.getFields());
+        assertEquals(1, type.getRangeConstraints().size());
+        assertNull(type.getSizeConstraints());
+    }
+
     private void checkMyCounter(SmiType type) {
         assertSame(getCounter(), type.getBaseType());
         assertSame(SmiPrimitiveType.COUNTER_32, type.getPrimitiveType());
@@ -288,6 +401,15 @@ public class TypesMibTest extends MibTestCase {
         assertEquals("255a", tc.getDisplayHint());
         assertEquals(StatusV2.DEPRECATED, tc.getStatusV2());
         checkMyCounterFromMinus100To100(tc);
+    }
+
+    public void testOTMyCounterFromMinus100To100() {
+        SmiObjectType ot = getMib().findAttribute("myCounterFromMinus100To100");
+        assertEquals(ot.getId() + " Desc", ot.getDescription());
+        assertEquals(ObjectTypeAccessV2.NOT_ACCESSIBLE, ot.getMaxAccess());
+        assertEquals(StatusV2.CURRENT, ot.getStatusV2());
+
+        checkMyCounterFromMinus100To100(ot.getType());
     }
 
     private void checkMyCounterFromMinus100To100(SmiType type) {

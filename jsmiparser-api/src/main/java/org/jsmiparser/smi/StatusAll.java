@@ -15,17 +15,27 @@
  */
 package org.jsmiparser.smi;
 
+import static org.jsmiparser.smi.MacroType.*;
+
+import java.util.Set;
+import java.util.EnumSet;
+
 public enum StatusAll {
-    MANDATORY,
-    OPTIONAL,
-    OBSOLETE,
-    DEPRECATED,
-    CURRENT;
+    MANDATORY(OBJECT_TYPE_V1),
+    OPTIONAL(OBJECT_TYPE_V1),
+    OBSOLETE(OBJECT_TYPE_V1, OBJECT_IDENTITY, NOTIFICATION_TYPE, TEXTUAL_CONVENTION, OBJECT_GROUP, NOTIFICATION_GROUP, MODULE_COMPLIANCE, AGENT_CAPABILITIES),
+    DEPRECATED(OBJECT_TYPE_V1, OBJECT_IDENTITY, NOTIFICATION_TYPE, TEXTUAL_CONVENTION, OBJECT_GROUP, NOTIFICATION_GROUP, MODULE_COMPLIANCE),
+    CURRENT(OBJECT_IDENTITY, NOTIFICATION_TYPE, TEXTUAL_CONVENTION, OBJECT_GROUP, NOTIFICATION_GROUP, MODULE_COMPLIANCE, AGENT_CAPABILITIES);
 
     private String m_keyword;
+    private Set<MacroType> m_supportedMacroTypes = EnumSet.noneOf(MacroType.class);
 
-    private StatusAll() {
+    private StatusAll(MacroType... macroTypes) {
         m_keyword = name().toLowerCase();
+
+        for (MacroType macroType : macroTypes) {
+            m_supportedMacroTypes.add(macroType);
+        }
     }
 
     public String toString() {
@@ -35,4 +45,36 @@ public enum StatusAll {
     public static StatusAll find(String keyword) {
         return Util.find(StatusAll.class, keyword);
     }
+
+    public StatusV1 getStatusV1() {
+        for (StatusV1 statusV1 : StatusV1.values()) {
+            if (statusV1.getStatusAll() == this) {
+                return statusV1;
+            }
+        }
+        return null;
+    }
+
+    public StatusV2 getStatusV2() {
+        for (StatusV2 statusV2 : StatusV2.values()) {
+            if (statusV2.getStatusAll() == this) {
+                return statusV2;
+            }
+        }
+        return null;
+    }
+
+    public static StatusAll findV1(MacroType macroType, String keyword) {
+        StatusAll result = find(keyword);
+        // TODO handle macro's for both V1/V2
+        if (result.isSupportedBy(macroType)) {
+            return result;
+        }
+        throw new IllegalArgumentException("Status " + result + " is not supported by " + macroType);
+    }
+
+    public boolean isSupportedBy(MacroType macroType) {
+        return m_supportedMacroTypes.contains(macroType);
+    }
+
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 Davy Verstappen.
+ * Copyright 2006 Davy Verstappen.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,29 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jsmiparser.smi;
 
-import org.jsmiparser.util.token.IdToken;
+public enum AccessV1 {
+    READ_ONLY(AccessAll.READ_ONLY),
+    READ_WRITE(AccessAll.READ_WRITE),
+    WRITE_ONLY(AccessAll.WRITE_ONLY),
+    NOT_ACCESSIBLE(AccessAll.NOT_ACCESSIBLE);
 
-public class SmiOidMacro extends SmiOidValue {
+    private AccessAll m_accessAll;
 
-    protected StatusAll m_status;
+    AccessV1(AccessAll accessAll) {
+       m_accessAll = accessAll;
+   }
 
-    public SmiOidMacro(IdToken idToken, SmiModule module) {
-        super(idToken, module);
+    public String toString() {
+        return m_accessAll.toString();
     }
 
-    public StatusAll getStatus() {
-        return m_status;
-    }
-
-    public StatusV1 getStatusV1() {
-        return m_status.getStatusV1();
-    }
-
-    public StatusV2 getStatusV2() {
-        return m_status.getStatusV2();
+    public AccessV1 find(String keyword) {
+        return Util.find(AccessV1.class, keyword);
     }
 
 }

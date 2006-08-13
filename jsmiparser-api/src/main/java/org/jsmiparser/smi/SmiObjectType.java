@@ -21,12 +21,14 @@ import org.jsmiparser.util.token.IdToken;
 public class SmiObjectType extends SmiOidMacro {
 
     protected SmiType m_type;
-    private SmiPrimitiveType m_primitiveType;
+    private SmiPrimitiveType m_primitiveType; // TODO remove?
+    private ObjectTypeAccessV1 m_accessV1;
+    private ObjectTypeAccessV2 m_accessV2;
+    private String m_description;
 
     public SmiObjectType(IdToken idToken, SmiModule module) {
         super(idToken, module);
     }
-
 
     public SmiPrimitiveType getPrimitiveType() {
 		if (m_type != null) {
@@ -52,4 +54,41 @@ public class SmiObjectType extends SmiOidMacro {
     public void resolveReferences() {
         m_type = m_type.resolveThis();
     }
+
+    public String getDescription() {
+        return m_description;
+    }
+
+    public void setDescription(String description) {
+        m_description = description;
+    }
+
+    public void setStatus(StatusAll status) {
+        m_status = status;
+    }
+
+    public ObjectTypeAccessV1 getAccessV1() {
+        return m_accessV1;
+    }
+
+    public void setAccessV1(ObjectTypeAccessV1 accessV1) {
+        m_accessV1 = accessV1;
+    }
+
+    public ObjectTypeAccessV2 getAccessV2() {
+        return m_accessV2;
+    }
+
+    public void setAccessV2(ObjectTypeAccessV2 accessV2) {
+        m_accessV2 = accessV2;
+    }
+
+    public ObjectTypeAccessV2 getMaxAccess() {
+        return m_accessV2;
+    }
+
+    public void setMaxAccess(ObjectTypeAccessV2 accessV2) {
+        m_accessV2 = accessV2;
+    }
+
 }
