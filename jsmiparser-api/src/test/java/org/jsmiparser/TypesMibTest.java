@@ -18,6 +18,12 @@ package org.jsmiparser;
 import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.SmiPrimitiveType;
 import org.jsmiparser.smi.SmiConstants;
+import org.jsmiparser.smi.SmiNamedNumber;
+import org.jsmiparser.smi.SmiRange;
+import org.jsmiparser.smi.SmiTextualConvention;
+import org.jsmiparser.smi.StatusV2;
+
+import java.util.List;
 
 public class TypesMibTest extends MibTestCase {
 
@@ -25,10 +31,24 @@ public class TypesMibTest extends MibTestCase {
         return new String[] { "types.txt" };
     }
 
+
+
     // TODO need to add lots of new tests here
 
     public void testMyINTEGER() {
         SmiType type = getMib().findType("MyINTEGER");
+        checkMyINTEGER(type);
+    }
+
+    public void testTCMyINTEGER() {
+        SmiTextualConvention tc = getMib().findTextualConvention("TCMyINTEGER");
+        assertEquals(tc.getId() + " Desc", tc.getDescription());
+        assertEquals("255a", tc.getDisplayHint());
+        assertEquals(StatusV2.DEPRECATED, tc.getStatusV2());
+        checkMyINTEGER(tc);
+    }
+
+    private void checkMyINTEGER(SmiType type) {
         assertSame(SmiConstants.INTEGER_TYPE, type.getBaseType());
         assertSame(SmiPrimitiveType.INTEGER, type.getPrimitiveType());
 
@@ -41,6 +61,18 @@ public class TypesMibTest extends MibTestCase {
 
     public void testMyINTEGERFromMinus3To4() {
         SmiType type = getMib().findType("MyINTEGERFromMinus3To4");
+        checkMyINTEGERFromMinus3To4(type);
+    }
+
+    public void testTCMyINTEGERFromMinus3To4() {
+        SmiTextualConvention tc = getMib().findTextualConvention("TCMyINTEGERFromMinus3To4");
+        assertEquals(tc.getId() + " Desc", tc.getDescription());
+        assertEquals("255a", tc.getDisplayHint());
+        assertEquals(StatusV2.DEPRECATED, tc.getStatusV2());
+        checkMyINTEGERFromMinus3To4(tc);
+    }
+
+    private void checkMyINTEGERFromMinus3To4(SmiType type) {
         assertSame(SmiConstants.INTEGER_TYPE, type.getBaseType());
         assertSame(SmiPrimitiveType.INTEGER, type.getPrimitiveType());
 
@@ -56,6 +88,18 @@ public class TypesMibTest extends MibTestCase {
 
     public void testMyInteger32() {
         SmiType type = getMib().findType("MyInteger32");
+        checkMyInteger32(type);
+    }
+
+    public void testTCMyInteger32() {
+        SmiTextualConvention tc = getMib().findTextualConvention("TCMyInteger32");
+        assertEquals(tc.getId() + " Desc", tc.getDescription());
+        assertEquals("255a", tc.getDisplayHint());
+        assertEquals(StatusV2.DEPRECATED, tc.getStatusV2());
+        checkMyInteger32(tc);
+    }
+
+    private void checkMyInteger32(SmiType type) {
         assertSame(getInteger32(), type.getBaseType());
         assertSame(SmiPrimitiveType.INTEGER_32, type.getPrimitiveType());
         assertNull(type.getEnumValues());
@@ -65,5 +109,198 @@ public class TypesMibTest extends MibTestCase {
         assertNull(type.getSizeConstraints());
     }
 
+    public void testMyInteger32FromMinus5To6() {
+        SmiType type = getMib().findType("MyInteger32FromMinus5To6");
+        checkMyInteger32FromMinus5To6(type);
+    }
+
+    public void testTCMyInteger32FromMinus5To6() {
+        SmiTextualConvention tc = getMib().findTextualConvention("TCMyInteger32FromMinus5To6");
+        assertEquals(tc.getId() + " Desc", tc.getDescription());
+        assertEquals("255a", tc.getDisplayHint());
+        assertEquals(StatusV2.DEPRECATED, tc.getStatusV2());
+        checkMyInteger32FromMinus5To6(tc);
+    }
+
+    private void checkMyInteger32FromMinus5To6(SmiType type) {
+        assertSame(getInteger32(), type.getBaseType());
+        assertSame(SmiPrimitiveType.INTEGER_32, type.getPrimitiveType());
+        assertNull(type.getEnumValues());
+        assertNull(type.getBitFields());
+        assertNull(type.getFields());
+        assertNull(type.getSizeConstraints());
+
+        assertEquals(1, type.getRangeConstraints().size());
+        assertEquals(-5, type.getRangeConstraints().get(0).getMinValue().intValue());
+        assertEquals(6, type.getRangeConstraints().get(0).getMaxValue().intValue());
+    }
+
+    public void testMyEnum() {
+        SmiType type = getMib().findType("MyEnum");
+        checkMyEnum(type);
+    }
+
+    public void testTCMyEnum() {
+        SmiTextualConvention tc = getMib().findTextualConvention("TCMyEnum");
+        assertEquals(tc.getId() + " Desc", tc.getDescription());
+        assertEquals("255a", tc.getDisplayHint());
+        assertEquals(StatusV2.DEPRECATED, tc.getStatusV2());
+        checkMyEnum(tc);
+    }
+
+
+    private void checkMyEnum(SmiType type) {
+        assertSame(SmiConstants.INTEGER_TYPE, type.getBaseType());
+        assertSame(SmiPrimitiveType.ENUM, type.getPrimitiveType());
+        assertNull(type.getBitFields());
+        assertNull(type.getFields());
+        assertNull(type.getRangeConstraints());
+        assertNull(type.getSizeConstraints());
+
+        List<SmiNamedNumber> values = type.getEnumValues();
+        assertEquals(3, values.size());
+        assertEquals(0, values.get(0).getValue().intValue());
+        assertEquals("zero", values.get(0).getId());
+        assertEquals(1, values.get(1).getValue().intValue());
+        assertEquals("one", values.get(1).getId());
+        assertEquals(57, values.get(2).getValue().intValue());
+        assertEquals("fiftySeven", values.get(2).getId());
+    }
+
+    public void testMyBits() {
+        SmiType type = getMib().findType("MyBits");
+        checkMyBits(type);
+    }
+
+    public void testTCMyBits() {
+        SmiTextualConvention tc = getMib().findTextualConvention("TCMyBits");
+        assertEquals(tc.getId() + " Desc", tc.getDescription());
+        assertEquals("255a", tc.getDisplayHint());
+        assertEquals(StatusV2.DEPRECATED, tc.getStatusV2());
+        checkMyBits(tc);
+    }
+
+    private void checkMyBits(SmiType type) {
+        assertSame(SmiConstants.BITS_TYPE, type.getBaseType());
+        assertSame(SmiPrimitiveType.BITS, type.getPrimitiveType());
+        assertNull(type.getEnumValues());
+        assertNull(type.getFields());
+        assertNull(type.getRangeConstraints());
+        assertNull(type.getSizeConstraints());
+
+        List<SmiNamedNumber> values = type.getBitFields();
+        assertEquals(3, values.size());
+        assertEquals(0, values.get(0).getValue().intValue());
+        assertEquals("zero", values.get(0).getId());
+        assertEquals(1, values.get(1).getValue().intValue());
+        assertEquals("one", values.get(1).getId());
+        assertEquals(57, values.get(2).getValue().intValue());
+        assertEquals("fiftySeven", values.get(2).getId()); // TODO should generate out-of-range here
+    }
+
+    public void testMyOctetString() {
+        SmiType type = getMib().findType("MyOctetString");
+        checkMyOctetString(type);
+    }
+
+    public void testTCMyOctetString() {
+        SmiTextualConvention tc = getMib().findTextualConvention("TCMyOctetString");
+        assertEquals(tc.getId() + " Desc", tc.getDescription());
+        assertEquals("255a", tc.getDisplayHint());
+        assertEquals(StatusV2.DEPRECATED, tc.getStatusV2());
+        checkMyOctetString(tc);
+    }
+
+    private void checkMyOctetString(SmiType type) {
+        assertSame(SmiConstants.OCTET_STRING_TYPE, type.getBaseType());
+        assertSame(SmiPrimitiveType.OCTET_STRING, type.getPrimitiveType());
+
+        assertNull(type.getEnumValues());
+        assertNull(type.getBitFields());
+        assertNull(type.getFields());
+        assertNull(type.getRangeConstraints());
+        assertNull(type.getSizeConstraints());
+    }
+
+    public void testMyOctetStringBetweenSize9And5() {
+        // TODO should check for error message
+
+        SmiType type = getMib().findType("MyOctetStringBetweenSize9And5");
+        checkMyOctetStringBetweenSize9And5(type);
+    }
+
+    public void testTCMyOctetStringBetweenSize9And5() {
+        // TODO should check for error message
+
+        SmiTextualConvention tc = getMib().findTextualConvention("TCMyOctetStringBetweenSize9And5");
+        assertEquals(tc.getId() + " Desc", tc.getDescription());
+        assertEquals("255a", tc.getDisplayHint());
+        assertEquals(StatusV2.DEPRECATED, tc.getStatusV2());
+        checkMyOctetStringBetweenSize9And5(tc);
+    }
+
+    private void checkMyOctetStringBetweenSize9And5(SmiType type) {
+        assertSame(SmiConstants.OCTET_STRING_TYPE, type.getBaseType());
+        assertSame(SmiPrimitiveType.OCTET_STRING, type.getPrimitiveType());
+
+        assertNull(type.getEnumValues());
+        assertNull(type.getBitFields());
+        assertNull(type.getFields());
+        assertNull(type.getRangeConstraints());
+
+        List<SmiRange> constraints = type.getSizeConstraints();
+        assertEquals(1, constraints.size());
+        assertEquals(9, constraints.get(0).getMinValue().intValue());
+        assertEquals(5, constraints.get(0).getMaxValue().intValue());
+    }
+
+    public void testMyCounter() {
+        SmiType type = getMib().findType("MyCounter");
+        checkMyCounter(type);
+    }
+
+    public void testTCMyCounter() {
+        SmiTextualConvention tc = getMib().findTextualConvention("TCMyCounter");
+        assertEquals(tc.getId() + " Desc", tc.getDescription());
+        assertEquals("255a", tc.getDisplayHint());
+        assertEquals(StatusV2.DEPRECATED, tc.getStatusV2());
+        checkMyCounter(tc);
+    }
+
+    private void checkMyCounter(SmiType type) {
+        assertSame(getCounter(), type.getBaseType());
+        assertSame(SmiPrimitiveType.COUNTER_32, type.getPrimitiveType());
+        assertNull(type.getEnumValues());
+        assertNull(type.getBitFields());
+        assertNull(type.getFields());
+        assertNull(type.getRangeConstraints());
+        assertNull(type.getSizeConstraints());
+    }
+
+    public void testMyCounterFromMinus100To100() {
+        SmiType type = getMib().findType("MyCounterFromMinus100To100");
+        checkMyCounterFromMinus100To100(type);
+    }
+
+    public void testTCMyCounterFromMinus5To6() {
+        SmiTextualConvention tc = getMib().findTextualConvention("TCMyCounterFromMinus100To100");
+        assertEquals(tc.getId() + " Desc", tc.getDescription());
+        assertEquals("255a", tc.getDisplayHint());
+        assertEquals(StatusV2.DEPRECATED, tc.getStatusV2());
+        checkMyCounterFromMinus100To100(tc);
+    }
+
+    private void checkMyCounterFromMinus100To100(SmiType type) {
+        assertSame(getCounter(), type.getBaseType());
+        assertSame(SmiPrimitiveType.COUNTER_32, type.getPrimitiveType());
+        assertNull(type.getEnumValues());
+        assertNull(type.getBitFields());
+        assertNull(type.getFields());
+        assertNull(type.getSizeConstraints());
+
+        assertEquals(1, type.getRangeConstraints().size());
+        assertEquals(-100, type.getRangeConstraints().get(0).getMinValue().intValue()); // TODO test error message:
+        assertEquals(100, type.getRangeConstraints().get(0).getMaxValue().intValue());
+    }
 
 }

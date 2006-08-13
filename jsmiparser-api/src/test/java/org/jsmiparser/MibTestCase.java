@@ -37,6 +37,7 @@ public abstract class MibTestCase extends TestCase {
     private SmiMib m_mib;
 
     private SmiType m_integer32;
+    private SmiType m_counter;
 
     protected SmiMib getMib() {
         if (m_mib == null) {
@@ -61,6 +62,7 @@ public abstract class MibTestCase extends TestCase {
         } catch (URISyntaxException e) {
             fail(e.getMessage());
         }
+        options.addFile(new File(mibsDir, "RFC1155-SMI"));
         options.addFile(new File(mibsDir, "SNMPv2-SMI"));
         options.addFile(new File(mibsDir, "SNMPv2-TC"));
         options.addFile(new File(mibsDir, "SNMPv2-CONF"));
@@ -95,6 +97,22 @@ public abstract class MibTestCase extends TestCase {
             assertNull(m_integer32.getFields());
         }
         return m_integer32;
+    }
+
+    public SmiType getCounter() {
+        if (m_counter == null) {
+            m_counter = getMib().findType("Counter");
+            assertSame(SmiConstants.INTEGER_TYPE, m_counter.getBaseType());
+            assertSame(SmiPrimitiveType.COUNTER_32, m_counter.getPrimitiveType());
+            assertEquals(1, m_counter.getRangeConstraints().size());
+            assertEquals(0, m_counter.getRangeConstraints().get(0).getMinValue().intValue());
+            assertEquals(0xFFFFFFFFL, m_counter.getRangeConstraints().get(0).getMaxValue().longValue());
+            assertNull(m_counter.getSizeConstraints());
+            assertNull(m_counter.getEnumValues());
+            assertNull(m_counter.getBitFields());
+            assertNull(m_counter.getFields());
+        }
+        return m_counter;
     }
 
     protected void showOverview() {

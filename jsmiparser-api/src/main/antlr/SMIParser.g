@@ -370,7 +370,7 @@ symbol_list returns [List<IdToken> result = m_mp.makeIdTokenList()]
 symbol returns [IdToken result = null]
 :
 	result=upper
-	| result=integer_type_id
+	| result=defined_integer_type_kw
 	| result=lower
 	| result=macroName
 ;
@@ -407,12 +407,10 @@ assignment returns [SmiSymbol s = null]
 	u:UPPER ASSIGN_OP s=type_assignment[m_mp.idt(u)]
 	| l:LOWER s=value_assignment[m_mp.idt(l)]
 	| macroName "MACRO" ASSIGN_OP BEGIN_KW ( ~(END_KW) )* END_KW
-	| intToken=defined_integer_type_kw[null] ASSIGN_OP s=leaf_type[intToken]
+	| intToken=defined_integer_type_kw ASSIGN_OP s=leaf_type[intToken]
 	)
 	{
-	    //if (s != null) {
 	    m_mp.addSymbol(s);
-	    //}
 	}
 ;
 
@@ -439,7 +437,7 @@ leaf_type[IdToken idToken] returns [SmiType t = null]
 
 integer_type[IdToken idToken] returns [SmiType t = null]
 {
-    IdToken intToken; // TODO need to turn this into SmiPrimitiveTypeIdToken
+    IntKeywordToken intToken;
     List<SmiNamedNumber> namedNumbers = null;
     List<SmiRange> rangeConstraints = null;
 }
@@ -447,62 +445,27 @@ integer_type[IdToken idToken] returns [SmiType t = null]
 	intToken=integer_type_kw[idToken]
 	(namedNumbers=named_number_list | rangeConstraints=range_constraint)?
 	{
-	    // this ensures that if there are no modifiers, then a single constant SmiType object
-	    // will be returned
-	    if (t == null) {
-	        t = m_mp.createIntegerType(idToken, intToken, namedNumbers, rangeConstraints);
-	    }
+	    t = m_mp.createIntegerType(idToken, intToken, namedNumbers, rangeConstraints);
 	}
 ;
 
-/*
-range_constrained_type[IdToken idToken, SmiType baseType] returns [SmiType t = null]
-{
-	List<SmiRange> rc = null;
-}
-:
-	rc=range_constraint
-{
-	t = m_mp.createType(idToken, baseType);
-	t.setRangeConstraint(rc);
-}
-;
-*/
-
 // TODO should get these SmiType objects from the imports
 // TODO should return SmiPrimitiveTypeIdToken here
-integer_type_kw[IdToken idToken] returns [IdToken t = null]
+integer_type_kw[IdToken idToken] returns [IntKeywordToken t = null]
 :
-	i:INTEGER_KW	{ t = m_mp.idt(i); }
-	| t=defined_integer_type_kw[idToken]
+	i:INTEGER_KW	{ t = m_mp.intkt(i, SmiPrimitiveType.INTEGER); }
+	| t=defined_integer_type_kw
 ;
 
-defined_integer_type_kw[IdToken idToken] returns [IdToken t = null]
+defined_integer_type_kw returns [IntKeywordToken t = null]
 :
-	i32:"Integer32"	  { return m_mp.idt(i32); }
-	| c:"Counter"	  { return m_mp.idt(c);   }
-	| c32:"Counter32" { return m_mp.idt(c32); }
-	| g:"Gauge"       { return m_mp.idt(g);   }
-	| g32:"Gauge32"   { return m_mp.idt(g32); }
-	| c64:"Counter64" { return m_mp.idt(c64); }
-	| tt:"TimeTicks"  { return m_mp.idt(tt);  }
-;
-
-// TODO clear up duplication with integer_type_id
-integer_type_id returns [IdToken result = null]
-:
-(
-	  i32 : "Integer32"
-	| c   : "Counter"
-	| c32 : "Counter32"
-	| g   : "Gauge"
-	| g32 : "Gauge32"
-	| c64 : "Counter64"
-	| tt  : "TimeTicks"
-)
-{
-	result = m_mp.idt(i32, c, c32, g, g32, c64, tt);
-}
+	i32:"Integer32"	  { return m_mp.intkt(i32, SmiPrimitiveType.INTEGER_32); }
+	| c:"Counter"	  { return m_mp.intkt(c,   SmiPrimitiveType.COUNTER_32);   }
+	| c32:"Counter32" { return m_mp.intkt(c32, SmiPrimitiveType.COUNTER_32); }
+	| g:"Gauge"       { return m_mp.intkt(g,   SmiPrimitiveType.GAUGE_32);   }
+	| g32:"Gauge32"   { return m_mp.intkt(g32, SmiPrimitiveType.GAUGE_32); }
+	| c64:"Counter64" { return m_mp.intkt(c64, SmiPrimitiveType.COUNTER_64); }
+	| tt:"TimeTicks"  { return m_mp.intkt(tt,  SmiPrimitiveType.TIME_TICKS);  }
 ;
 
 oid_type[IdToken idToken] returns [SmiType t = null]
@@ -524,19 +487,6 @@ octet_string_type[IdToken idToken] returns [SmiType type = null]
 	}
 ;
 
-/*
-size_constrained_type[IdToken idToken, SmiType baseType] returns [SmiType t = null]
-{
-	List<SmiRange> sc = null;
-}
-:
-	sc=size_constraint
-{
-	t = m_mp.createType(idToken, baseType);
-	t.setSizeConstraint(sc);
-}
-;
-*/
 
 bits_type[IdToken idToken] returns [SmiType type = null]
 {
@@ -571,14 +521,6 @@ defined_type[IdToken idToken] returns [SmiType type = null]
 	    type = m_mp.createDefinedType(mt, tt, namedNumbers, sizeConstraints, rangeConstraints);
 	}
 ;
-
-/*
-constrained_type[IdToken idToken, SmiType baseType] returns [SmiType t = null]
-:
-	t = size_constrained_type[idToken, baseType]
-	| t = range_constrained_type[idToken, baseType]
-;
-*/
 
 sequence_type[IdToken idToken] returns [SmiType t = null]
 :

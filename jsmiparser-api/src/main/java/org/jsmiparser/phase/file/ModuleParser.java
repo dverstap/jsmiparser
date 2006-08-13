@@ -34,6 +34,7 @@ import org.jsmiparser.smi.SmiOidValue;
 import org.jsmiparser.smi.SmiPrimitiveType;
 import org.jsmiparser.smi.SmiProtocolType;
 import org.jsmiparser.smi.SmiRange;
+import org.jsmiparser.smi.SmiReferencedType;
 import org.jsmiparser.smi.SmiRow;
 import org.jsmiparser.smi.SmiSymbol;
 import org.jsmiparser.smi.SmiTable;
@@ -41,7 +42,6 @@ import org.jsmiparser.smi.SmiTextualConvention;
 import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.SmiValue;
 import org.jsmiparser.smi.StatusV2;
-import org.jsmiparser.smi.SmiReferencedType;
 import org.jsmiparser.util.location.Location;
 import org.jsmiparser.util.symbol.IdSymbolImpl;
 import org.jsmiparser.util.token.BigIntegerToken;
@@ -247,6 +247,10 @@ public class ModuleParser extends IdSymbolImpl {
         return null;
     }
 
+    public IntKeywordToken intkt(Token idToken, SmiPrimitiveType primitiveType) {
+        return new IntKeywordToken(makeLocation(idToken), idToken.getText(), primitiveType);
+    }
+
     public String getCStr(Token t) {
         String text = t.getText();
         if (!(text.startsWith("\"") && text.endsWith("\""))) {
@@ -381,7 +385,11 @@ public class ModuleParser extends IdSymbolImpl {
     public SmiTextualConvention createTextualConvention(IdToken idToken, Token displayHint, StatusV2 status, Token description, Token reference, SmiType type) {
         SmiTextualConvention result = new SmiTextualConvention(idToken, m_module, getOptCStr(displayHint), status, getCStr(description), getOptCStr(reference));
 
-        result.setBaseType(type.getBaseType());
+        if (type.getBaseType() == null) {
+            result.setBaseType(type);
+        } else {
+            result.setBaseType(type.getBaseType());
+        }
         result.setPrimitiveType(type.getPrimitiveType());
         result.setEnumValues(type.getEnumValues());
         result.setBitFields(type.getBitFields());
@@ -433,13 +441,18 @@ public class ModuleParser extends IdSymbolImpl {
 
     // TODO investigate idea: instead of using the hardcoded SmiConstants here, use SmiReferencedType for everything,
     // and resolve references to INTEGER, BITS, ... during the XRef phase
-    public SmiType createIntegerType(IdToken idToken, IdToken intToken, List<SmiNamedNumber> namedNumbers, List<SmiRange> rangeConstraints) {
-        if (idToken == null && intToken.getId().equals("INTEGER") && namedNumbers == null && rangeConstraints == null) {
+    public SmiType createIntegerType(IdToken idToken, IntKeywordToken intToken, List<SmiNamedNumber> namedNumbers, List<SmiRange> rangeConstraints) {
+        if (idToken == null && intToken.getPrimitiveType() == SmiPrimitiveType.INTEGER && namedNumbers == null && rangeConstraints == null) {
             return SmiConstants.INTEGER_TYPE;
         } else {
             SmiType type = new SmiType(idToken, m_module);
-            // TODO based on intToken type.setPrimitiveType(SmiPrimitiveType.BITS);
-            if (intToken.getId().equals("INTEGER")) {
+            if (idToken instanceof IntKeywordToken) {
+                IntKeywordToken intKeywordToken = (IntKeywordToken) idToken;
+                type.setPrimitiveType(intKeywordToken.getPrimitiveType());
+            } else {
+                type.setPrimitiveType(intToken.getPrimitiveType());
+            }
+            if (intToken.getPrimitiveType() == SmiPrimitiveType.INTEGER) {
                 type.setBaseType(SmiConstants.INTEGER_TYPE);
             } else {
                 type.setBaseType(new SmiReferencedType(intToken, m_module));
@@ -448,24 +461,6 @@ public class ModuleParser extends IdSymbolImpl {
             type.setRangeConstraints(rangeConstraints);
             return type;
         }
-
-
-
-/*
-        if (idToken != null || namedNumbers != null || rangeConstraints != null) {
-            SmiType type = new SmiType(idToken, m_module);
-            // TODO based on intToken type.setPrimitiveType(SmiPrimitiveType.BITS);
-            if (intToken.getId().equals("INTEGER")) {
-                type.setBaseType(SmiConstants.INTEGER_TYPE);
-            } else {
-                type.setBaseType(new SmiReferencedType(intToken, m_module));
-            }
-            type.setEnumValues(namedNumbers);
-            type.setRangeConstraints(rangeConstraints);
-            return type;
-        }
-        return SmiConstants.INTEGER_TYPE;
-*/
     }
 
     public SmiType createBitsType(IdToken idToken, List<SmiNamedNumber> namedNumbers) {

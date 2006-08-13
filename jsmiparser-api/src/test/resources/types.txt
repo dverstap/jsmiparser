@@ -1,5 +1,7 @@
 JSMI-TYPES-TEST-MIB DEFINITIONS ::= BEGIN
 
+-- Part 1 basic types and constrained versions
+
 MyINTEGER ::= INTEGER
 
 MyINTEGERFromMinus3To4 ::= INTEGER (-3..4)
@@ -8,5 +10,101 @@ MyInteger32 ::= Integer32
 
 MyInteger32FromMinus5To6 ::= Integer32 (-5..6)
 
-END
+MyEnum ::= INTEGER {
+    zero(0),
+    one(1),
+    fiftySeven(57)
+}
 
+MyBits ::= BITS {
+    zero(0),
+    one(1),
+    fiftySeven(57)
+}
+
+MyOctetString ::= OCTET STRING
+
+MyOctetStringBetweenSize9And5 ::= OCTET STRING (SIZE (9..5))
+
+MyCounter ::= Counter
+
+MyCounterFromMinus100To100 ::= Counter (-100..100)
+
+
+-- Part 2: textual convention variants for everything from part 1
+
+TCMyINTEGER ::= TEXTUAL-CONVENTION
+    DISPLAY-HINT "255a"
+    STATUS       deprecated
+    DESCRIPTION  "TCMyINTEGER Desc"
+    SYNTAX       INTEGER
+
+TCMyINTEGERFromMinus3To4 ::= TEXTUAL-CONVENTION
+    DISPLAY-HINT "255a"
+    STATUS       deprecated
+    DESCRIPTION  "TCMyINTEGERFromMinus3To4 Desc"
+    SYNTAX       INTEGER (-3..4)
+
+TCMyInteger32 ::= TEXTUAL-CONVENTION
+    DISPLAY-HINT "255a"
+    STATUS       deprecated
+    DESCRIPTION  "TCMyInteger32 Desc"
+    SYNTAX       Integer32
+
+TCMyInteger32FromMinus5To6 ::= TEXTUAL-CONVENTION
+         DISPLAY-HINT "255a"
+         STATUS       deprecated
+         DESCRIPTION  "TCMyInteger32FromMinus5To6 Desc"
+         SYNTAX       Integer32 (-5..6)
+
+TCMyEnum ::= TEXTUAL-CONVENTION
+    DISPLAY-HINT "255a"
+    STATUS       deprecated
+    DESCRIPTION  "TCMyEnum Desc"
+    SYNTAX       INTEGER {
+                    zero(0),
+                    one(1),
+                    fiftySeven(57)
+                }
+
+TCMyBits ::= TEXTUAL-CONVENTION
+    DISPLAY-HINT "255a"
+    STATUS       deprecated
+    DESCRIPTION  "TCMyBits Desc"
+    SYNTAX       BITS {
+                    zero(0),
+                    one(1),
+                    fiftySeven(57)
+                }
+
+TCMyOctetString ::= TEXTUAL-CONVENTION
+    DISPLAY-HINT "255a"
+    STATUS       deprecated
+    DESCRIPTION  "TCMyOctetString Desc"
+    SYNTAX       OCTET STRING
+
+
+TCMyOctetStringBetweenSize9And5 ::= TEXTUAL-CONVENTION
+         DISPLAY-HINT "255a"
+         STATUS       deprecated
+         DESCRIPTION  "TCMyOctetStringBetweenSize9And5 Desc"
+         SYNTAX       OCTET STRING (SIZE (9..5))
+
+TCMyCounter ::= TEXTUAL-CONVENTION
+         DISPLAY-HINT "255a"
+         STATUS       deprecated
+         DESCRIPTION  "TCMyCounter Desc"
+         SYNTAX       Counter
+
+TCMyCounterFromMinus100To100 ::= TEXTUAL-CONVENTION
+         DISPLAY-HINT "255a"
+         STATUS       deprecated
+         DESCRIPTION  "TCMyCounterFromMinus100To100 Desc"
+         SYNTAX       Counter (-100..100)
+
+-- TODO Part 3 Object types with references to everything from part 1
+
+-- TODO Part 4 Object types with references to everything from part 2
+
+
+END

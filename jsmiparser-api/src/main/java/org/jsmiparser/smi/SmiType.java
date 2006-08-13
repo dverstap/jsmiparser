@@ -37,9 +37,28 @@ public class SmiType extends SmiSymbol {
     public SmiType(IdToken idToken, SmiModule module) {
         super(idToken, module);
 
-        if (idToken != null && idToken.getId().equals("Integer32")) {
-            m_primitiveType = SmiPrimitiveType.INTEGER_32;
+/*
+        if (idToken != null) {
+            String id = idToken.getId();
+            if (id.equals("Integer32")) {
+                m_primitiveType = SmiPrimitiveType.INTEGER_32;
+            } else if (id.equals("")) {
+                m_primitiveType = SmiPrimitiveType.;
+            } else if (id.equals("")) {
+                m_primitiveType = SmiPrimitiveType.;
+            } else if (id.equals("")) {
+                m_primitiveType = SmiPrimitiveType.;
+            } else if (id.equals("")) {
+                m_primitiveType = SmiPrimitiveType.;
+            } else if (id.equals("")) {
+                m_primitiveType = SmiPrimitiveType.;
+            } else if (id.equals("")) {
+                m_primitiveType = SmiPrimitiveType.;
+            } else if (id.equals("")) {
+                m_primitiveType = SmiPrimitiveType.;
+            }
         }
+*/
     }
 
     /**
