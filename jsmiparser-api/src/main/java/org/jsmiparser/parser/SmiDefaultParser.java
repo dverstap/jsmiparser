@@ -20,7 +20,6 @@ import org.jsmiparser.phase.Phase;
 import org.jsmiparser.phase.PhaseException;
 import org.jsmiparser.phase.xref.XRefPhase;
 import org.jsmiparser.phase.lexer.LexerPhase;
-import org.jsmiparser.phase.cm.ConceptualModelBuilderPhase;
 import org.jsmiparser.phase.file.FileParserPhase;
 import org.jsmiparser.phase.oid.OidResolverPhase;
 import org.jsmiparser.phase.quality.MibQualityCheckerPhase;
@@ -35,7 +34,6 @@ public class SmiDefaultParser extends CompositePhase implements SmiParser {
     private Phase m_oidResolverPhase;
     private Phase m_xrefPhase;
     private Phase m_mibQualityCheckerPhase;
-    private Phase m_conceptualModelBuilderPhase;
     private Phase m_lexerPhase;
 
     protected SmiDefaultParser() {
@@ -62,9 +60,6 @@ public class SmiDefaultParser extends CompositePhase implements SmiParser {
 
         m_mibQualityCheckerPhase = createMibQualityCheckerPhase();
         addOptionalPhase(m_mibQualityCheckerPhase);
-
-        m_conceptualModelBuilderPhase = createConceptualModelBuilderPhase();
-        addOptionalPhase(m_conceptualModelBuilderPhase);
     }
 
     protected Phase createLexerPhase() {
@@ -87,10 +82,6 @@ public class SmiDefaultParser extends CompositePhase implements SmiParser {
         return new MibQualityCheckerPhase(m_problemReporterFactory);
     }
 
-    protected ConceptualModelBuilderPhase createConceptualModelBuilderPhase() {
-        return new ConceptualModelBuilderPhase(m_problemReporterFactory);
-    }
-
     private void addOptionalPhase(Phase phase) {
         if (phase != null) {
             addPhase(phase);
@@ -111,10 +102,6 @@ public class SmiDefaultParser extends CompositePhase implements SmiParser {
 
     public Phase getMibQualityCheckerPhase() {
         return m_mibQualityCheckerPhase;
-    }
-
-    public Phase getConceptualModelBuilderPhase() {
-        return m_conceptualModelBuilderPhase;
     }
 
     public SmiMib parse() throws PhaseException {

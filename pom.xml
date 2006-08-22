@@ -110,7 +110,7 @@
                 <configuration>
                     <aggregate>true</aggregate>
                     <minmemory>128m</minmemory>
-                    <maxmemory>512</maxmemory>
+                    <maxmemory>512m</maxmemory>
                 </configuration>
             </plugin>
             <plugin>
