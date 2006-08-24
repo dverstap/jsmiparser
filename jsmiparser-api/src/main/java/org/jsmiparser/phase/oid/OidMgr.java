@@ -33,64 +33,45 @@ import java.util.Set;
  */
 public class OidMgr {
 
-    OidProblemReporter m_pr;
-    Set m_ignorableIds = new HashSet();
-    Map<String, OidNode> m_idNodeMap = new HashMap<String, OidNode>();
-    Map<BigInteger, OidNode> m_standardSubIdMap = new HashMap<BigInteger, OidNode>();
+    private OidProblemReporter m_pr;
+    private Map<String, OidNode> m_idNodeMap = new HashMap<String, OidNode>();
+    private Map<BigInteger, OidNode> m_standardSubIdMap = new HashMap<BigInteger, OidNode>();
 
-    OidNode root_;
+    private OidNode m_root;
 
     public OidMgr(ProblemReporterFactory prf) {
         m_pr = prf.create(OidMgr.class.getClassLoader(), OidProblemReporter.class);
 
-        root_ = create(null, new IdToken(null, OidNode.ROOT_NODE_NAME), new BigIntegerToken(null, false, "0"));
+        m_root = create(null, new IdToken(null, OidNode.ROOT_NODE_NAME), new BigIntegerToken(null, false, "0"));
 
         // see http://asn1.elibel.tm.fr
 
         // TODO by default disable some of these shaky standard root names
 
-        OidNode node0 = create(root_, new IdToken(null, "itu-t"), new BigIntegerToken(null, false, "0"));
+        OidNode node0 = create(m_root, new IdToken(null, "itu-t"), new BigIntegerToken(null, false, "0"));
         m_standardSubIdMap.put(node0.getValue(), node0);
         m_idNodeMap.put("itu-t", node0);
         m_idNodeMap.put("ccitt", node0);
         m_idNodeMap.put("itu-r", node0);
         m_idNodeMap.put("itu", node0);
 
-        OidNode node1 = create(root_, new IdToken(null, "iso"), new BigIntegerToken(null, false, "1"));
+        OidNode node1 = create(m_root, new IdToken(null, "iso"), new BigIntegerToken(null, false, "1"));
         m_standardSubIdMap.put(node1.getValue(), node1);
         m_idNodeMap.put("iso", node1);
 
-        OidNode node2 = create(root_, new IdToken(null, "joint-iso-itu-t"), new BigIntegerToken(null, false, "2"));
+        OidNode node2 = create(m_root, new IdToken(null, "joint-iso-itu-t"), new BigIntegerToken(null, false, "2"));
         m_standardSubIdMap.put(node2.getValue(), node2);
         m_idNodeMap.put("joint-iso-itu-t", node2);
         m_idNodeMap.put("joint-iso-ccitt", node2);
     }
 
-    /*
-    public OidNode getNode(OidNode parent, String id, BigInteger subId) {
-        OidNode result = null;
-        if (parent == null) {
-            if (id != null) {
-                result = findNode(id);
-                if (result == null) {
-                    // this is resolved later
-                    //m_pr.error("ASN OID that starts with a name must have a first name that is already declared.", id);
-                }
-            } else {
-                result = m_standardSubIdMap.get(subId);
-                if (result == null) {
-                    m_pr.reportInvalidOidStart(subId);
-                }
-            }
-        }
-
-        // we always make one, to avoid crashes
-        if (result == null) {
-            result = create(parent, id, subId);
-        }
-        return result;
+    public OidProblemReporter getOidProblemReporter() {
+        return m_pr;
     }
-    */
+
+    public OidNode getRoot() {
+        return m_root;
+    }
 
     public OidNode registerNode(IdToken idToken, OidNode newNode) {
         if (newNode.m_idToken == null) {
@@ -144,52 +125,9 @@ public class OidMgr {
         }
     }
 
-    /*
-    public void resolveAll() {
-        for (String id : m_idNodeMap.keySet()) {
-            resolve(id);
-//            OidNode node = (OidNode) entry.getValue();
-//            OidNode nodeRoot = node.getRoot();
-//            if (nodeRoot != root_)
-//            {
-//                use(id, node, nodeRoot);
-//            }
-        }
-    }
-
-    private OidNode resolve(String id) {
-        OidNode node = findNode(id);
-        if (node == null) {
-            m_pr.reportCannotFindOidNode(id);
-        } else {
-            OidNode nodeRoot = node.getRoot();
-            if (nodeRoot != root_) {
-                if (nodeRoot.getValue() == null) {
-                    OidNode n = resolve(nodeRoot.getId());
-                    if (n != null) {
-                        if (isResolved(n)) {
-                            node.fixStart(n);
-                        } else {
-                            // error message here will only be confusing
-                        }
-                    } else {
-                        // error message already printed by call to use
-                    }
-                } else {
-                    m_pr.reportCannotResolveUnresolvedOid(id);
-                }
-            }
-        }
-        return node;
-    }
-    */
-
     /**
      * Resolves the starting node of an oid sequence.
      *
-     * @param idToken
-     * @param valueToken
-     * @return
      */
     public OidNode resolveStart(IdToken idToken, BigIntegerToken valueToken) {
         assert(idToken != null || valueToken != null);
@@ -215,15 +153,6 @@ public class OidMgr {
     }
 
     private void checkStartOidNode(OidNode result, IdToken idToken, BigIntegerToken valueToken) {
-        /* what was I thinking here?
-        if (result.getParent() != null) {
-            if (idToken != null) {
-                m_pr.reportNotAValidStartNode(idToken.getLocation(), idToken.getId());
-            } else {
-                m_pr.reportNotAValidStartNode(valueToken.getLocation(), valueToken.getValue());
-            }
-        }
-        */
         if (idToken != null && !idToken.getId().equals(result.getId())) {
             // this happens when two OID's are referred to with several names,
             // for example atmMIB/mib_2_37 and atmMIBObjects and mib-2_37_1
@@ -263,57 +192,9 @@ public class OidMgr {
 
 
     private boolean isResolved(OidNode node) {
-        return node.getRoot() == root_;
+        return node.getRoot() == m_root;
     }
 
-
-    public OidNode resolve2(OidNode parent, IdToken idToken, BigIntegerToken valueToken) {
-        OidNode result = null;
-
-        if (parent == null && idToken == null) {
-            // it must be one of the three roots
-        } else if (idToken != null) {
-            result = findNode(idToken.getId());
-            if (result != null) {
-
-                // TODO parent stuff
-            } else if (parent != null) {
-                // look by name isn't necessary: it would have been found above
-                if (valueToken != null) {
-                    result = parent.findChild(valueToken.getValue());
-                    if (result != null) {
-                        assert(result.m_idToken == null);
-                        result.m_idToken = idToken;
-                    }
-                }
-            }
-        } else {
-
-        }
-
-        assert(result != null);
-        return result;
-    }
-
-
-    public OidNode resolve3(OidNode parent, IdToken idToken, BigIntegerToken valueToken) {
-        assert(idToken != null || valueToken != null);
-        OidNode result = null;
-
-        if (parent == null) {
-            if (idToken != null) {
-
-            } else {
-                // one of the three roots
-            }
-        } else {
-            //result = parent.resolveChild()
-        }
-
-
-        assert(result != null);
-        return result;
-    }
 
     OidNode create(OidNode parent, IdToken idToken, BigIntegerToken valueToken) {
         OidNode result = new OidNode(this, parent, idToken, valueToken);

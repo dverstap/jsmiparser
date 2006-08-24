@@ -37,11 +37,9 @@ public class OidNode {
 
     static final String ROOT_NODE_NAME = "jsmiparser#rootNode";
 
-    //Map<BigInteger, OidNode> m_valueChildMap = new HashMap<BigInteger, OidNode>();
-
     public OidNode(OidMgr oidMgr, OidNode parent, IdToken idToken, BigIntegerToken valueToken) {
         super();
-        m_pr = oidMgr.m_pr;
+        m_pr = oidMgr.getOidProblemReporter();
         m_oidMgr = oidMgr;
         m_parent = parent;
         m_idToken = idToken;
