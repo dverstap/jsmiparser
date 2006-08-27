@@ -516,7 +516,7 @@ defined_type[IdToken idToken] returns [SmiType type = null]
     List<SmiRange> rangeConstraints = null;
 }
 :
-	(mt:UPPER DOT)? tt:UPPER 	{ type = m_mp.getDefinedType(mt, tt); }
+	(mt:UPPER DOT)? tt:UPPER
 	(namedNumbers=named_number_list | sizeConstraints=size_constraint | rangeConstraints=range_constraint)?
 	{
 	    type = m_mp.createDefinedType(mt, tt, namedNumbers, sizeConstraints, rangeConstraints);
@@ -534,14 +534,13 @@ sequence_type[IdToken idToken] returns [SmiType t = null]
 
 sequence_field[SmiType sequenceType]
 {
-	SmiAttribute col = null;
 	SmiType fieldType = null;
 }
 :
-	l: LOWER	{ col = m_mp.useColumn(l); }
+	l: LOWER
 	fieldType=leaf_type[null]
 {
-	m_mp.addField(sequenceType, col, fieldType);
+	m_mp.addField(sequenceType, l, fieldType);
 }
 ;
 
@@ -802,8 +801,12 @@ objecttype_macro_indextype
 ;
 
 objecttype_macro_augments
+{
+    IdToken mt = null;
+    IdToken idt = null;
+}
 :
-	L_BRACE use_row R_BRACE
+	L_BRACE (mt=upper)? idt=lower R_BRACE
 ;
 
 
@@ -1023,29 +1026,5 @@ lower returns [IdToken result = null]
 	l:LOWER
 {
 	result = m_mp.idt(l);
-}
-;
-
-use_row returns [SmiRow row = null]
-{
-	ModuleParser mp = m_mp;
-	IdToken idt = null;
-}
-:
-	(mp=use_module_parser)? idt=lower
-{
-	row = mp.useRow(idt);
-}
-;
-
-
-use_module_parser returns [ModuleParser mp = null]
-{
-	IdToken mt = null;
-}
-:
-	mt=upper
-{
-	mp = m_mp.getParserPhase().use(mt);
 }
 ;

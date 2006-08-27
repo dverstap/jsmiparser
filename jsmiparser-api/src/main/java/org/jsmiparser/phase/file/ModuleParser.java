@@ -23,6 +23,7 @@ import org.jsmiparser.phase.PhaseException;
 import org.jsmiparser.phase.file.antlr.SMIParser;
 import org.jsmiparser.phase.lexer.LexerModule;
 import org.jsmiparser.phase.oid.OidNode;
+import org.jsmiparser.smi.OidComponent;
 import org.jsmiparser.smi.SmiAttribute;
 import org.jsmiparser.smi.SmiConstants;
 import org.jsmiparser.smi.SmiImports;
@@ -40,9 +41,7 @@ import org.jsmiparser.smi.SmiSymbol;
 import org.jsmiparser.smi.SmiTable;
 import org.jsmiparser.smi.SmiTextualConvention;
 import org.jsmiparser.smi.SmiType;
-import org.jsmiparser.smi.SmiValue;
 import org.jsmiparser.smi.StatusV2;
-import org.jsmiparser.smi.OidComponent;
 import org.jsmiparser.util.location.Location;
 import org.jsmiparser.util.symbol.IdSymbolImpl;
 import org.jsmiparser.util.token.BigIntegerToken;
@@ -73,10 +72,6 @@ public class ModuleParser extends IdSymbolImpl {
     private State m_state = State.UNPARSED;
     private SmiModule m_module;
 
-    private SmiSymbolMap<SmiType> m_typeMap;
-    private SmiSymbolMap<SmiValue> m_valueMap;
-    private SmiSymbolMap<SmiMacro> m_macroMap;
-
     public ModuleParser(FileParserPhase parserPhase, LexerModule lexerModule) {
         super(lexerModule.getId());
         m_parserPhase = parserPhase;
@@ -86,9 +81,6 @@ public class ModuleParser extends IdSymbolImpl {
     private void init(SmiModule module) {
         assert(m_module == null);
         m_module = module;
-        m_typeMap = new SmiSymbolMap<SmiType>(m_parserPhase.getFileParserProblemReporter(), m_module, SmiType.class);
-        m_valueMap = new SmiSymbolMap<SmiValue>(m_parserPhase.getFileParserProblemReporter(), m_module, SmiValue.class);
-        m_macroMap = new SmiSymbolMap<SmiMacro>(m_parserPhase.getFileParserProblemReporter(), m_module, SmiMacro.class);
     }
 
     public State getState() {
@@ -105,43 +97,6 @@ public class ModuleParser extends IdSymbolImpl {
 
     public SmiModule getModule() {
         return m_module;
-    }
-
-    public SmiSymbolMap<SmiType> getTypeMap() {
-        return m_typeMap;
-    }
-
-    public SmiSymbolMap<SmiValue> getValueMap() {
-        return m_valueMap;
-    }
-
-    public SmiSymbolMap<SmiMacro> getMacroMap() {
-        return m_macroMap;
-    }
-
-    /**
-     * Called by other module parsers to imports symbols from this module
-     */
-    public SmiSymbol use(IdToken idToken) {
-        if (m_typeMap == null) {
-            m_log.debug(idToken + " used from " + m_module.getIdToken());
-        }
-        SmiSymbol result = null;
-        String id = idToken.getId();
-        if (Character.isLowerCase(id.charAt(0))) {
-            result = m_valueMap.use(idToken);
-        } else {
-            if (id.toUpperCase().equals(id)) {
-                result = m_macroMap.use(idToken);
-            } else {
-                result = m_typeMap.use(idToken);
-            }
-        }
-        return result;
-    }
-
-    public SmiType useType(IdToken idToken) {
-        return m_typeMap.use(idToken);
     }
 
     public SmiModule useModule(IdToken idToken) {
@@ -417,29 +372,8 @@ public class ModuleParser extends IdSymbolImpl {
         return new SmiType(idToken, m_module);
     }
 
-    public SmiType getDefinedType(Token moduleToken, Token typeToken) {
-        SmiType result = m_module.findType(typeToken.getText());
-
-        ModuleParser mp = this;
-        if (moduleToken != null) {
-            mp = getParserPhase().use(idt(moduleToken));
-        }
-        return mp.useType(idt(typeToken));
-    }
-
-/*
-    public SmiType createType(SmiType baseType) {
-        SmiType result = new SmiType(null, m_module);
-        result.setBaseType(baseType);
-        return result;
-    }
-*/
-
     public SmiType createType(IdToken idToken, SmiType baseType) {
         SmiType result;
-        /* if (baseType == null) {
-          result = new SmiType(idToken, m_module);
-      } else */
         if (baseType == null) {
             throw new IllegalArgumentException();
         }
@@ -455,7 +389,8 @@ public class ModuleParser extends IdSymbolImpl {
     // TODO investigate idea: instead of using the hardcoded SmiConstants here, use SmiReferencedType for everything,
     // and resolve references to INTEGER, BITS, ... during the XRef phase
     public SmiType createIntegerType(IdToken idToken, IntKeywordToken intToken, List<SmiNamedNumber> namedNumbers, List<SmiRange> rangeConstraints) {
-        if (idToken == null && intToken.getPrimitiveType() == SmiPrimitiveType.INTEGER && namedNumbers == null && rangeConstraints == null) {
+        if (idToken == null && intToken.getPrimitiveType() == SmiPrimitiveType.INTEGER && namedNumbers == null && rangeConstraints == null)
+        {
             return SmiConstants.INTEGER_TYPE;
         } else if (idToken != null || namedNumbers != null || rangeConstraints != null) {
             SmiType type = new SmiType(idToken, m_module);
@@ -519,22 +454,13 @@ public class ModuleParser extends IdSymbolImpl {
         return new SmiProtocolType(idToken, m_module);
     }
 
-    public SmiAttribute useColumn(Token idToken) {
-        return m_valueMap.use(idt(idToken), SmiAttribute.class);
-    }
-
-    public SmiRow useRow(IdToken idToken) {
-        return m_valueMap.use(idToken, SmiRow.class);
-    }
-
-    public void addField(SmiType sequenceType, SmiAttribute col, SmiType fieldType) {
-        sequenceType.addField(col, fieldType);
+    public void addField(SmiType sequenceType, Token col, SmiType fieldType) {
+        sequenceType.addField(idt(col), fieldType);
     }
 
     public SmiType createSequenceOfType(Token elementTypeNameToken) {
-        SmiType elementType = m_typeMap.use(idt(elementTypeNameToken));
         SmiType sequenceOfType = new SmiType(null, m_module);
-        sequenceOfType.setElementType(elementType);
+        sequenceOfType.setElementTypeToken(idt(elementTypeNameToken));
         return sequenceOfType;
     }
 

@@ -16,14 +16,27 @@
 
 package org.jsmiparser.smi;
 
+import org.jsmiparser.util.token.IdToken;
+
 public class SmiField {
 
+    private SmiType m_parentType;
+    private IdToken m_columnIdToken;
     private SmiAttribute m_column;
     private SmiType m_type;
 
-    public SmiField(SmiAttribute column, SmiType type) {
-        m_column = column;
+    public SmiField(SmiType parentType, IdToken columnIdToken, SmiType type) {
+        m_parentType = parentType;
+        m_columnIdToken = columnIdToken;
         m_type = type;
+    }
+
+    public SmiType getParentType() {
+        return m_parentType;
+    }
+
+    public IdToken getColumnIdToken() {
+        return m_columnIdToken;
     }
 
     public SmiAttribute getColumn() {
@@ -33,4 +46,10 @@ public class SmiField {
     public SmiType getType() {
         return m_type;
     }
+
+    public void resolveReferences() {
+        m_column = m_parentType.getModule().resolveReference(m_columnIdToken); // TODO error msg?
+    }
+
+    // TODO resolve type?
 }

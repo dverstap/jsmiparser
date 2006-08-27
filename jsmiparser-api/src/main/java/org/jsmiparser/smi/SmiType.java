@@ -32,6 +32,7 @@ public class SmiType extends SmiSymbol {
     private List<SmiRange> m_rangeConstraints;
     private List<SmiRange> m_sizeConstraints;
     private List<SmiField> m_fields;
+    private IdToken m_elementTypeToken;
     private SmiType m_elementType;
 
     public SmiType(IdToken idToken, SmiModule module) {
@@ -197,15 +198,23 @@ public class SmiType extends SmiSymbol {
         m_sizeConstraints = sizeConstraints;
     }
 
-    public void addField(SmiAttribute col, SmiType fieldType) {
+    public void addField(IdToken col, SmiType fieldType) {
         if (m_fields == null) {
             m_fields = new ArrayList<SmiField>();
         }
-        m_fields.add(new SmiField(col, fieldType));
+        m_fields.add(new SmiField(this, col, fieldType));
     }
 
     public List<SmiField> getFields() {
         return m_fields;
+    }
+
+    public IdToken getElementTypeToken() {
+        return m_elementTypeToken;
+    }
+
+    public void setElementTypeToken(IdToken elementTypeToken) {
+        m_elementTypeToken = elementTypeToken;
     }
 
     public SmiType getElementType() {
@@ -227,6 +236,17 @@ public class SmiType extends SmiSymbol {
 
     public void resolveReferences() {
         resolveThis();
+        if (m_elementTypeToken != null) {
+            m_elementType = getModule().resolveReference(m_elementTypeToken);
+            if (m_elementType != null) {
+                // TODO error
+            }
+        }
+        if (m_fields != null) {
+            for (SmiField field : m_fields) {
+                field.resolveReferences();
+            }
+        }
     }
 
 }

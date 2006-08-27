@@ -100,6 +100,10 @@ public class SmiOidValue extends SmiValue {
         if (parent == null) {
             throw new IllegalArgumentException(getId());
         }
+        SmiOidValue oldChild = parent.findChild(getLastOid());
+        if (oldChild != null) {
+            System.out.println("there is already a child " + oldChild.getIdToken() + " for last oid " + getLastOid() + " under " + getIdToken());
+        }
         m_parent = parent;
         m_parent.m_childMap.put(getLastOid(), this);
     }
