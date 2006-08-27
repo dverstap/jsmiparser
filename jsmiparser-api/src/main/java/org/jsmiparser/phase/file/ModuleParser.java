@@ -42,6 +42,7 @@ import org.jsmiparser.smi.SmiTextualConvention;
 import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.SmiValue;
 import org.jsmiparser.smi.StatusV2;
+import org.jsmiparser.smi.OidComponent;
 import org.jsmiparser.util.location.Location;
 import org.jsmiparser.util.symbol.IdSymbolImpl;
 import org.jsmiparser.util.token.BigIntegerToken;
@@ -292,7 +293,9 @@ public class ModuleParser extends IdSymbolImpl {
 
         ModuleParser importedModuleParser = getParserPhase().use(moduleToken);
         // TODO this isn't true when there are cyclic deps: assert(importedModuleParser.getState() == State.PARSED);
-        SmiImports result = new SmiImports(m_module, moduleToken, importedModuleParser.getModule());
+        SmiImports result = new SmiImports(moduleToken, importedTokenList);
+        result.setModule(importedModuleParser.getModule());
+/*
         for (IdToken idToken : importedTokenList) {
             //SmiSymbol symbol = importedModuleParser.use(idToken);
             SmiSymbol symbol = importedModuleParser.getModule().findSymbol(idToken.getId());
@@ -304,6 +307,7 @@ public class ModuleParser extends IdSymbolImpl {
             // TODO check duplicate
             result.addSymbol(idToken, symbol);
         }
+*/
         m_module.getImports().add(result);
     }
 
@@ -343,11 +347,20 @@ public class ModuleParser extends IdSymbolImpl {
         registerOid(new IdToken(null, id), internetNode);
     }
 
+    public void addOidComponent(List<OidComponent> ocs, Token id, Token value) {
+        IdToken idToken = id != null ? idt(id) : null;
+        BigIntegerToken valueToken = value != null ? bintt(value) : null;
+        ocs.add(new OidComponent(idToken, valueToken));
+    }
 
-    public SmiOidValue createOidValue(IdToken idToken, OidNode oc) {
+    public SmiOidValue createOidValue(IdToken idToken, List<OidComponent> oidComponents) {
         SmiOidValue result = new SmiOidValue(idToken, m_module);
-        result.setOidComponent(oc);
+        result.setOidComponents(oidComponents);
         return result;
+    }
+
+    public SmiMacro createMacro(IdToken idToken) {
+        return new SmiMacro(idToken, m_module);
     }
 
     public SmiOidMacro createOidMacro(IdToken idToken) {

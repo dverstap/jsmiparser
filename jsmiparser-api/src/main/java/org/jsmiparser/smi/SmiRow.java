@@ -21,12 +21,11 @@ import java.util.*;
 
 public class SmiRow extends SmiObjectType implements SmiClass {
 
-	private SmiTable table_;
-	private List<SmiRow> parentRows_ = new ArrayList<SmiRow>();
-	private List<SmiRow> childRows_ = new ArrayList<SmiRow>();
-	private List<SmiColumn> columns_ = new ArrayList<SmiColumn>();
-	private SmiRow augments_;
-	private List<SmiIndex> indexes_ = new ArrayList<SmiIndex>();
+	private List<SmiRow> m_parentRows = new ArrayList<SmiRow>();
+	private List<SmiRow> m_childRows = new ArrayList<SmiRow>();
+	private List<SmiColumn> m_columns = new ArrayList<SmiColumn>();
+	private SmiRow m_augments;
+	private List<SmiIndex> m_indexes = new ArrayList<SmiIndex>();
 
 	public SmiRow(IdToken idToken, SmiModule module) {
 		super(idToken, module);
@@ -34,40 +33,35 @@ public class SmiRow extends SmiObjectType implements SmiClass {
 	
 	public SmiTable getTable()
 	{
-		return table_;
-	}
-	
-	public void setTable(SmiTable table) {
-		table_ = table;
-		table_.row_ = this;
+		return (SmiTable) getParent();
 	}
 
-	public List<SmiColumn> getColumns()
-	{
-		return columns_;
-	}
+    public List<SmiColumn> getColumns()
+    {
+        return m_columns;
+    }
 	
 	public SmiRow getAugments()
 	{
-		return augments_;
+		return m_augments;
 	}
 	
 	public void setAugments(SmiRow augments) {
-		augments_ = augments;
-		augments_.childRows_.add(this);
+		m_augments = augments;
+		m_augments.m_childRows.add(this);
 	}
 
 	public List<SmiIndex> getIndexes()
 	{
-		return indexes_;
+		return m_indexes;
 	}
 
 	public List<? extends SmiClass> getParentClasses() {
-		return parentRows_;
+		return m_parentRows;
 	}
 
 	public List<? extends SmiClass> getChildClasses() {
-		return childRows_;
+		return m_childRows;
 	}
 
     public SmiAttribute findAttribute(String id) {
@@ -75,7 +69,7 @@ public class SmiRow extends SmiObjectType implements SmiClass {
     }
 
 	public List<SmiColumn> getAttributes() {
-		return columns_;
+		return m_columns;
 	}
 
 	public Set<SmiColumn> getAllAttributes() {
@@ -97,22 +91,22 @@ public class SmiRow extends SmiObjectType implements SmiClass {
 	}
 
 	private void addAllColumns(Set<SmiColumn> allColumns) {
-		for (SmiRow parent : parentRows_) {
+		for (SmiRow parent : m_parentRows) {
 			parent.addAllColumns(allColumns);
 		}
-		allColumns.addAll(columns_);
+		allColumns.addAll(m_columns);
 	}
 
 	public List<SmiRow> getChildRows() {
-		return childRows_;
+		return m_childRows;
 	}
 
 	public List<SmiRow> getParentRows() {
-		return parentRows_;
+		return m_parentRows;
 	}
 
 	public SmiColumn findColumn(String id) {
-		for (SmiColumn c : columns_) {
+		for (SmiColumn c : m_columns) {
 			if (c.getId().equals(id)) {
 				return c;
 			}
@@ -122,15 +116,15 @@ public class SmiRow extends SmiObjectType implements SmiClass {
 
 	public SmiIndex addIndex(SmiColumn col, boolean isImplied) {
 		SmiIndex index = new SmiIndex(this, col, isImplied);
-		indexes_.add(index);
+		m_indexes.add(index);
 		return index;
 	}
 
 	public boolean hasSameIndexes(SmiRow other) {
 		boolean result = false;
-		if (indexes_.size() == other.indexes_.size()) {
+		if (m_indexes.size() == other.m_indexes.size()) {
 			boolean tmpResult = true;
-			Iterator<SmiIndex> i = indexes_.iterator();
+			Iterator<SmiIndex> i = m_indexes.iterator();
 			Iterator<SmiIndex> j = other.getIndexes().iterator();
 			while (tmpResult && i.hasNext() && j.hasNext()) {
 				SmiIndex i1 = i.next();
@@ -151,7 +145,7 @@ public class SmiRow extends SmiObjectType implements SmiClass {
 	}
 
 	public void addParentRow(SmiRow row) {
-		parentRows_.add(row);
-		row.childRows_.add(this);
+		m_parentRows.add(row);
+		row.m_childRows.add(this);
 	}
 }

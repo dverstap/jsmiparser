@@ -15,28 +15,25 @@
  */
 package org.jsmiparser.parser;
 
-import junit.framework.TestCase;
+import org.jsmiparser.MibTestCase;
 import org.jsmiparser.phase.file.FileParserOptions;
+import org.jsmiparser.smi.SmiAttribute;
 import org.jsmiparser.smi.SmiMib;
 import org.jsmiparser.smi.SmiModule;
 import org.jsmiparser.smi.SmiOidValue;
+import org.jsmiparser.smi.SmiRow;
 import org.jsmiparser.smi.SmiSymbol;
 import org.jsmiparser.smi.SmiTable;
-import org.jsmiparser.smi.SmiRow;
-import org.jsmiparser.smi.SmiAttribute;
-import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.SmiTextualConvention;
-import org.jsmiparser.smi.SmiPrimitiveType;
-import org.jsmiparser.smi.SmiRange;
+import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.util.problem.DefaultProblemEventHandler;
 import org.jsmiparser.util.problem.ProblemEventHandler;
 
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.List;
 
-public class SmiDefaultParserTest extends TestCase {
+public class SmiDefaultParserTest extends MibTestCase {
 
     public void testLibSmi() throws URISyntaxException {
         URL mibsURL = getClass().getClassLoader().getResource("libsmi-0.4.5/mibs");
@@ -55,7 +52,7 @@ public class SmiDefaultParserTest extends TestCase {
         //XStream xStream = new XStream();
         //xStream.toXML(mib, System.out);
 
-        assertEquals(254, mib.getModules().size());
+        assertEquals(255, mib.getModules().size());
         // TODO assertEquals(1815, mib.getTypes().size());
         assertEquals(1823, mib.getTypes().size());
         assertEquals(1238, mib.getTables().size());
@@ -78,6 +75,12 @@ public class SmiDefaultParserTest extends TestCase {
         assertEquals(errorCount, problemEventHandler.getErrorCount());
         */
 
+        checkJobMonitoringMib(mib);
+        checkDlswMib(mib);
+        checkDismanPingMib(mib);
+
+        // doesn't work yet because there are duplicates from the v1 and v2 mibs
+        //checkOidTree(mib);
     }
 
 
@@ -111,8 +114,30 @@ public class SmiDefaultParserTest extends TestCase {
             assertEquals(79, ifIndexType.getLocation().getLine());
             assertEquals(1, ifIndexType.getLocation().getColumn());
             //TODO assertEquals(SmiVarBindField.INTEGER_VALUE, ifIndexType.getVarBindField());
-        */}
+        */
+    }
 
+    private void checkJobMonitoringMib(SmiMib mib) {
+        SmiOidValue jobmonMIB = (SmiOidValue) mib.findSymbol("jobmonMIB");
+        assertNotNull(jobmonMIB);
+        assertEquals("1.3.6.1.4.1.2699.1.1", jobmonMIB.getOid());
+    }
+
+    private void checkDlswMib(SmiMib mib) {
+        SmiOidValue nullSymbol = (SmiOidValue) mib.findSymbol("null");
+        assertNotNull(nullSymbol);
+        assertEquals("0.0", nullSymbol.getOid());
+    }
+
+    private void checkDismanPingMib(SmiMib mib) {
+        SmiOidValue pingMIB = (SmiOidValue) mib.findSymbol("pingMIB");
+        assertNotNull(pingMIB);
+        assertNotNull(pingMIB.getParent());
+        assertEquals(mib.getRootNode(), pingMIB.getRootNode());
+        assertEquals(4, pingMIB.getChildren().size());
+
+        //pingMIB.dumpTree(System.out, "");
+    }
 
     private void showOverview(SmiMib mib) {
         for (SmiModule module : mib.getModules()) {
@@ -166,4 +191,7 @@ public class SmiDefaultParserTest extends TestCase {
 
     }
 
+    public String[] getResources() {
+        throw new UnsupportedOperationException();
+    }
 }

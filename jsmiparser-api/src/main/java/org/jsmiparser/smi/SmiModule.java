@@ -190,7 +190,6 @@ public class SmiModule extends SmiSymbolContainer {
             put(m_scalarMap, SmiScalar.class, symbol);
             put(m_columnMap, SmiColumn.class, symbol);
             put(m_rowMap, SmiRow.class, symbol);
-
         }
     }
 
@@ -204,5 +203,57 @@ public class SmiModule extends SmiSymbolContainer {
         m_symbols.add(symbol);
         m_symbolMap.put(symbol.getId(), symbol);
     }
-    
+
+    /**
+     * Resolves a reference from within this module to a symbol in the same module, an imported module
+     * or in the whole mib
+     *
+     * @param idToken
+     */
+    public <T extends SmiSymbol> T resolveReference(IdToken idToken) {
+        if (!idToken.getLocation().getSource().equals(getIdToken().getLocation().getSource())) {
+            // note this check is not entirely fool-proof in case multiple modules are located in one file
+            throw new IllegalArgumentException("Resolving references is only allowed from inside the same module");
+        }
+
+        SmiSymbol result = findSymbol(idToken.getId());
+        if (result == null) {
+            result = findImportedSymbol(idToken.getId());
+        }
+        if (result == null) {
+            result = getMib().findSymbol(idToken.getId());
+            if (result != null) {
+                // TODO give warning here
+            }
+        }
+
+        return (T) result;
+    }
+
+    private SmiSymbol findImportedSymbol(String id) {
+        for (SmiImports imports : m_imports) {
+            for (SmiSymbol symbol : imports.getSymbols()) {
+                if (symbol.getId().equals(id)) {
+                    return symbol;
+                }
+            }
+        }
+        return null;
+    }
+
+    public void resolveImports() {
+        for (SmiImports imports : m_imports) {
+            for (IdToken idToken : imports.getSymbolTokens()) {
+                SmiSymbol symbol = imports.getModule().findSymbol(idToken.getId());
+                if (symbol != null) {
+                    imports.getSymbols().add(symbol);
+                } else {
+                    // TODO
+                    System.err.println("Couldn't resolve import " + idToken);
+                }
+            }
+        }
+        // TODO check for imports with the same id
+    }
+
 }

@@ -128,4 +128,45 @@ public abstract class MibTestCase extends TestCase {
         }
     }
 
+    protected SmiOidValue findOidSymbol(SmiOidValue rootNode, String id) {
+        for (SmiOidValue child : rootNode.getChildren()) {
+            if (child.getId().equals(id)) {
+                return child;
+            }
+            SmiOidValue result = findOidSymbol(child, id);
+            if (result != null) {
+                return result;
+            }
+        }
+        return null;
+    }
+
+    protected void checkOidTree(SmiMib mib) {
+        //mib.getRootNode().dumpTree(System.out, "");
+
+        int count = 0;
+        for (SmiSymbol symbol : mib.getSymbols()) {
+            if (symbol instanceof SmiOidValue) {
+                SmiOidValue oidValue = (SmiOidValue) symbol;
+                //oidValue.dumpAncestors(System.out);
+                if (oidValue != mib.getRootNode()) {
+                    String msg = oidValue.getIdToken().toString();
+                    assertNotNull(msg, oidValue.getParent());
+
+                    SmiOidValue foundOidValue = oidValue.getParent().findChild(oidValue.getLastOid());
+                    assertNotNull(msg, foundOidValue);
+                    assertSame(msg, oidValue, foundOidValue);
+                    assertTrue(msg, oidValue.getParent().contains(oidValue));
+                }
+//                SmiOidValue foundSymbol = findOidSymbol(mib.getRootNode(), symbol.getId());
+//                assertNotNull(symbol.getId(), foundSymbol);
+//                assertSame(symbol.getId(), symbol, foundSymbol);
+                count++;
+            }
+        }
+
+        int totalChildCount = mib.getRootNode().getTotalChildCount();
+        //assertTrue(count + " < " +  totalChildCount, count < totalChildCount);
+        assertEquals(count + mib.getDummyOidNodesCount(), totalChildCount);
+    }
 }

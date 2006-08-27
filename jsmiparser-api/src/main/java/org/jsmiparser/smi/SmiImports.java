@@ -15,54 +15,51 @@
  */
 package org.jsmiparser.smi;
 
-import org.jsmiparser.util.data.LinkedHashMapKeyList;
 import org.jsmiparser.util.location.Location;
 import org.jsmiparser.util.token.IdToken;
 
-import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.ArrayList;
 
 // TODO idtokens
 public class SmiImports {
 
-    private SmiModule m_importingModule;
-    private IdToken m_importedModuleToken;
-    private SmiModule m_importedModule;
-    private LinkedHashMap<SmiSymbol, IdToken> m_symbolMap = new LinkedHashMap<SmiSymbol,  IdToken>();
-    private List<SmiSymbol> m_symbols = new LinkedHashMapKeyList<SmiSymbol, IdToken>(m_symbolMap);
+    private IdToken m_moduleToken;
+    private SmiModule m_module;
+    private List<IdToken> m_symbolTokens;
+    private List<SmiSymbol> m_symbols = new ArrayList<SmiSymbol>();
 
-    public SmiImports(SmiModule importingModule, IdToken importedModuleToken, SmiModule importedModule) {
-        m_importingModule = importingModule;
-        m_importedModuleToken = importedModuleToken;
-        m_importedModule = importedModule;
+    public SmiImports(IdToken moduleToken, List<IdToken> symbolTokens) {
+        m_moduleToken = moduleToken;
+        m_symbolTokens = symbolTokens;
     }
 
-    public SmiModule getImportingModule() {
-        return m_importingModule;
+    public SmiModule getModule() {
+        return m_module;
     }
 
-    public SmiModule getImportedModule() {
-        return m_importedModule;
+    public void setModule(SmiModule module) {
+        m_module = module;
     }
 
     public List<SmiSymbol> getSymbols() {
         return m_symbols;
     }
 
-    public IdToken getImportedModuleToken() {
-        return m_importedModuleToken;
+    public IdToken getModuleToken() {
+        return m_moduleToken;
+    }
+
+    public List<IdToken> getSymbolTokens() {
+        return m_symbolTokens;
     }
 
     public Location getLocation() {
-        return m_importedModuleToken.getLocation();
-    }
-
-    public void addSymbol(IdToken idToken, SmiSymbol symbol) {
-        m_symbolMap.put(symbol, idToken);
+        return m_moduleToken.getLocation();
     }
 
     public SmiSymbol find(String id) {
-        for (SmiSymbol symbol : m_symbolMap.keySet()) {
+        for (SmiSymbol symbol : m_symbols) {
             if (symbol.getId().equals(id)) {
                 return symbol;
             }

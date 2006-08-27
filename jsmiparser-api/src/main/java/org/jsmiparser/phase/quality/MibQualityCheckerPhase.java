@@ -50,7 +50,7 @@ public class MibQualityCheckerPhase extends AbstractPhase {
         //trail.push(module);
 
         for (SmiImports imports : module.getImports()) {
-            SmiModule importedModule = imports.getImportedModule();
+            SmiModule importedModule = imports.getModule();
             if (!visited.contains(importedModule)) {
                 visited.add(importedModule);
                 if (importedModule == root) {

@@ -401,12 +401,13 @@ assignment returns [SmiSymbol s = null]
 {
     IdToken intToken = null;
     SmiType type = null;
+    IdToken mn = null;
 }
 :
     (
 	u:UPPER ASSIGN_OP s=type_assignment[m_mp.idt(u)]
 	| l:LOWER s=value_assignment[m_mp.idt(l)]
-	| macroName "MACRO" ASSIGN_OP BEGIN_KW ( ~(END_KW) )* END_KW
+	| mn=macroName "MACRO" ASSIGN_OP BEGIN_KW ( ~(END_KW) )* END_KW    { s = m_mp.createMacro(mn); }
 	| intToken=defined_integer_type_kw ASSIGN_OP s=leaf_type[intToken]
 	)
 	{
@@ -597,17 +598,17 @@ range_value returns [org.jsmiparser.util.token.Token t = null]
 value_assignment[IdToken idToken] returns [SmiValue v = null]
 :
 	v=macro_value_assignment[idToken]
-	| v=primitive_value_assignment[idToken]
+	| v=oid_value_assignment[idToken]
 ;
 
-primitive_value_assignment[IdToken idToken] returns [SmiOidValue v = null]
+oid_value_assignment[IdToken idToken] returns [SmiOidValue v = null]
 {
-	OidNode oc = null;
+	List<OidComponent> ocs = null;
 }
 :
-	OBJECT_KW IDENTIFIER_KW ASSIGN_OP oc=oid_sequence[idToken]
+	OBJECT_KW IDENTIFIER_KW ASSIGN_OP ocs=oid_sequence[idToken]
 {
-	v = m_mp.createOidValue(idToken, oc);
+	v = m_mp.createOidValue(idToken, ocs);
 }
 ;
 
@@ -619,7 +620,7 @@ macro_value_assignment[IdToken idToken] returns [SmiValue v = null]
 
 oid_macro_value_assignment[IdToken idToken] returns [SmiOidMacro v = null]
 {
-	OidNode oc = null;
+	List<OidComponent> ocs = null;
 }
 :
 	(v=objecttype_macro[idToken]
@@ -630,13 +631,13 @@ oid_macro_value_assignment[IdToken idToken] returns [SmiOidMacro v = null]
 	| notificationgroup_macro
 	| modulecompliance_macro
 	| agentcapabilities_macro)
-	ASSIGN_OP oc=oid_sequence[idToken]
+	ASSIGN_OP ocs=oid_sequence[idToken]
 	// TODO it's probably better to move the oid stuff into the macro def
 {
 	if (v == null) { // TODO temporary
 		v = m_mp.createOidMacro(idToken);
 	}
-	v.setOidComponent(oc);
+	v.setOidComponents(ocs);
 }
 ;
 
@@ -648,34 +649,36 @@ int_macro_value_assignment
 
 leaf_value
 {
-	OidNode oc = null;
+	List<OidComponent> ocs = null;
 }
 :
 	integer_value
 	| (bits_value) => bits_value
-	| oc=oid_sequence[null]
+	| ocs=oid_sequence[null]
 	| octet_string_value
 	| defined_value
 	| NULL_KW
 ;
 
 
-oid_sequence [IdToken idToken] returns [OidNode oc = null]
+oid_sequence [IdToken idToken] returns [List<OidComponent> ocs = new ArrayList<OidComponent>()]
 :
 	L_BRACE
-		(oc=oid_component[oc])+
+		(oid_component[ocs])+
 	R_BRACE
 {
+/*
 	if (idToken != null) {
 		oc = m_mp.registerOid(idToken, oc);
 	}
+	*/
 }
 ;
 
-oid_component[OidNode parent] returns [OidNode oc = null]
+oid_component[List<OidComponent> ocs]
 :
-	nt1:NUMBER { oc = m_mp.resolveOidComponent(parent, null, nt1); }
-	| (lt:LOWER (L_PAREN nt2:NUMBER R_PAREN)?) { oc = m_mp.resolveOidComponent(parent, lt, nt2); }
+	nt1:NUMBER { m_mp.addOidComponent(ocs, null, nt1); }
+	| (lt:LOWER (L_PAREN nt2:NUMBER R_PAREN)?) { m_mp.addOidComponent(ocs, lt, nt2); }
 ;
 
 octet_string_value

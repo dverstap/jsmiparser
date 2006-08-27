@@ -18,8 +18,11 @@ package org.jsmiparser;
 import org.jsmiparser.smi.SmiAttribute;
 import org.jsmiparser.smi.SmiConstants;
 import org.jsmiparser.smi.SmiMib;
+import org.jsmiparser.smi.SmiModule;
+import org.jsmiparser.smi.SmiOidValue;
 import org.jsmiparser.smi.SmiPrimitiveType;
 import org.jsmiparser.smi.SmiRow;
+import org.jsmiparser.smi.SmiSymbol;
 import org.jsmiparser.smi.SmiTable;
 import org.jsmiparser.smi.SmiTextualConvention;
 import org.jsmiparser.smi.SmiType;
@@ -73,18 +76,19 @@ public class IfMibTest extends MibTestCase {
         SmiRow ifEntry = mib.findRow("ifEntry");
         assertNotNull(ifEntry);
         assertEquals("1.3.6.1.2.1.2.2.1", ifEntry.getOid());
-        // TODO assertSame(ifTable, ifEntry.getTable());
+        assertSame(ifTable, ifEntry.getTable());
 
         SmiAttribute ifIndex = mib.findAttribute("ifIndex");
         assertNotNull(ifIndex);
         assertEquals("1.3.6.1.2.1.2.2.1.1", ifIndex.getOid());
-// TODO
-//        assertEquals(SmiTextualConvention.class, ifIndex.getType().getClass());
-//        assertSame(interfaceIndex, ifIndex.getType());
+        SmiTextualConvention interfaceIndex = getMib().findTextualConvention("InterfaceIndex");
+        assertNotNull(interfaceIndex);
+        assertSame(interfaceIndex, ifIndex.getType());
 
         SmiAttribute ifAdminStatus = mib.findAttribute("ifAdminStatus");
         assertNotNull(ifAdminStatus);
         assertEquals("1.3.6.1.2.1.2.2.1.7", ifAdminStatus.getOid());
+        assertSame(ifEntry, ifAdminStatus.getParent());
 
         SmiType ifAdminStatusType = ifAdminStatus.getType();
         assertSame(SmiPrimitiveType.ENUM, ifAdminStatusType.getPrimitiveType());
@@ -98,6 +102,13 @@ public class IfMibTest extends MibTestCase {
         assertEquals("testing", ifAdminStatusType.getEnumValues().get(2).getId());
         assertEquals(3, ifAdminStatusType.getEnumValues().get(2).getValue().intValue());
 
+       // mib.getRootNode().dumpTree(System.out, "");
+
+        SmiModule ifMib = mib.findModule("IF-MIB");
+        assertNotNull(ifMib);
+        System.out.println(mib.getAttributes().size() + mib.getTables().size() + mib.getRows().size());
+
+        checkOidTree(mib);
     }
 
 }

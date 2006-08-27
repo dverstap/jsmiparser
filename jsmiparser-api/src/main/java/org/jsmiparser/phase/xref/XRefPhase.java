@@ -17,12 +17,15 @@ package org.jsmiparser.phase.xref;
 
 import org.jsmiparser.phase.Phase;
 import org.jsmiparser.phase.PhaseException;
+import org.jsmiparser.phase.oid.OidProblemReporter;
 import org.jsmiparser.util.problem.ProblemReporterFactory;
 import org.jsmiparser.smi.SmiMib;
 import org.jsmiparser.smi.SmiTable;
 import org.jsmiparser.smi.SmiModule;
 import org.jsmiparser.smi.SmiAttribute;
 import org.jsmiparser.smi.SmiType;
+import org.jsmiparser.smi.SmiSymbol;
+import org.jsmiparser.smi.SmiOidValue;
 
 public class XRefPhase implements Phase {
 
@@ -46,6 +49,10 @@ public class XRefPhase implements Phase {
         mib.fillTables();
 
         for (SmiModule module : mib.getModules()) {
+            module.resolveImports();
+        }
+
+        for (SmiModule module : mib.getModules()) {
             for (SmiType type : module.getTypes()) {
                 type.resolveReferences();
             }
@@ -54,6 +61,15 @@ public class XRefPhase implements Phase {
         for (SmiModule module : mib.getModules()) {
             for (SmiAttribute attribute : module.getAttributes()) {
                 attribute.resolveReferences();
+            }
+        }
+
+        for (SmiModule module : mib.getModules()) {
+            for (SmiSymbol symbol : module.getSymbols()) {
+                if (symbol instanceof SmiOidValue) {
+                    SmiOidValue oidValue = (SmiOidValue) symbol;
+                    oidValue.resolveOid(m_problemReporterFactory.create(getClass().getClassLoader(), OidProblemReporter.class));
+                }
             }
         }
 

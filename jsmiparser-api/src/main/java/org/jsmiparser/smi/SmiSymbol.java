@@ -18,10 +18,11 @@ package org.jsmiparser.smi;
 import org.jsmiparser.util.location.Location;
 import org.jsmiparser.util.token.IdToken;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SmiSymbol {
+public class SmiSymbol implements Serializable, Comparable {
 
     private IdToken m_idToken;
     private SmiModule m_module;
@@ -123,4 +124,17 @@ public class SmiSymbol {
         }
         return super.equals(obj);
     }
+
+    public int compareTo(Object o) {
+        return compareTo((SmiSymbol) o);
+    }
+
+    public int compareTo(SmiSymbol other) {
+        int result = getModule().getId().compareTo(other.getModule().getId());
+        if (result == 0) {
+            result = getId().compareTo(other.getId());
+        }
+        return result;
+    }
+
 }

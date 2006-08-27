@@ -20,6 +20,8 @@ import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.util.*;
+import java.net.URL;
+import java.net.URISyntaxException;
 
 public class FileParserOptions {
 
@@ -75,6 +77,12 @@ public class FileParserOptions {
 
     public void addFile(File file) {
         m_inputFileList.add(file);
+    }
+
+    public void addResource(String path) throws URISyntaxException {
+        URL pathURL = getClass().getClassLoader().getResource(path);
+        File pathFile = new File(pathURL.toURI());
+        addFile(pathFile);
     }
 
     public List<String> getExtensions() {
