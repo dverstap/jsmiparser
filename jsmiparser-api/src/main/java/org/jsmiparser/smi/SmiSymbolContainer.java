@@ -23,9 +23,9 @@ import java.util.Map;
 
 public abstract class SmiSymbolContainer {
 	private static final Logger log = Logger.getLogger(SmiSymbolContainer.class);
-	
-	private SmiSymbolContainer parent_;
-	
+
+	private SmiSymbolContainer m_parent;
+
 	Map<String, SmiType> m_typeMap = new LinkedHashMap<String, SmiType>();
 	Map<String, SmiSymbol> m_symbolMap = new LinkedHashMap<String, SmiSymbol>();
 	Map<String, SmiClass> m_classMap = new LinkedHashMap<String, SmiClass>();
@@ -40,7 +40,7 @@ public abstract class SmiSymbolContainer {
 	public SmiSymbolContainer(SmiSymbolContainer parent) {
 		super();
 		log.debug("SmiSymbolContainer constructor");
-		parent_ = parent;
+		m_parent = parent;
 	}
 	
 	public SmiType findType(String id) {
