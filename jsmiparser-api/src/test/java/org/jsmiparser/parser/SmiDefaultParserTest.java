@@ -15,7 +15,7 @@
  */
 package org.jsmiparser.parser;
 
-import org.jsmiparser.MibTestCase;
+import org.jsmiparser.AbstractMibTestCase;
 import org.jsmiparser.phase.file.FileParserOptions;
 import org.jsmiparser.smi.SmiAttribute;
 import org.jsmiparser.smi.SmiMib;
@@ -33,7 +33,7 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-public class SmiDefaultParserTest extends MibTestCase {
+public class SmiDefaultParserTest extends AbstractMibTestCase {
 
     public void testLibSmi() throws URISyntaxException {
         URL mibsURL = getClass().getClassLoader().getResource("libsmi-0.4.5/mibs");
@@ -187,7 +187,12 @@ public class SmiDefaultParserTest extends MibTestCase {
         FileParserOptions options = (FileParserOptions) parser.getLexerPhase().getOptions();
         options.addFile(mibFile);
 
-        SmiMib mib = parser.parse();
+        try {
+            parser.parse();
+            fail();
+        } catch (RuntimeException expected) {
+            assertTrue(expected.getMessage().contains("cyclic")); // TODO error handling must be better
+        }
 
     }
 

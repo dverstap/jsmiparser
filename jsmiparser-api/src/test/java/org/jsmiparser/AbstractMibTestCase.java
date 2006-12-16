@@ -32,7 +32,7 @@ import java.net.URL;
 import java.net.URISyntaxException;
 import java.io.File;
 
-public abstract class MibTestCase extends TestCase {
+public abstract class AbstractMibTestCase extends TestCase {
 
     private SmiMib m_mib;
 
@@ -165,8 +165,11 @@ public abstract class MibTestCase extends TestCase {
             }
         }
 
+
+        //mib.getRootNode().dumpTree(System.out, "");
         int totalChildCount = mib.getRootNode().getTotalChildCount();
         //assertTrue(count + " < " +  totalChildCount, count < totalChildCount);
+        //System.out.println("totalChildCount: " + totalChildCount);
         assertEquals(count + mib.getDummyOidNodesCount(), totalChildCount);
     }
 }

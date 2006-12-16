@@ -54,17 +54,15 @@ public class MibQualityCheckerPhase extends AbstractPhase {
             if (!visited.contains(importedModule)) {
                 visited.add(importedModule);
                 if (importedModule == root) {
-                    System.err.println("cyclic dependency with " + root.getId() + " via import in " + module.getId());
+                    String msg = "cyclic dependency with " + root.getId() + " via import in " + module.getId();
+                    System.err.println(msg);
+                    throw new RuntimeException(msg);
                 } else {
                     checkDependencyCycles(root, importedModule, visited);
                 }
             }
         }
 
-    }
-
-    private void checkDependencyCycles(SmiModule root, SmiImports imports) {
-        //To change body of created methods use File | Settings | File Templates.
     }
 
 /*

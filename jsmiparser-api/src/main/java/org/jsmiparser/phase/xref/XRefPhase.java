@@ -20,14 +20,17 @@ import org.jsmiparser.phase.PhaseException;
 import org.jsmiparser.phase.oid.OidProblemReporter;
 import org.jsmiparser.util.problem.ProblemReporterFactory;
 import org.jsmiparser.smi.SmiMib;
-import org.jsmiparser.smi.SmiTable;
 import org.jsmiparser.smi.SmiModule;
 import org.jsmiparser.smi.SmiAttribute;
 import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.SmiSymbol;
 import org.jsmiparser.smi.SmiOidValue;
+import org.apache.log4j.Logger;
 
 public class XRefPhase implements Phase {
+
+    private static final Logger m_log = Logger.getLogger(XRefPhase.class);
+
 
     private ProblemReporterFactory m_problemReporterFactory;
 
@@ -64,11 +67,13 @@ public class XRefPhase implements Phase {
             }
         }
 
+        OidProblemReporter reporter = m_problemReporterFactory.create(getClass().getClassLoader(), OidProblemReporter.class);
         for (SmiModule module : mib.getModules()) {
+            m_log.debug("Resolving oids in module: " + module.getId() + " hash=" + module.getId().hashCode());
             for (SmiSymbol symbol : module.getSymbols()) {
                 if (symbol instanceof SmiOidValue) {
                     SmiOidValue oidValue = (SmiOidValue) symbol;
-                    oidValue.resolveOid(m_problemReporterFactory.create(getClass().getClassLoader(), OidProblemReporter.class));
+                    oidValue.resolveOid(reporter);
                 }
             }
         }

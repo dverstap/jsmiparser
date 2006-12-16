@@ -24,7 +24,7 @@ import org.jsmiparser.smi.SmiRange;
 
 import java.util.List;
 
-public class BridgeMibTest extends MibTestCase {
+public class BridgeMibTest extends AbstractMibTestCase {
 
     public String[] getResources() {
         return new String[]{

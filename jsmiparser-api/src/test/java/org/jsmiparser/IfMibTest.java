@@ -19,10 +19,8 @@ import org.jsmiparser.smi.SmiAttribute;
 import org.jsmiparser.smi.SmiConstants;
 import org.jsmiparser.smi.SmiMib;
 import org.jsmiparser.smi.SmiModule;
-import org.jsmiparser.smi.SmiOidValue;
 import org.jsmiparser.smi.SmiPrimitiveType;
 import org.jsmiparser.smi.SmiRow;
-import org.jsmiparser.smi.SmiSymbol;
 import org.jsmiparser.smi.SmiTable;
 import org.jsmiparser.smi.SmiTextualConvention;
 import org.jsmiparser.smi.SmiType;
@@ -30,7 +28,7 @@ import org.jsmiparser.smi.StatusV2;
 
 import java.net.URISyntaxException;
 
-public class IfMibTest extends MibTestCase {
+public class IfMibTest extends AbstractMibTestCase {
 
     public String[] getResources() {
         return new String[]{

@@ -27,7 +27,7 @@ import org.jsmiparser.smi.StatusV2;
 
 import java.util.List;
 
-public class TypesMibTest extends MibTestCase {
+public class TypesMibTest extends AbstractMibTestCase {
 
     public String[] getResources() {
         return new String[]{"types.txt"};
