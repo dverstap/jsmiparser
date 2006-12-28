@@ -17,17 +17,17 @@ package org.jsmiparser.parser;
 
 import org.jsmiparser.AbstractMibTestCase;
 import org.jsmiparser.phase.file.FileParserOptions;
+import org.jsmiparser.phase.PhaseException;
 import org.jsmiparser.smi.SmiAttribute;
 import org.jsmiparser.smi.SmiMib;
-import org.jsmiparser.smi.SmiModule;
 import org.jsmiparser.smi.SmiOidValue;
 import org.jsmiparser.smi.SmiRow;
-import org.jsmiparser.smi.SmiSymbol;
 import org.jsmiparser.smi.SmiTable;
 import org.jsmiparser.smi.SmiTextualConvention;
 import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.util.problem.DefaultProblemEventHandler;
 import org.jsmiparser.util.problem.ProblemEventHandler;
+import org.jsmiparser.util.jung.DirectedCycleException;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -62,7 +62,7 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         assertEquals(0, mib.getColumns().size());
 
         //checkBridgeMib(mib);
-        checkIfMib(mib);
+        //checkIfMib(mib);
 
         //SmiMib mib2 = parser.parse();
         //assertEquals(mib1, mib2);
@@ -139,6 +139,7 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         //pingMIB.dumpTree(System.out, "");
     }
 
+/*
     private void showOverview(SmiMib mib) {
         for (SmiModule module : mib.getModules()) {
             for (SmiSymbol symbol : module.getSymbols()) {
@@ -151,6 +152,7 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
             }
         }
     }
+*/
 
     private void initFileParserOptions(FileParserOptions options, File mibsDir, String... subDirNames) {
         for (String subDirName : subDirNames) {
@@ -160,9 +162,7 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
 
             options.getUsedDirList().add(dir);
             File[] files = dir.listFiles();
-            for (int i = 0; i < files.length; i++) {
-                File file = files[i];
-
+            for (File file : files) {
                 if (file.isFile()
                         && !file.getName().equals("RFC1158-MIB") // obsoleted by RFC-1213
                         && !file.getName().contains("TOTAL")
@@ -190,8 +190,10 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         try {
             parser.parse();
             fail();
-        } catch (RuntimeException expected) {
-            assertTrue(expected.getMessage().contains("cyclic")); // TODO error handling must be better
+        } catch (PhaseException expected) {
+            //expected.printStackTrace();
+            assertNotNull(expected.getCause());
+            assertTrue(expected.getCause() instanceof DirectedCycleException);
         }
 
     }

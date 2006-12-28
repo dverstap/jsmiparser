@@ -19,18 +19,18 @@ import org.jsmiparser.phase.Phase;
 import org.jsmiparser.phase.PhaseException;
 import org.jsmiparser.phase.oid.OidProblemReporter;
 import org.jsmiparser.util.problem.ProblemReporterFactory;
-import org.jsmiparser.smi.SmiMib;
-import org.jsmiparser.smi.SmiModule;
-import org.jsmiparser.smi.SmiAttribute;
-import org.jsmiparser.smi.SmiType;
-import org.jsmiparser.smi.SmiSymbol;
-import org.jsmiparser.smi.SmiOidValue;
+import org.jsmiparser.util.jung.TopologicalSort;
+import org.jsmiparser.util.jung.DirectedCycleException;
+import org.jsmiparser.smi.*;
 import org.apache.log4j.Logger;
+
+import java.util.*;
+
+import edu.uci.ics.jung.graph.Vertex;
 
 public class XRefPhase implements Phase {
 
     private static final Logger m_log = Logger.getLogger(XRefPhase.class);
-
 
     private ProblemReporterFactory m_problemReporterFactory;
 
@@ -55,20 +55,25 @@ public class XRefPhase implements Phase {
             module.resolveImports();
         }
 
-        for (SmiModule module : mib.getModules()) {
+        List<SmiModule> modules = sortModules(mib);
+        if (modules.size() != mib.getModules().size()) {
+            throw new AssertionError("Topological sort failure");
+        }
+
+        for (SmiModule module : modules) {
             for (SmiType type : module.getTypes()) {
                 type.resolveReferences();
             }
         }
 
-        for (SmiModule module : mib.getModules()) {
+        for (SmiModule module : modules) {
             for (SmiAttribute attribute : module.getAttributes()) {
                 attribute.resolveReferences();
             }
         }
 
         OidProblemReporter reporter = m_problemReporterFactory.create(getClass().getClassLoader(), OidProblemReporter.class);
-        for (SmiModule module : mib.getModules()) {
+        for (SmiModule module : modules) {
             m_log.debug("Resolving oids in module: " + module.getId() + " hash=" + module.getId().hashCode());
             for (SmiSymbol symbol : module.getSymbols()) {
                 if (symbol instanceof SmiOidValue) {
@@ -81,4 +86,22 @@ public class XRefPhase implements Phase {
         // TODO
         return mib;
     }
+
+    private List<SmiModule> sortModules(SmiMib mib) {
+        try {
+            List<Vertex> sortedVertexes = TopologicalSort.sort(mib.createGraph());
+
+            List<SmiModule> result = new ArrayList<SmiModule>(sortedVertexes.size());
+            for (Vertex sortedVertex : sortedVertexes) {
+                SmiModule module = (SmiModule) sortedVertex.getUserDatum(SmiModule.class);
+                assert(module != null);
+                result.add(module);
+            }
+            //Collections.reverse(result);
+            return result;
+        } catch (DirectedCycleException e) {
+            throw new PhaseException(e);
+        }
+    }
+
 }

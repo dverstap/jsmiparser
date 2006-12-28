@@ -17,10 +17,7 @@ package org.jsmiparser.smi;
 
 import org.jsmiparser.util.token.IdToken;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SmiModule extends SmiSymbolContainer {
 
@@ -175,8 +172,23 @@ public class SmiModule extends SmiSymbolContainer {
     }
 
 
+    /**
+     * @return The list of IMPORTS statements. Note that there may be more than one IMPORTS statement per module,
+     * so this is not guaranteed to be unique.
+     */
     public List<SmiImports> getImports() {
         return m_imports;
+    }
+
+    /**
+     * @return Unique set of imported modules.
+     */
+    public Set<SmiModule> getImportedModules() {
+        Set<SmiModule> result = new HashSet<SmiModule>();
+        for (SmiImports anImport : m_imports) {
+            result.add(anImport.getModule());
+        }
+        return result;
     }
 
     public void fillTables() {
@@ -207,8 +219,6 @@ public class SmiModule extends SmiSymbolContainer {
     /**
      * Resolves a reference from within this module to a symbol in the same module, an imported module
      * or in the whole mib
-     *
-     * @param idToken
      */
     public <T extends SmiSymbol> T resolveReference(IdToken idToken) {
         if (!idToken.getLocation().getSource().equals(getIdToken().getLocation().getSource())) {
