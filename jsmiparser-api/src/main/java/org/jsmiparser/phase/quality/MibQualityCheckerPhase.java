@@ -79,10 +79,10 @@ public class MibQualityCheckerPhase extends AbstractPhase {
         }
 
         for (SmiModule module : mib.getModules()) {
-            Vertex vertex = vertexMap.get(module);
+            Vertex vertex = vertexMap.getOne(module);
             for (SmiImports imports : module.getImports()) {
                 SmiModule importedModule = imports.getImportedModule();
-                Vertex importedVertex = vertexMap.get(importedModule);
+                Vertex importedVertex = vertexMap.getOne(importedModule);
                 try {
                     graph.addEdge(new DirectedSparseEdge(vertex, importedVertex));
                 } catch (Exception e) {

@@ -20,6 +20,7 @@ import org.jsmiparser.phase.oid.OidNode;
 import org.jsmiparser.phase.oid.OidProblemReporter;
 import org.jsmiparser.util.token.IdToken;
 import org.jsmiparser.util.token.Token;
+import org.apache.log4j.Logger;
 
 import java.io.PrintStream;
 import java.math.BigInteger;
@@ -31,6 +32,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class SmiOidValue extends SmiValue {
+
+    private static final Logger m_log = Logger.getLogger(SmiOidValue.class);
 
     //private OidNode m_oidComponent;
 
@@ -90,7 +93,7 @@ public class SmiOidValue extends SmiValue {
     public SmiOidValue getParent() {
         return m_parent;
 //        if (m_oidComponents.size() > 1) {
-//            return m_oidComponents.get(m_oidComponents.size() - 2).getSymbol();
+//            return m_oidComponents.getOne(m_oidComponents.size() - 2).getSymbol();
 //        } else {
 //            return null;
 //        }
@@ -102,7 +105,7 @@ public class SmiOidValue extends SmiValue {
         }
         SmiOidValue oldChild = parent.findChild(getLastOid());
         if (oldChild != null) {
-            System.out.println("there is already a child " + oldChild.getIdToken() + " for last oid " + getLastOid() + " under " + getIdToken());
+            m_log.warn("there is already a child " + oldChild.getIdToken() + " for last oid " + getLastOid() + " under " + getIdToken());
         }
         m_parent = parent;
         m_parent.m_childMap.put(getLastOid(), this);

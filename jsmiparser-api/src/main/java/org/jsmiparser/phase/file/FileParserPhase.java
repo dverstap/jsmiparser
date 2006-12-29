@@ -23,15 +23,21 @@ import org.jsmiparser.phase.lexer.LexerModule;
 import org.jsmiparser.smi.SmiJavaCodeNamingStrategy;
 import org.jsmiparser.smi.SmiMib;
 import org.jsmiparser.smi.SmiModule;
+import org.jsmiparser.smi.SmiVersion;
 import org.jsmiparser.util.location.Location;
 import org.jsmiparser.util.problem.ProblemReporterFactory;
 import org.jsmiparser.util.symbol.IdSymbolList;
 import org.jsmiparser.util.symbol.IdSymbolListImpl;
 import org.jsmiparser.util.token.IdToken;
+import org.apache.log4j.Logger;
+
+import java.util.Set;
 
 // TODO allow any URL's
 
 public class FileParserPhase implements Phase {
+
+    private static final Logger m_log = Logger.getLogger(FileParserPhase.class);
 
     private FileParserProblemReporter m_pr;
     private FileParserOptions m_options = new FileParserOptions();
@@ -68,9 +74,29 @@ public class FileParserPhase implements Phase {
             }
         }
 
+        if (m_log.isDebugEnabled()) {
+            Set<SmiModule> v1modules = m_mib.findModules(SmiVersion.V1);
+            Set<SmiModule> v2modules = m_mib.findModules(SmiVersion.V2);
+            m_log.debug("#SMIv1 modules=" + v1modules.size() + " #SMIv2 modules=" + v2modules.size());
+            if (v1modules.size() > v2modules.size()) {
+                m_log.debug("V2 modules:");
+                logMibs(v2modules);
+            } else if (v1modules.size() < v2modules.size()) {
+                m_log.debug("V1 modules:");
+                logMibs(v1modules);
+            }
+        }
+
+
         m_oidMgr.check();
 
         return m_mib;
+    }
+
+    private void logMibs(Set<SmiModule> modules) {
+        for (SmiModule module : modules) {
+            m_log.debug(module + ": #V1 features=" + module.getV1Features() + " #V2 features=" + module.getV2Features());
+        }
     }
 
     private void createParserModules() {

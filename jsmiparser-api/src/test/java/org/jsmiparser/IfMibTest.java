@@ -24,17 +24,17 @@ import org.jsmiparser.smi.SmiRow;
 import org.jsmiparser.smi.SmiTable;
 import org.jsmiparser.smi.SmiTextualConvention;
 import org.jsmiparser.smi.SmiType;
+import org.jsmiparser.smi.SmiVersion;
 import org.jsmiparser.smi.StatusV2;
 
 import java.net.URISyntaxException;
 
 public class IfMibTest extends AbstractMibTestCase {
 
-    public String[] getResources() {
-        return new String[]{
+    public IfMibTest() {
+        super(SmiVersion.V2,
                 "libsmi-0.4.5/mibs/iana/IANAifType-MIB",
-                "libsmi-0.4.5/mibs/ietf/IF-MIB"
-        };
+                "libsmi-0.4.5/mibs/ietf/IF-MIB");
     }
 
     public void testInterfaceIndex() {
@@ -100,7 +100,7 @@ public class IfMibTest extends AbstractMibTestCase {
         assertEquals("testing", ifAdminStatusType.getEnumValues().get(2).getId());
         assertEquals(3, ifAdminStatusType.getEnumValues().get(2).getValue().intValue());
 
-       // mib.getRootNode().dumpTree(System.out, "");
+        // mib.getRootNode().dumpTree(System.out, "");
 
         SmiModule ifMib = mib.findModule("IF-MIB");
         assertNotNull(ifMib);

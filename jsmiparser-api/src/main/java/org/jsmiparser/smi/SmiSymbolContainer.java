@@ -15,96 +15,40 @@
  */
 package org.jsmiparser.smi;
 
-import org.apache.log4j.Logger;
-
 import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
-public abstract class SmiSymbolContainer {
-	private static final Logger log = Logger.getLogger(SmiSymbolContainer.class);
+public interface SmiSymbolContainer {
 
-	private SmiSymbolContainer m_parent;
+	public SmiType findType(String id);
+	
+	public Collection<SmiType> getTypes();
 
-	Map<String, SmiType> m_typeMap = new LinkedHashMap<String, SmiType>();
-	Map<String, SmiSymbol> m_symbolMap = new LinkedHashMap<String, SmiSymbol>();
-	Map<String, SmiClass> m_classMap = new LinkedHashMap<String, SmiClass>();
-	Map<String, SmiAttribute> m_attributeMap = new LinkedHashMap<String, SmiAttribute>();
-	Map<String, SmiScalar> m_scalarMap = new LinkedHashMap<String, SmiScalar>();
-	Map<String, SmiTable> m_tableMap = new LinkedHashMap<String, SmiTable>();
-	Map<String, SmiRow> m_rowMap = new LinkedHashMap<String, SmiRow>();
-	Map<String, SmiColumn> m_columnMap = new LinkedHashMap<String, SmiColumn>();
+	public Collection<SmiSymbol> getSymbols();
 	
+	public SmiSymbol findSymbol(String id);
 	
+	public SmiClass findClass(String id);
 	
-	public SmiSymbolContainer(SmiSymbolContainer parent) {
-		super();
-		log.debug("SmiSymbolContainer constructor");
-		m_parent = parent;
-	}
+	public Collection<SmiClass> getClasses();
 	
-	public SmiType findType(String id) {
-		return m_typeMap.get(id);
-	}
-	
-	public Collection<SmiType> getTypes() {
-		return m_typeMap.values();
-	}
+	public SmiAttribute findAttribute(String id);
 
-	public Collection<SmiSymbol> getSymbols() {
-		return m_symbolMap.values();
-	}
+	public Collection<SmiAttribute> getAttributes();
 	
-	public SmiSymbol findSymbol(String id) {
-		return m_symbolMap.get(id);
-	}
+	public SmiScalar findScalar(String id);
 	
-	public SmiClass findClass(String id) {
-		return m_classMap.get(id);
-	}
-	
-	public Collection<SmiClass> getClasses() {
-		return m_classMap.values();
-	}
-	
-	public SmiAttribute findAttribute(String id) {
-		return m_attributeMap.get(id);
-	}
+	public Collection<SmiScalar> getScalars();
 
-	public Collection<SmiAttribute> getAttributes() {
-		return m_attributeMap.values();
-	}
+	public SmiTable findTable(String id);
 	
-	public SmiScalar findScalar(String id) {
-		return m_scalarMap.get(id);
-	}
+	public Collection<SmiTable> getTables();
 	
-	public Collection<SmiScalar> getScalars() {
-		return m_scalarMap.values();
-	}
+	public SmiRow findRow(String id);
+	
+	public Collection<SmiRow> getRows();
 
-	public SmiTable findTable(String id) {
-		return m_tableMap.get(id);
-	}
-	
-	public Collection<SmiTable> getTables() {
-		return m_tableMap.values();
-	}
-	
-	public SmiRow findRow(String id) {
-		return m_rowMap.get(id);
-	}
-	
-	public Collection<SmiRow> getRows() {
-		return m_rowMap.values();
-	}
-	
-	public SmiColumn findColumn(String id) {
-		return m_columnMap.get(id);
-	}
+    public SmiColumn findColumn(String id);
 
-    public Collection<SmiColumn> getColumns() {
-        return m_columnMap.values();
-    }
+    public Collection<SmiColumn> getColumns();
 
 }

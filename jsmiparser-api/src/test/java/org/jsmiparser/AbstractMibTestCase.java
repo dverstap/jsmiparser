@@ -16,28 +16,38 @@
 package org.jsmiparser;
 
 import junit.framework.TestCase;
-import org.jsmiparser.smi.SmiMib;
-import org.jsmiparser.smi.SmiType;
-import org.jsmiparser.smi.SmiConstants;
-import org.jsmiparser.smi.SmiPrimitiveType;
-import org.jsmiparser.smi.SmiModule;
-import org.jsmiparser.smi.SmiSymbol;
-import org.jsmiparser.smi.SmiOidValue;
-import org.jsmiparser.util.problem.ProblemEventHandler;
-import org.jsmiparser.util.problem.DefaultProblemEventHandler;
 import org.jsmiparser.parser.SmiDefaultParser;
 import org.jsmiparser.phase.file.FileParserOptions;
+import org.jsmiparser.smi.SmiConstants;
+import org.jsmiparser.smi.SmiMib;
+import org.jsmiparser.smi.SmiModule;
+import org.jsmiparser.smi.SmiOidValue;
+import org.jsmiparser.smi.SmiPrimitiveType;
+import org.jsmiparser.smi.SmiSymbol;
+import org.jsmiparser.smi.SmiType;
+import org.jsmiparser.smi.SmiVersion;
+import org.jsmiparser.util.problem.DefaultProblemEventHandler;
+import org.jsmiparser.util.problem.ProblemEventHandler;
 
-import java.net.URL;
-import java.net.URISyntaxException;
 import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 public abstract class AbstractMibTestCase extends TestCase {
+
+    private final SmiVersion m_version;
+    private final String[] m_resources;
 
     private SmiMib m_mib;
 
     private SmiType m_integer32;
     private SmiType m_counter;
+
+
+    protected AbstractMibTestCase(SmiVersion version, String... resources) {
+        m_version = version;
+        m_resources = resources;
+    }
 
     protected SmiMib getMib() {
         if (m_mib == null) {
@@ -62,11 +72,16 @@ public abstract class AbstractMibTestCase extends TestCase {
         } catch (URISyntaxException e) {
             fail(e.getMessage());
         }
-        options.addFile(new File(mibsDir, "RFC1155-SMI"));
-        options.addFile(new File(mibsDir, "SNMPv2-SMI"));
-        options.addFile(new File(mibsDir, "SNMPv2-TC"));
-        options.addFile(new File(mibsDir, "SNMPv2-CONF"));
-        options.addFile(new File(mibsDir, "SNMPv2-MIB"));
+
+        if (m_version == null || m_version == SmiVersion.V1) {
+            options.addFile(new File(mibsDir, "RFC1155-SMI"));
+        }
+        if (m_version == null || m_version == SmiVersion.V2) {
+            options.addFile(new File(mibsDir, "SNMPv2-SMI"));
+            options.addFile(new File(mibsDir, "SNMPv2-TC"));
+            options.addFile(new File(mibsDir, "SNMPv2-CONF"));
+            options.addFile(new File(mibsDir, "SNMPv2-MIB"));
+        }
 
         for (String resource : getResources()) {
             URL mibURL = getClass().getClassLoader().getResource(resource);
@@ -81,7 +96,9 @@ public abstract class AbstractMibTestCase extends TestCase {
 
     }
 
-    public abstract String[] getResources();
+    public final String[] getResources() {
+        return m_resources;
+    }
 
     public SmiType getInteger32() {
         if (m_integer32 == null) {
@@ -164,7 +181,6 @@ public abstract class AbstractMibTestCase extends TestCase {
                 count++;
             }
         }
-
 
         //mib.getRootNode().dumpTree(System.out, "");
         int totalChildCount = mib.getRootNode().getTotalChildCount();

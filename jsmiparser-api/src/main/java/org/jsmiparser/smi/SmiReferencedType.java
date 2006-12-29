@@ -38,8 +38,6 @@ public class SmiReferencedType extends SmiType {
         // is made, not the token where the Type is defined.
     }
 
-    // TODO put resolve algorithm here
-
     public IdToken getReferencedModuleToken() {
         return m_referencedModuleToken;
     }
@@ -60,10 +58,9 @@ public class SmiReferencedType extends SmiType {
     public SmiType resolveThis() {
         SmiType result = this;
 
-        SmiType type = findReferencedType(getModule().getMib());
+        SmiType type = getModule().resolveReference(getIdToken());
         if (type != null) {
             // TODO check compatibility
-            // TODO check module token; look in different places than module token
             // TODO verify
             if (getEnumValues() != null || getBitFields() != null || getRangeConstraints() != null || getSizeConstraints() != null)
             {
@@ -86,11 +83,6 @@ public class SmiReferencedType extends SmiType {
             throw new IllegalStateException();
         }
         return result;
-    }
-
-    // TODO change algorithm: use the specified module first, then look in the current module, then use the imports, then use the global mib
-    private SmiType findReferencedType(SmiMib mib) {
-        return mib.findType(getId());
     }
 
     @Override

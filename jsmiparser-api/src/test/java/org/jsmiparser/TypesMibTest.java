@@ -24,13 +24,14 @@ import org.jsmiparser.smi.SmiRange;
 import org.jsmiparser.smi.SmiTextualConvention;
 import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.StatusV2;
+import org.jsmiparser.smi.SmiVersion;
 
 import java.util.List;
 
 public class TypesMibTest extends AbstractMibTestCase {
 
-    public String[] getResources() {
-        return new String[]{"types.txt"};
+    public TypesMibTest() {
+        super(null, "types.txt");
     }
 
     // TODO need to add lots of new tests here

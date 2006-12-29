@@ -42,6 +42,10 @@ import org.jsmiparser.smi.SmiTable;
 import org.jsmiparser.smi.SmiTextualConvention;
 import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.StatusV2;
+import org.jsmiparser.smi.SmiVersion;
+import org.jsmiparser.smi.ObjectTypeAccessV1;
+import org.jsmiparser.smi.ObjectTypeAccessV2;
+import org.jsmiparser.smi.StatusV1;
 import org.jsmiparser.util.location.Location;
 import org.jsmiparser.util.symbol.IdSymbolImpl;
 import org.jsmiparser.util.token.BigIntegerToken;
@@ -203,7 +207,14 @@ public class ModuleParser extends IdSymbolImpl {
         return null;
     }
 
-    public IntKeywordToken intkt(Token idToken, SmiPrimitiveType primitiveType) {
+    public IntKeywordToken intkt(Token idToken, SmiPrimitiveType primitiveType, SmiVersion version) {
+        if (version != null) {
+            if (version == SmiVersion.V1) {
+                m_module.incV1Features();
+            } else {
+                m_module.incV2Features();
+            }
+        }
         return new IntKeywordToken(makeLocation(idToken), idToken.getText(), primitiveType);
     }
 
@@ -413,6 +424,7 @@ public class ModuleParser extends IdSymbolImpl {
     }
 
     public SmiType createBitsType(IdToken idToken, List<SmiNamedNumber> namedNumbers) {
+        m_module.incV2Features();
         if (idToken != null || namedNumbers != null) {
             SmiType type = new SmiType(idToken, m_module);
             type.setPrimitiveType(SmiPrimitiveType.BITS);
@@ -465,7 +477,7 @@ public class ModuleParser extends IdSymbolImpl {
     }
 
     public void addRange(List<SmiRange> rc, org.jsmiparser.util.token.Token rv1, org.jsmiparser.util.token.Token rv2) {
-        SmiRange range = null;
+        SmiRange range;
         if (rv2 != null) {
             range = new SmiRange(rv1, rv2);
         } else {
@@ -486,6 +498,26 @@ public class ModuleParser extends IdSymbolImpl {
         if (symbol != null) {
             m_module.addSymbol(symbol);
         }
+    }
+
+    public ObjectTypeAccessV1 findObjectTypeAccessV1(String text) {
+        m_module.incV1Features();
+        return ObjectTypeAccessV1.find(text);
+    }
+
+    public ObjectTypeAccessV2 findObjectTypeAccessV2(String text) {
+        m_module.incV2Features();
+        return ObjectTypeAccessV2.find(text);
+    }
+
+    public StatusV1 findStatusV1(String text) {
+        m_module.incV1Features();
+        return StatusV1.find(text);
+    }
+
+    public StatusV2 findStatusV2(String text) {
+        m_module.incV2Features();
+        return StatusV2.find(text);
     }
 
 }

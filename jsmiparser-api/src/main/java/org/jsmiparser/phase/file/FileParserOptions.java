@@ -99,7 +99,7 @@ public class FileParserOptions {
             itf = true;
         }
 
-        File result = null; //m_cache.get(moduleName);
+        File result = null; //m_cache.getOne(moduleName);
         if (result != null) {
             return result;
         }

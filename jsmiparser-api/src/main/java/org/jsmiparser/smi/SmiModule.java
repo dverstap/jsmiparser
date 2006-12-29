@@ -15,11 +15,20 @@
  */
 package org.jsmiparser.smi;
 
+import org.apache.log4j.Logger;
 import org.jsmiparser.util.token.IdToken;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-public class SmiModule extends SmiSymbolContainer {
+public class SmiModule implements SmiSymbolContainer {
+
+    private static final Logger m_log = Logger.getLogger(SmiModule.class);
 
     private SmiMib m_mib;
     private IdToken m_idToken;
@@ -28,20 +37,23 @@ public class SmiModule extends SmiSymbolContainer {
     private List<SmiImports> m_imports = new ArrayList<SmiImports>();
     private List<SmiSymbol> m_symbols = new ArrayList<SmiSymbol>();
 
+    Map<String, SmiType> m_typeMap = new LinkedHashMap<String, SmiType>();
+    Map<String, SmiSymbol> m_symbolMap = new LinkedHashMap<String, SmiSymbol>();
+    Map<String, SmiClass> m_classMap = new LinkedHashMap<String, SmiClass>();
+    Map<String, SmiAttribute> m_attributeMap = new LinkedHashMap<String, SmiAttribute>();
+    Map<String, SmiScalar> m_scalarMap = new LinkedHashMap<String, SmiScalar>();
+    Map<String, SmiTable> m_tableMap = new LinkedHashMap<String, SmiTable>();
+    Map<String, SmiRow> m_rowMap = new LinkedHashMap<String, SmiRow>();
+    Map<String, SmiColumn> m_columnMap = new LinkedHashMap<String, SmiColumn>();
+
+    private int m_v1Features = 0;
+    private int m_v2Features = 0;
+    private SmiVersion m_version;
+
+
     public SmiModule(SmiMib mib, IdToken idToken) {
-        super(mib);
         m_mib = mib;
 
-        /*
-        m_typeMap = new ContextMap<String, SmiType>(mib.m_typeMap);
-        m_symbolMap = new ContextMap<String, SmiSymbol>(mib.m_symbolMap);
-        m_classMap = new ContextMap<String, SmiClass>(mib.m_classMap);
-        m_attributeMap = new ContextMap<String, SmiAttribute>(mib.m_attributeMap);
-        m_scalarMap = new ContextMap<String, SmiScalar>(mib.m_scalarMap);
-        m_tableMap = new ContextMap<String, SmiTable>(mib.m_tableMap);
-        m_rowMap = new ContextMap<String, SmiRow>(mib.m_rowMap);
-        m_columnMap = new ContextMap<String, SmiColumn>(mib.m_columnMap);
-        */
         if (idToken != null) {
             setIdToken(idToken);
 
@@ -56,8 +68,113 @@ public class SmiModule extends SmiSymbolContainer {
         }
     }
 
+
+    public int getV1Features() {
+        return m_v1Features;
+    }
+
+    public void incV1Features() {
+        m_v1Features++;
+    }
+
+    public int getV2Features() {
+        return m_v2Features;
+    }
+
+    // TODO this needs to be applied in more cases, such as SNMPv2-CONF, where the V2 macro's are defined
+    public void incV2Features() {
+        m_v2Features++;
+    }
+
+    public SmiVersion getVersion() {
+        if (m_version == null && (m_v1Features != 0 || m_v2Features != 0)) {
+            m_version = determineVersion();
+        }
+        return m_version;
+    }
+
+    private SmiVersion determineVersion() {
+        if (m_v1Features > m_v2Features) {
+            return SmiVersion.V1;
+        } else if (m_v1Features < m_v2Features) {
+            return SmiVersion.V2;
+        }
+        m_log.info("interesting mib with equal amount of V1 and V2 features: " + m_v1Features + ": " + getIdToken());
+        return null;
+    }
+
+    public SmiType findType(String id) {
+        return m_typeMap.get(id);
+    }
+
+    public Collection<SmiType> getTypes() {
+        return m_typeMap.values();
+    }
+
+    public Collection<SmiSymbol> getSymbols() {
+        // TODO when the symbols have been resolved, set the m_symbols list to null?
+        if (m_symbols != null) {
+            return m_symbols;
+        } else {
+            return m_symbolMap.values();
+        }
+    }
+
+    public SmiSymbol findSymbol(String id) {
+        return m_symbolMap.get(id);
+    }
+
+    public SmiClass findClass(String id) {
+        return m_classMap.get(id);
+    }
+
+    public Collection<SmiClass> getClasses() {
+        return m_classMap.values();
+    }
+
+    public SmiAttribute findAttribute(String id) {
+        return m_attributeMap.get(id);
+    }
+
+    public Collection<SmiAttribute> getAttributes() {
+        return m_attributeMap.values();
+    }
+
+    public SmiScalar findScalar(String id) {
+        return m_scalarMap.get(id);
+    }
+
+    public Collection<SmiScalar> getScalars() {
+        return m_scalarMap.values();
+    }
+
+    public SmiTable findTable(String id) {
+        return m_tableMap.get(id);
+    }
+
+    public Collection<SmiTable> getTables() {
+        return m_tableMap.values();
+    }
+
+    public SmiRow findRow(String id) {
+        return m_rowMap.get(id);
+    }
+
+    public Collection<SmiRow> getRows() {
+        return m_rowMap.values();
+    }
+
+    public SmiColumn findColumn(String id) {
+        return m_columnMap.get(id);
+    }
+
+    public Collection<SmiColumn> getColumns() {
+        return m_columnMap.values();
+    }
+
+
     public void setIdToken(IdToken id) {
-        assert(m_idToken == null);
+        assert (m_idToken == null);
         m_idToken = id;
         m_mib.addModule(id.getId(), this);
     }
@@ -68,16 +185,6 @@ public class SmiModule extends SmiSymbolContainer {
 
     public String getId() {
         return m_idToken.getId();
-    }
-
-    @Override
-    public Collection<SmiSymbol> getSymbols() {
-        // TODO when the symbols have been resolved, set the m_symbols list to null?
-        if (m_symbols != null) {
-            return m_symbols;
-        } else {
-            return super.getSymbols();
-        }
     }
 
     public SmiMib getMib() {
@@ -174,7 +281,7 @@ public class SmiModule extends SmiSymbolContainer {
 
     /**
      * @return The list of IMPORTS statements. Note that there may be more than one IMPORTS statement per module,
-     * so this is not guaranteed to be unique.
+     *         so this is not guaranteed to be unique.
      */
     public List<SmiImports> getImports() {
         return m_imports;
@@ -193,9 +300,6 @@ public class SmiModule extends SmiSymbolContainer {
 
     public void fillTables() {
         for (SmiSymbol symbol : m_symbols) {
-//            if (symbol instanceof SmiTable) {
-//                m_tableMap.put(symbol.getId(), (SmiTable) symbol);
-//            }
             put(m_tableMap, SmiTable.class, symbol);
             put(m_attributeMap, SmiAttribute.class, symbol);
             put(m_typeMap, SmiType.class, symbol);
@@ -231,13 +335,38 @@ public class SmiModule extends SmiSymbolContainer {
             result = findImportedSymbol(idToken.getId());
         }
         if (result == null) {
-            result = getMib().findSymbol(idToken.getId());
-            if (result != null) {
-                // TODO give warning here
+            List<SmiSymbol> symbols = getMib().findSymbols(idToken.getId());
+            if (symbols.size() == 1) {
+                result = symbols.get(0);
+            } else if (symbols.size() > 0) {
+                result = determineBestMatch(idToken, symbols);
             }
         }
 
         return (T) result;
+    }
+
+    private SmiSymbol determineBestMatch(IdToken idToken, List<SmiSymbol> symbols) {
+        if (symbols.size() == 2) {
+            SmiSymbol s0 = symbols.get(0);
+            SmiSymbol s1 = symbols.get(1);
+            SmiVersion version0 = s0.getModule().getVersion();
+            SmiVersion version1 = s1.getModule().getVersion();
+            if (version0 != null && version1 != null && version0 != version1) {
+                if (getVersion() == version0) {
+                    return s0;
+                } else if (getVersion() == version1) {
+                    return s1;
+                }
+            }
+        }
+        if (m_log.isDebugEnabled()) {
+            m_log.debug("Couldn't choose between " + symbols.size() + " choices for resolving: " + idToken + ":");
+            for (SmiSymbol symbol : symbols) {
+                m_log.debug(symbol);
+            }
+        }
+        return null;
     }
 
     private SmiSymbol findImportedSymbol(String id) {
@@ -266,4 +395,8 @@ public class SmiModule extends SmiSymbolContainer {
         // TODO check for imports with the same id
     }
 
+
+    public String toString() {
+        return m_idToken.toString();
+    }
 }

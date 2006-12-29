@@ -21,17 +21,17 @@ import org.jsmiparser.smi.SmiAttribute;
 import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.SmiModule;
 import org.jsmiparser.smi.SmiRange;
+import org.jsmiparser.smi.SmiVersion;
 
 import java.util.List;
 
 public class BridgeMibTest extends AbstractMibTestCase {
 
-    public String[] getResources() {
-        return new String[]{
+    public BridgeMibTest() {
+        super(SmiVersion.V2,
                 "libsmi-0.4.5/mibs/iana/IANAifType-MIB",
                 "libsmi-0.4.5/mibs/ietf/IF-MIB",
-                "libsmi-0.4.5/mibs/ietf/BRIDGE-MIB"
-        };
+                "libsmi-0.4.5/mibs/ietf/BRIDGE-MIB");
     }
 
     public void testBridgeMib() {

@@ -18,7 +18,9 @@ package org.jsmiparser.smi;
 import org.jsmiparser.util.token.IdToken;
 import org.jsmiparser.util.token.BigIntegerToken;
 import org.jsmiparser.util.location.Location;
+import org.jsmiparser.util.multimap.GenMultiMap;
 import org.jsmiparser.phase.PhaseException;
+import org.apache.log4j.Logger;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -26,6 +28,9 @@ import java.util.Map;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.List;
 
 import edu.uci.ics.jung.graph.DirectedGraph;
 import edu.uci.ics.jung.graph.Vertex;
@@ -34,7 +39,10 @@ import edu.uci.ics.jung.graph.impl.DirectedSparseVertex;
 import edu.uci.ics.jung.graph.impl.DirectedSparseEdge;
 import edu.uci.ics.jung.utils.UserDataContainer;
 
-public class SmiMib extends SmiSymbolContainer {
+public class SmiMib implements SmiSymbolContainer {
+
+    private static final Logger m_log = Logger.getLogger(SmiMib.class);
+
 
     private static final UserDataContainer.CopyAction SHARED = new UserDataContainer.CopyAction.Shared();
 
@@ -42,10 +50,18 @@ public class SmiMib extends SmiSymbolContainer {
     private SmiCodeNamingStrategy m_codeNamingStrategy;
     private SmiOidValue m_rootNode;
 
+    GenMultiMap<String, SmiType> m_typeMap = GenMultiMap.hashMap();
+    GenMultiMap<String, SmiSymbol> m_symbolMap = GenMultiMap.hashMap();
+    GenMultiMap<String, SmiClass> m_classMap = GenMultiMap.hashMap();
+    GenMultiMap<String, SmiAttribute> m_attributeMap = GenMultiMap.hashMap();
+    GenMultiMap<String, SmiScalar> m_scalarMap = GenMultiMap.hashMap();
+    GenMultiMap<String, SmiTable> m_tableMap = GenMultiMap.hashMap();
+    GenMultiMap<String, SmiRow> m_rowMap = GenMultiMap.hashMap();
+    GenMultiMap<String, SmiColumn> m_columnMap = GenMultiMap.hashMap();
+
     int m_dummyOidNodesCount;
 
     public SmiMib(SmiCodeNamingStrategy codeNamingStrategy) {
-        super(null);
         //assert(codeNamingStrategy != null);
         m_codeNamingStrategy = codeNamingStrategy;
 
@@ -128,7 +144,10 @@ public class SmiMib extends SmiSymbolContainer {
     }
 
     void addModule(String id, SmiModule module) {
-        // TODO unique id check
+        SmiModule oldModule = m_moduleMap.get(id);
+        if (oldModule != null) {
+            throw new IllegalArgumentException("Mib already contains a module: " + oldModule);
+        }
         m_moduleMap.put(id, module);
     }
 
@@ -173,6 +192,7 @@ public class SmiMib extends SmiSymbolContainer {
             for (SmiModule importedModule : module.getImportedModules()) {
                 Vertex importedVertex = vertexMap.get(importedModule);
                 try {
+                    m_log.debug("Adding dependency from " + module.getId() + " to " + importedModule.getId());                    
                     graph.addEdge(new DirectedSparseEdge(v, importedVertex));
                 } catch (Exception e) {
                     String msg = "Exception while added dependency from " + module.getId() + " to " + importedModule.getId();
@@ -183,4 +203,109 @@ public class SmiMib extends SmiSymbolContainer {
         return graph;
     }
 
+    public List<SmiSymbol> findSymbols(String id) {
+        return m_symbolMap.getAll(id);
+    }
+
+    public SmiSymbol findSymbol(String id) {
+        return m_symbolMap.getOne(id);
+    }
+
+    public Collection<SmiSymbol> getSymbols() {
+        return m_symbolMap.values();
+    }
+
+    public List<SmiType> findTypes(String id) {
+        return m_typeMap.getAll(id);
+    }
+
+    public SmiType findType(String id) {
+        return m_typeMap.getOne(id);
+    }
+
+    public Collection<SmiType> getTypes() {
+        return m_typeMap.values();
+    }
+
+    public List<SmiClass> findClasses(String id) {
+        return m_classMap.getAll(id);
+    }
+
+    public SmiClass findClass(String id) {
+        return m_classMap.getOne(id);
+    }
+
+    public Collection<SmiClass> getClasses() {
+        return m_classMap.values();
+    }
+
+    public List<SmiAttribute> findAttributes(String id) {
+        return m_attributeMap.getAll(id);
+    }
+
+    public SmiAttribute findAttribute(String id) {
+        return m_attributeMap.getOne(id);
+    }
+
+    public Collection<SmiAttribute> getAttributes() {
+        return m_attributeMap.values();
+    }
+
+    public List<SmiScalar> findScalars(String id) {
+        return m_scalarMap.getAll(id);
+    }
+
+    public SmiScalar findScalar(String id) {
+        return m_scalarMap.getOne(id);
+    }
+
+    public Collection<SmiScalar> getScalars() {
+        return m_scalarMap.values();
+    }
+
+    public List<SmiTable> findTables(String id) {
+        return m_tableMap.getAll(id);
+    }
+
+    public SmiTable findTable(String id) {
+        return m_tableMap.getOne(id);
+    }
+
+    public Collection<SmiTable> getTables() {
+        return m_tableMap.values();
+    }
+
+    public List<SmiRow> findRows(String id) {
+        return m_rowMap.getAll(id);
+    }
+
+    public SmiRow findRow(String id) {
+        return m_rowMap.getOne(id);
+    }
+
+    public Collection<SmiRow> getRows() {
+        return m_rowMap.values();
+    }
+
+    public List<SmiColumn> findColumns(String id) {
+        return m_columnMap.getAll(id);
+    }
+
+    public SmiColumn findColumn(String id) {
+        return m_columnMap.getOne(id);
+    }
+
+    public Collection<SmiColumn> getColumns() {
+        return m_columnMap.values();
+    }
+
+    public Set<SmiModule> findModules(SmiVersion version) {
+        Set<SmiModule> result = new HashSet<SmiModule>();
+        for (SmiModule module : m_moduleMap.values()) {
+            if (module.getVersion() == null || module.getVersion() == version) {
+                result.add(module);
+            }
+        }
+        return result;
+    }
 }

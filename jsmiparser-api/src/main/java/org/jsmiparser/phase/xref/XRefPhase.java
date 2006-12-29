@@ -42,7 +42,7 @@ public class XRefPhase implements Phase {
         return null;
     }
 
-    public Object process(Object input) throws PhaseException {
+    public SmiMib process(Object input) throws PhaseException {
         SmiMib mib = (SmiMib) input;
 
         for (SmiModule module : mib.getModules()) {
@@ -58,6 +58,12 @@ public class XRefPhase implements Phase {
         List<SmiModule> modules = sortModules(mib);
         if (modules.size() != mib.getModules().size()) {
             throw new AssertionError("Topological sort failure");
+        }
+
+        if (m_log.isDebugEnabled()) {
+            for (SmiModule module : modules) {
+                m_log.debug(module.toString() + ": " + module.getVersion());
+            }
         }
 
         for (SmiModule module : modules) {

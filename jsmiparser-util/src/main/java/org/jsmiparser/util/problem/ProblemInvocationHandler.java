@@ -92,7 +92,7 @@ public class ProblemInvocationHandler <T> implements InvocationHandler {
                 if (ep != null) {
                     Class paramType = paramTypes[i];
                     String propertyName = ep.value();
-                    Method m = MethodUtils.getAccessibleMethod(paramType, "get" + TextUtil.ucFirst(propertyName), (Class[]) null);
+                    Method m = MethodUtils.getAccessibleMethod(paramType, "getOne" + TextUtil.ucFirst(propertyName), (Class[]) null);
                     if (m == null) {
                         m = MethodUtils.getAccessibleMethod(paramType, "is" + TextUtil.ucFirst(propertyName), (Class[]) null);
                     }

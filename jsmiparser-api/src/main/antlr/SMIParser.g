@@ -381,15 +381,15 @@ macroName returns [IdToken result = null]
 :
 (
 	ot:"OBJECT-TYPE"
-	| mi:"MODULE-IDENTITY"
-	| oi:"OBJECT-IDENTITY"
-	| nt:"NOTIFICATION-TYPE" 
-        | tc:"TEXTUAL-CONVENTION"
-	| og:"OBJECT-GROUP"
-	| ng:"NOTIFICATION-GROUP"
-	| mc:"MODULE-COMPLIANCE" 
-	| ac:"AGENT-CAPABILITIES"
-	| tt:"TRAP-TYPE"
+	| mi:"MODULE-IDENTITY"    { m_mp.getModule().incV2Features(); }
+	| oi:"OBJECT-IDENTITY"    { m_mp.getModule().incV2Features(); }
+	| nt:"NOTIFICATION-TYPE"  { m_mp.getModule().incV2Features(); }
+    | tc:"TEXTUAL-CONVENTION" { m_mp.getModule().incV2Features(); }
+	| og:"OBJECT-GROUP"       { m_mp.getModule().incV2Features(); }
+	| ng:"NOTIFICATION-GROUP" { m_mp.getModule().incV2Features(); }
+	| mc:"MODULE-COMPLIANCE"  { m_mp.getModule().incV2Features(); }
+	| ac:"AGENT-CAPABILITIES" { m_mp.getModule().incV2Features(); }
+	| tt:"TRAP-TYPE"{ m_mp.getModule().incV1Features(); }
 )
 {
 	result = m_mp.idt(ot, mi, oi, nt, tc, og, ng, mc, ac, tt);
@@ -454,19 +454,19 @@ integer_type[IdToken idToken] returns [SmiType t = null]
 // TODO should return SmiPrimitiveTypeIdToken here
 integer_type_kw[IdToken idToken] returns [IntKeywordToken t = null]
 :
-	i:INTEGER_KW	{ t = m_mp.intkt(i, SmiPrimitiveType.INTEGER); }
+	i:INTEGER_KW	{ t = m_mp.intkt(i, SmiPrimitiveType.INTEGER, null); }
 	| t=defined_integer_type_kw
 ;
 
 defined_integer_type_kw returns [IntKeywordToken t = null]
 :
-	i32:"Integer32"	  { return m_mp.intkt(i32, SmiPrimitiveType.INTEGER_32); }
-	| c:"Counter"	  { return m_mp.intkt(c,   SmiPrimitiveType.COUNTER_32);   }
-	| c32:"Counter32" { return m_mp.intkt(c32, SmiPrimitiveType.COUNTER_32); }
-	| g:"Gauge"       { return m_mp.intkt(g,   SmiPrimitiveType.GAUGE_32);   }
-	| g32:"Gauge32"   { return m_mp.intkt(g32, SmiPrimitiveType.GAUGE_32); }
-	| c64:"Counter64" { return m_mp.intkt(c64, SmiPrimitiveType.COUNTER_64); }
-	| tt:"TimeTicks"  { return m_mp.intkt(tt,  SmiPrimitiveType.TIME_TICKS);  }
+	i32:"Integer32"	  { return m_mp.intkt(i32, SmiPrimitiveType.INTEGER_32, SmiVersion.V2); }
+	| c:"Counter"	  { return m_mp.intkt(c,   SmiPrimitiveType.COUNTER_32, SmiVersion.V1);   }
+	| c32:"Counter32" { return m_mp.intkt(c32, SmiPrimitiveType.COUNTER_32, SmiVersion.V2); }
+	| g:"Gauge"       { return m_mp.intkt(g,   SmiPrimitiveType.GAUGE_32, SmiVersion.V1);   }
+	| g32:"Gauge32"   { return m_mp.intkt(g32, SmiPrimitiveType.GAUGE_32, SmiVersion.V2); }
+	| c64:"Counter64" { return m_mp.intkt(c64, SmiPrimitiveType.COUNTER_64, SmiVersion.V2); }
+	| tt:"TimeTicks"  { return m_mp.intkt(tt,  SmiPrimitiveType.TIME_TICKS, null);  }
 ;
 
 oid_type[IdToken idToken] returns [SmiType t = null]
@@ -750,7 +750,7 @@ objecttype_access_v1 returns [ObjectTypeAccessV1 result = null]
 :
 	l:LOWER
 {
-	result = ObjectTypeAccessV1.find(l.getText());
+	result = m_mp.findObjectTypeAccessV1(l.getText());
 }
 ;
 
@@ -758,7 +758,7 @@ objecttype_access_v2 returns [ObjectTypeAccessV2 result = null]
 :
 	l:LOWER
 {
-	result = ObjectTypeAccessV2.find(l.getText());
+	result = m_mp.findObjectTypeAccessV2(l.getText());
 }
 ;
 
@@ -774,7 +774,7 @@ status_v1 returns [StatusV1 status = null]
 :
 	l:LOWER
 {
-	status = StatusV1.find(l.getText());
+	status = m_mp.findStatusV1(l.getText());
 }
 ;
 
@@ -782,7 +782,7 @@ status_v2 returns [StatusV2 status = null]
 :
 	l:LOWER
 {
-	status = StatusV2.find(l.getText());
+	status = m_mp.findStatusV2(l.getText());
 }
 ;
 
