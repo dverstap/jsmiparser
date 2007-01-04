@@ -17,5 +17,5 @@ package org.jsmiparser.util.problem;
 
 public interface ProblemReporterFactory {
 
-    <T> T create(ClassLoader classLoader, Class<T> cl);
+    <T> T create(Class<T> cl);
 }

@@ -17,7 +17,6 @@
 package org.jsmiparser.smi;
 
 import org.apache.log4j.Logger;
-import org.jsmiparser.phase.oid.OidNode;
 import org.jsmiparser.phase.xref.XRefProblemReporter;
 import org.jsmiparser.util.token.IdToken;
 import org.jsmiparser.util.token.Token;
@@ -42,16 +41,6 @@ public class SmiOidValue extends SmiValue {
 
     public SmiOidValue(IdToken idToken, SmiModule module) {
         super(idToken, module);
-    }
-
-    // TODO delete
-    public OidNode getOidComponent() {
-        return null;
-//        return m_oidComponent;
-    }
-
-    public void setOidComponent(OidNode oidComponent) {
-//        m_oidComponent = oidComponent;
     }
 
     public List<OidComponent> getOidComponents() {

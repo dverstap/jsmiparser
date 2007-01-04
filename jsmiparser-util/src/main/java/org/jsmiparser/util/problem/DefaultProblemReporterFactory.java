@@ -15,22 +15,27 @@
  */
 package org.jsmiparser.util.problem;
 
-import org.apache.log4j.Logger;
-
 import java.lang.reflect.Proxy;
 
 public class DefaultProblemReporterFactory implements ProblemReporterFactory {
-    private static final Logger m_log = Logger.getLogger(DefaultProblemReporterFactory.class);
 
-    private ProblemEventHandler m_problemEventHandler;
+    private final ClassLoader m_classLoader;
+    private final ProblemEventHandler m_problemEventHandler;
 
     public DefaultProblemReporterFactory(ProblemEventHandler ph) {
+        m_classLoader = Thread.currentThread().getContextClassLoader();
         m_problemEventHandler = ph;
     }
 
-    public <T> T create(ClassLoader classLoader, Class<T> cl) {
-        Class[] classArray = { cl };
-        return (T) Proxy.newProxyInstance(classLoader, classArray, new ProblemInvocationHandler(cl, m_problemEventHandler));
+    public DefaultProblemReporterFactory(ClassLoader classLoader, ProblemEventHandler ph) {
+        m_classLoader = classLoader;
+        m_problemEventHandler = ph;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T create(Class<T> cl) {
+        Class[] classArray = {cl};
+        return (T) Proxy.newProxyInstance(m_classLoader, classArray, new ProblemInvocationHandler(cl, m_problemEventHandler));
     }
 
 }

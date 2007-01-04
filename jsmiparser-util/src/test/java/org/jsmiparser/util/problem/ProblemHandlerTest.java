@@ -28,8 +28,8 @@ public class ProblemHandlerTest extends TestCase {
     protected void setUp() throws Exception {
         m_teh = new TestProblemEventHandler();
 
-        ProblemReporterFactory factory = new DefaultProblemReporterFactory(m_teh);
-        m_eh = factory.create(ProblemHandlerTest.class.getClassLoader(),
+        ProblemReporterFactory factory = new DefaultProblemReporterFactory(this.getClass().getClassLoader(), m_teh);
+        m_eh = factory.create(
                 ExampleProblemReporter.class);
     }
 

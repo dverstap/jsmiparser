@@ -15,21 +15,22 @@
  */
 package org.jsmiparser.phase.file;
 
+import antlr.RecognitionException;
+import antlr.TokenStreamException;
 import org.apache.log4j.Logger;
 import org.jsmiparser.phase.Phase;
 import org.jsmiparser.phase.PhaseException;
 import org.jsmiparser.phase.file.antlr.SMILexer;
 import org.jsmiparser.phase.file.antlr.SMIParser;
-import org.jsmiparser.phase.oid.OidMgr;
-import org.jsmiparser.smi.SmiJavaCodeNamingStrategy;
 import org.jsmiparser.smi.SmiMib;
 import org.jsmiparser.smi.SmiModule;
 import org.jsmiparser.smi.SmiVersion;
-import org.jsmiparser.util.problem.ProblemReporterFactory;
+import org.jsmiparser.util.location.Location;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Set;
@@ -40,48 +41,31 @@ public class FileParserPhase implements Phase {
 
     private static final Logger m_log = Logger.getLogger(FileParserPhase.class);
 
-    private FileParserProblemReporter m_pr;
+    private FileParserProblemReporter m_reporter;
     private FileParserOptions m_options = new FileParserOptions();
-    private SmiMib m_mib;
-    private OidMgr m_oidMgr;
 
-    public FileParserPhase(ProblemReporterFactory prf) {
-        super();
-        m_pr = prf.create(FileParserPhase.class.getClassLoader(), FileParserProblemReporter.class);
-        m_oidMgr = new OidMgr(prf);
+    public FileParserPhase(FileParserProblemReporter reporter) {
+        m_reporter = reporter;
     }
 
     public FileParserProblemReporter getFileParserProblemReporter() {
-        return m_pr;
+        return m_reporter;
     }
 
-    public SmiMib process(Object input) throws PhaseException {
-        m_mib = new SmiMib(new SmiJavaCodeNamingStrategy("org.jsmiparser.mib")); // TODO
-
+    public SmiMib process(SmiMib mib) throws PhaseException {
         for (File file : m_options.getInputFileSet()) {
-            parse(file);
+            parse(mib, file);
         }
 
         if (m_log.isDebugEnabled()) {
-            Set<SmiModule> v1modules = m_mib.findModules(SmiVersion.V1);
-            Set<SmiModule> v2modules = m_mib.findModules(SmiVersion.V2);
-            m_log.debug("#SMIv1 modules=" + v1modules.size() + " #SMIv2 modules=" + v2modules.size());
-            if (v1modules.size() > v2modules.size()) {
-                m_log.debug("V2 modules:");
-                logMibs(v2modules);
-            } else if (v1modules.size() < v2modules.size()) {
-                m_log.debug("V1 modules:");
-                logMibs(v1modules);
-            }
+            logParseResults(mib);
         }
 
-
-        m_oidMgr.check();
-
-        return m_mib;
+        return mib;
     }
 
-    public void parse(File inputFile) {
+
+    public void parse(SmiMib mib, File inputFile) {
         InputStream is = null;
         try {
             m_log.debug("Parsing :" + inputFile);
@@ -89,24 +73,42 @@ public class FileParserPhase implements Phase {
             SMILexer lexer = new SMILexer(is);
 
             SMIParser parser = new SMIParser(lexer);
-            parser.init(m_mib, inputFile.getPath());
+            parser.init(mib, inputFile.getPath());
 
             // TODO should define this in the grammar
             SmiModule module = parser.module_definition();
             while (module != null) {
                 module = parser.module_definition();
             }
-        } catch (Exception e) {
-            throw new PhaseException(inputFile.getPath(), e);
+        } catch (TokenStreamException e) {
+            m_log.debug(e.getMessage(), e);
+            m_reporter.reportTokenStreamError(inputFile);
+        } catch (RecognitionException e) {
+            m_log.debug(e.getMessage(), e);
+            m_reporter.reportParseError(new Location(inputFile.getPath(), e.getLine(), e.getColumn()));
+        } catch (FileNotFoundException e) {
+            m_reporter.reportFileNotFound(inputFile);
         } finally {
             m_log.debug("Finished parsing :" + inputFile);
             if (is != null) {
                 try {
                     is.close();
                 } catch (IOException e) {
-                    throw new PhaseException(inputFile.getPath(), e);
+                    m_log.warn(e.getMessage(), e);
                 }
             }
+        }
+    }
+    private void logParseResults(SmiMib mib) {
+        Set<SmiModule> v1modules = mib.findModules(SmiVersion.V1);
+        Set<SmiModule> v2modules = mib.findModules(SmiVersion.V2);
+        m_log.debug("#SMIv1 modules=" + v1modules.size() + " #SMIv2 modules=" + v2modules.size());
+        if (v1modules.size() > v2modules.size()) {
+            m_log.debug("V2 modules:");
+            logMibs(v2modules);
+        } else if (v1modules.size() < v2modules.size()) {
+            m_log.debug("V1 modules:");
+            logMibs(v1modules);
         }
     }
 
@@ -120,11 +122,4 @@ public class FileParserPhase implements Phase {
         return m_options;
     }
 
-    public SmiMib getMib() {
-        return m_mib;
-    }
-
-    public OidMgr getOidMgr() {
-        return m_oidMgr;
-    }
 }

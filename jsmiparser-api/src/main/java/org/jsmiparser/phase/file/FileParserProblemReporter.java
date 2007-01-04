@@ -20,6 +20,17 @@ import org.jsmiparser.util.problem.annotations.ProblemMethod;
 import org.jsmiparser.util.token.IdToken;
 import org.jsmiparser.util.location.Location;
 
+import java.io.File;
+
 public interface FileParserProblemReporter {
 
+    @ProblemMethod(message="Lex error at: %s")
+    void reportTokenStreamError(File inputFile);
+
+    @ProblemMethod(message="Parse error at: %s")
+    void reportParseError(Location location);
+
+    @ProblemMethod(message = "File not found: %s")
+    void reportFileNotFound(File file);
 }
+

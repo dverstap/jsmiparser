@@ -20,23 +20,18 @@ import org.jsmiparser.phase.PhaseException;
 import org.jsmiparser.phase.file.FileParserOptions;
 import org.jsmiparser.smi.SmiAttribute;
 import org.jsmiparser.smi.SmiMib;
+import org.jsmiparser.smi.SmiModule;
 import org.jsmiparser.smi.SmiOidValue;
 import org.jsmiparser.smi.SmiRow;
+import org.jsmiparser.smi.SmiSymbol;
 import org.jsmiparser.smi.SmiTable;
 import org.jsmiparser.smi.SmiTextualConvention;
 import org.jsmiparser.smi.SmiType;
-import org.jsmiparser.smi.SmiModule;
-import org.jsmiparser.smi.SmiSymbol;
 import org.jsmiparser.util.jung.DirectedCycleException;
-import org.jsmiparser.util.problem.DefaultProblemEventHandler;
-import org.jsmiparser.util.problem.ProblemEventHandler;
 
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Set;
-import java.util.HashSet;
 import java.util.Collection;
 
 public class SmiDefaultParserTest extends AbstractMibTestCase {
@@ -49,9 +44,7 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         URL mibsURL = getClass().getClassLoader().getResource("libsmi-0.4.5/mibs");
         File mibsDir = new File(mibsURL.toURI());
 
-        ProblemEventHandler problemEventHandler = new DefaultProblemEventHandler();
-        SmiDefaultParser parser = new SmiDefaultParser(problemEventHandler);
-        parser.init();
+        SmiDefaultParser parser = new SmiDefaultParser();
         FileParserOptions options = (FileParserOptions) parser.getFileParserPhase().getOptions();
         initFileParserOptions(options, mibsDir, "iana", "ietf", "site", "tubs");
 
@@ -98,7 +91,7 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
 
         SmiModule ifModule = mib.findModule("IF-MIB");
         assertNotNull(ifModule);
-        
+
         SmiType interfaceIndex = ifModule.findType("InterfaceIndex");
         assertNotNull(interfaceIndex);
         Collection<SmiType> interfaceIndexes = mib.findTypes("InterfaceIndex");
@@ -194,8 +187,6 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
             assertTrue(dir.toString(), dir.exists());
             assertTrue(dir.toString(), dir.isDirectory());
 
-            Set<String> v1mibs = new HashSet<String>(Arrays.asList(V1_MIBS));
-
             options.getUsedDirSet().add(dir);
             File[] files = dir.listFiles();
             for (File file : files) {
@@ -218,9 +209,7 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         URL mibURL = getClass().getClassLoader().getResource("cyclic_deps.txt");
         File mibFile = new File(mibURL.toURI());
 
-        ProblemEventHandler problemEventHandler = new DefaultProblemEventHandler();
-        SmiDefaultParser parser = new SmiDefaultParser(problemEventHandler);
-        parser.init();
+        SmiDefaultParser parser = new SmiDefaultParser();
         FileParserOptions options = (FileParserOptions) parser.getFileParserPhase().getOptions();
         options.addFile(mibFile);
 
@@ -233,31 +222,5 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
             assertTrue(expected.getCause() instanceof DirectedCycleException);
         }
     }
-
-    private String[] V1_MIBS = new String[]{
-            //"RFC1155-SMI",
-            "FDDI-SMT73-MIB",
-            //"RFC1271-MIB",
-            "DECNET-PHIV-MIB",
-            "PPP-SEC-MIB",
-            "APPLETALK-MIB",
-            //"RFC-1212",
-            "CLNS-MIB",
-            "SOURCE-ROUTING-MIB",
-            "MIOX25-MIB",
-            "RFC1382-MIB",
-            //"TOKEN-RING-RMON-MIB",
-            "PPP-BRIDGE-NCP-MIB",
-            "RFC1285-MIB",
-            "RFC1065-SMI",
-            "RFC1269-MIB",
-            "PPP-IP-NCP-MIB",
-            "RFC-1215",
-            "RFC1316-MIB",
-            //"RFC1213-MIB", even though this is a v1 mib, there are references to it from V2 mibs
-            "TCPIPX-MIB",
-            "RFC1414-MIB",
-            "RFC1381-MIB",
-            "PPP-LCP-MIB"};
 
 }

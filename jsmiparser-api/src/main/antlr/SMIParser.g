@@ -22,7 +22,6 @@ package org.jsmiparser.phase.file.antlr;
 import org.jsmiparser.util.token.*;
 import org.jsmiparser.smi.*;
 import org.jsmiparser.phase.file.*;
-import org.jsmiparser.phase.oid.*;
 import org.jsmiparser.util.location.Location;
 
 import antlr.*;

@@ -15,87 +15,115 @@
  */
 package org.jsmiparser.parser;
 
-import org.jsmiparser.phase.CompositePhase;
 import org.jsmiparser.phase.Phase;
 import org.jsmiparser.phase.PhaseException;
-import org.jsmiparser.phase.xref.XRefPhase;
+import org.jsmiparser.phase.check.ErrorCheckPhase;
 import org.jsmiparser.phase.file.FileParserPhase;
-import org.jsmiparser.phase.oid.OidResolverPhase;
-import org.jsmiparser.phase.quality.MibQualityCheckerPhase;
+import org.jsmiparser.phase.file.FileParserProblemReporter;
+import org.jsmiparser.phase.xref.XRefPhase;
+import org.jsmiparser.phase.xref.XRefProblemReporter;
+import org.jsmiparser.smi.SmiJavaCodeNamingStrategy;
 import org.jsmiparser.smi.SmiMib;
 import org.jsmiparser.util.problem.DefaultProblemEventHandler;
 import org.jsmiparser.util.problem.DefaultProblemReporterFactory;
 import org.jsmiparser.util.problem.ProblemEventHandler;
+import org.jsmiparser.util.problem.ProblemReporterFactory;
 
-public class SmiDefaultParser extends CompositePhase implements SmiParser {
+public class SmiDefaultParser implements SmiParser {
 
-    private Phase m_fileParserPhase;
-    private Phase m_oidResolverPhase;
-    private Phase m_xrefPhase;
-    private Phase m_mibQualityCheckerPhase;
+    protected boolean m_failOnError = false;
+    protected ProblemEventHandler m_problemEventHandler;
+    protected ProblemReporterFactory m_problemReporterFactory;
+    protected Phase m_fileParserPhase;
+    protected Phase m_xRefPhase;
+    protected Phase m_errorCheckPhase;
 
-    protected SmiDefaultParser() {
-        super(new DefaultProblemReporterFactory(new DefaultProblemEventHandler()));
-    }
+    public SmiMib parse() throws PhaseException {
+        SmiMib mib = new SmiMib(new SmiJavaCodeNamingStrategy("org.jsmiparser.mib")); // TODO
+        
+        Phase[] phases = new Phase[]{getFileParserPhase(), getXRefPhase(), getErrorCheckPhase()};
+        for (Phase phase : phases) {
+            phase.process(mib);
+        }
 
-    public SmiDefaultParser(ProblemEventHandler problemEventHandler) {
-        super(new DefaultProblemReporterFactory(problemEventHandler));
-    }
-
-    public void init() {
-
-        m_fileParserPhase = createFileParserPhase();
-        addOptionalPhase(m_fileParserPhase);
-
-        m_oidResolverPhase = createOidResolverPhase();
-        addOptionalPhase(m_oidResolverPhase);
-
-        m_xrefPhase = createXRefPhase();
-        addOptionalPhase(m_xrefPhase);
-
-        m_mibQualityCheckerPhase = createMibQualityCheckerPhase();
-        addOptionalPhase(m_mibQualityCheckerPhase);
+        if (m_failOnError && m_problemEventHandler.isNotOk()) {
+            throw new PhaseException();
+        }
+        return mib;
     }
 
     protected Phase createFileParserPhase() {
-        return new FileParserPhase(m_problemReporterFactory);
-    }
-
-    protected OidResolverPhase createOidResolverPhase() {
-        return new OidResolverPhase(m_problemReporterFactory);
+        return new FileParserPhase(getProblemReporterFactory().create(FileParserProblemReporter.class));
     }
 
     protected Phase createXRefPhase() {
-        return new XRefPhase(m_problemReporterFactory);
+        return new XRefPhase(getProblemReporterFactory().create(XRefProblemReporter.class));
     }
 
-    protected Phase createMibQualityCheckerPhase() {
-        return new MibQualityCheckerPhase(m_problemReporterFactory);
+    private Phase createErrorCheckPhase() {
+        return new ErrorCheckPhase();
     }
 
-    private void addOptionalPhase(Phase phase) {
-        if (phase != null) {
-            addPhase(phase);
+    public ProblemEventHandler getProblemEventHandler() {
+        if (m_problemEventHandler == null) {
+            m_problemEventHandler = new DefaultProblemEventHandler();
         }
+        return m_problemEventHandler;
+    }
+
+    public void setProblemEventHandler(ProblemEventHandler problemEventHandler) {
+        m_problemEventHandler = problemEventHandler;
+    }
+
+    public ProblemReporterFactory getProblemReporterFactory() {
+        if (m_problemReporterFactory == null) {
+            m_problemReporterFactory = new DefaultProblemReporterFactory(getProblemEventHandler());
+        }
+        return m_problemReporterFactory;
+    }
+
+    public void setProblemReporterFactory(ProblemReporterFactory problemReporterFactory) {
+        m_problemReporterFactory = problemReporterFactory;
     }
 
     public Phase getFileParserPhase() {
+        if (m_fileParserPhase == null) {
+            m_fileParserPhase = createFileParserPhase();
+        }
         return m_fileParserPhase;
     }
 
-    public Phase getXrefPhase() {
-        return m_xrefPhase;
+    public void setFileParserPhase(Phase fileParserPhase) {
+        m_fileParserPhase = fileParserPhase;
     }
 
-    public Phase getOidResolverPhase() {
-        return m_oidResolverPhase;
+    public Phase getXRefPhase() {
+        if (m_xRefPhase == null) {
+            m_xRefPhase = createXRefPhase();
+        }
+        return m_xRefPhase;
     }
 
-    public Phase getMibQualityCheckerPhase() {
-        return m_mibQualityCheckerPhase;
+    public void setXRefPhase(Phase xrefPhase) {
+        m_xRefPhase = xrefPhase;
     }
 
-    public SmiMib parse() throws PhaseException {
-        return (SmiMib) process(null);
+    public Phase getErrorCheckPhase() {
+        if (m_errorCheckPhase == null) {
+            m_errorCheckPhase = createErrorCheckPhase();
+        }
+        return m_errorCheckPhase;
+    }
+
+    public void setErrorCheckPhase(Phase errorCheckPhase) {
+        m_errorCheckPhase = errorCheckPhase;
+    }
+
+    public boolean isFailOnError() {
+        return m_failOnError;
+    }
+
+    public void setFailOnError(boolean failOnError) {
+        m_failOnError = failOnError;
     }
 }

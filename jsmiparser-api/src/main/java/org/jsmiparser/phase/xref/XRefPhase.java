@@ -15,28 +15,28 @@
  */
 package org.jsmiparser.phase.xref;
 
+import edu.uci.ics.jung.graph.DirectedEdge;
+import edu.uci.ics.jung.graph.Vertex;
+import org.apache.log4j.Logger;
 import org.jsmiparser.phase.Phase;
 import org.jsmiparser.phase.PhaseException;
-import org.jsmiparser.util.problem.ProblemReporterFactory;
-import org.jsmiparser.util.jung.TopologicalSort;
+import org.jsmiparser.smi.SmiAttribute;
+import org.jsmiparser.smi.SmiMib;
+import org.jsmiparser.smi.SmiModule;
+import org.jsmiparser.smi.SmiOidValue;
+import org.jsmiparser.smi.SmiSymbol;
+import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.util.jung.DirectedCycleException;
-import org.jsmiparser.smi.*;
-import org.apache.log4j.Logger;
+import org.jsmiparser.util.jung.TopologicalSort;
 
-import java.util.*;
-
-import edu.uci.ics.jung.graph.Vertex;
-import edu.uci.ics.jung.graph.DirectedEdge;
+import java.util.ArrayList;
+import java.util.List;
 
 public class XRefPhase implements Phase {
 
     private static final Logger m_log = Logger.getLogger(XRefPhase.class);
 
     private XRefProblemReporter m_reporter;
-
-    public XRefPhase(ProblemReporterFactory reporterFactory) {
-        m_reporter = reporterFactory.create(getClass().getClassLoader(), XRefProblemReporter.class);
-    }
 
     public XRefPhase(XRefProblemReporter reporter) {
         m_reporter = reporter;
@@ -46,9 +46,7 @@ public class XRefPhase implements Phase {
         return null;
     }
 
-    public SmiMib process(Object input) throws PhaseException {
-        SmiMib mib = (SmiMib) input;
-
+    public SmiMib process(SmiMib mib) throws PhaseException {
         for (SmiModule module : mib.getModules()) {
             module.fillTables();
         }
@@ -102,7 +100,7 @@ public class XRefPhase implements Phase {
             List<SmiModule> result = new ArrayList<SmiModule>(sortedVertexes.size());
             for (Vertex sortedVertex : sortedVertexes) {
                 SmiModule module = (SmiModule) sortedVertex.getUserDatum(SmiModule.class);
-                assert(module != null);
+                assert (module != null);
                 result.add(module);
             }
             //Collections.reverse(result);
