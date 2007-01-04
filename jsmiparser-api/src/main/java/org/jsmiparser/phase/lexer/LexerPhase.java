@@ -46,7 +46,7 @@ public class LexerPhase implements Phase {
     public LexerMib process(Object input) throws PhaseException {
         m_lexerMib = new LexerMib();
 
-        for (File file : m_options.getInputFileList()) {
+        for (File file : m_options.getInputFileSet()) {
             lexFile(file);
         }
 

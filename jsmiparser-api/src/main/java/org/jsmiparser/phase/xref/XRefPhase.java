@@ -27,6 +27,7 @@ import org.apache.log4j.Logger;
 import java.util.*;
 
 import edu.uci.ics.jung.graph.Vertex;
+import edu.uci.ics.jung.graph.DirectedEdge;
 
 public class XRefPhase implements Phase {
 
@@ -108,6 +109,15 @@ public class XRefPhase implements Phase {
             //Collections.reverse(result);
             return result;
         } catch (DirectedCycleException e) {
+            if (m_log.isDebugEnabled()) {
+                StringBuilder sb = new StringBuilder("Cycle consists of: \n");
+                for (DirectedEdge edge : e.getCycleEdges()) {
+                    SmiModule src = (SmiModule) edge.getSource().getUserDatum(SmiModule.class);
+                    SmiModule dest = (SmiModule) edge.getDest().getUserDatum(SmiModule.class);
+                    sb.append(src.getId()).append(" -> ").append(dest.getId()).append("\n");
+                }
+                m_log.debug(sb);
+            }
             throw new PhaseException(e);
         }
     }

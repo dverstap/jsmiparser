@@ -105,12 +105,15 @@ public class SmiMib implements SmiSymbolContainer {
     }
 
     public SmiModule createModule(IdToken idToken) {
-        return new SmiModule(this, idToken);
-    }
-
-    public SmiModule createModule() {
-        // used to create class definition module from XML using the ReflectContentHandler.
-        return new SmiModule(this, null);
+        SmiModule oldModule = m_moduleMap.get(idToken.getId());
+        if (oldModule != null) {
+            // TODO error handling
+            // should do this in the XRefPhase
+            throw new IllegalStateException("Duplicate module: " + oldModule.getIdToken() + " is already defined when adding: " + idToken);
+        }
+        SmiModule module = new SmiModule(this, idToken);
+        m_moduleMap.put(module.getId(), module);
+        return module;
     }
 
     public void determineInheritanceRelations() {

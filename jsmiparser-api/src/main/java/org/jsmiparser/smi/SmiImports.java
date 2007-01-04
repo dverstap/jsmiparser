@@ -18,28 +18,32 @@ package org.jsmiparser.smi;
 import org.jsmiparser.util.location.Location;
 import org.jsmiparser.util.token.IdToken;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-// TODO idtokens
 public class SmiImports {
 
-    private IdToken m_moduleToken;
-    private SmiModule m_module;
-    private List<IdToken> m_symbolTokens;
-    private List<SmiSymbol> m_symbols = new ArrayList<SmiSymbol>();
+    private final SmiModule m_importerModule;
+    private final IdToken m_moduleToken;
+    private final List<IdToken> m_symbolTokens;
 
-    public SmiImports(IdToken moduleToken, List<IdToken> symbolTokens) {
+    private SmiModule m_module;
+    private List<SmiSymbol> m_symbols;
+
+    public SmiImports(SmiModule importerModule, IdToken moduleToken, List<IdToken> symbolTokens) {
+        assert(importerModule != null);
+        assert(moduleToken != null);
+        assert(symbolTokens != null);
+        
+        m_importerModule = importerModule;
+
         m_moduleToken = moduleToken;
-        m_symbolTokens = symbolTokens;
+        m_symbolTokens = Collections.unmodifiableList(symbolTokens);
     }
 
     public SmiModule getModule() {
         return m_module;
-    }
-
-    public void setModule(SmiModule module) {
-        m_module = module;
     }
 
     public List<SmiSymbol> getSymbols() {
@@ -65,5 +69,24 @@ public class SmiImports {
             }
         }
         return null;
+    }
+
+    public void resolveImports() {
+        List<SmiSymbol> symbols = new ArrayList<SmiSymbol>();
+        m_module = m_importerModule.getMib().findModule(m_moduleToken.getId());
+        if (m_module != null) {
+            for (IdToken idToken : getSymbolTokens()) {
+                SmiSymbol symbol = getModule().findSymbol(idToken.getId());
+                if (symbol != null) {
+                    symbols.add(symbol);
+                } else {
+                    // TODO
+                    System.err.println("Couldn't resolve import " + idToken);
+                }
+            }
+        } else {
+            System.err.println("Couldn't resolve imported module " + m_moduleToken);
+        }
+        m_symbols = Collections.unmodifiableList(symbols);
     }
 }

@@ -15,22 +15,26 @@
  */
 package org.jsmiparser.phase.file;
 
+import antlr.RecognitionException;
+import antlr.TokenStreamException;
+import org.apache.log4j.Logger;
 import org.jsmiparser.phase.Phase;
 import org.jsmiparser.phase.PhaseException;
+import org.jsmiparser.phase.file.antlr.SMILexer;
+import org.jsmiparser.phase.file.antlr.SMIParser;
 import org.jsmiparser.phase.oid.OidMgr;
-import org.jsmiparser.phase.lexer.LexerMib;
-import org.jsmiparser.phase.lexer.LexerModule;
 import org.jsmiparser.smi.SmiJavaCodeNamingStrategy;
 import org.jsmiparser.smi.SmiMib;
 import org.jsmiparser.smi.SmiModule;
 import org.jsmiparser.smi.SmiVersion;
-import org.jsmiparser.util.location.Location;
 import org.jsmiparser.util.problem.ProblemReporterFactory;
-import org.jsmiparser.util.symbol.IdSymbolList;
-import org.jsmiparser.util.symbol.IdSymbolListImpl;
-import org.jsmiparser.util.token.IdToken;
-import org.apache.log4j.Logger;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Set;
 
 // TODO allow any URL's
@@ -42,10 +46,6 @@ public class FileParserPhase implements Phase {
     private FileParserProblemReporter m_pr;
     private FileParserOptions m_options = new FileParserOptions();
     private SmiMib m_mib;
-    private LexerMib m_lexerMib;
-    private IdSymbolList<ModuleParser> m_parserModules = new IdSymbolListImpl<ModuleParser>();
-    private IdSymbolList<ModuleParser> m_usedParserModules = new IdSymbolListImpl<ModuleParser>();
-    private IdSymbolList<ModuleParser> m_unresolvedParserModules = new IdSymbolListImpl<ModuleParser>();
     private OidMgr m_oidMgr;
 
     public FileParserPhase(ProblemReporterFactory prf) {
@@ -59,19 +59,10 @@ public class FileParserPhase implements Phase {
     }
 
     public SmiMib process(Object input) throws PhaseException {
-        m_lexerMib = (LexerMib) input;
-
-        createParserModules();
-
         m_mib = new SmiMib(new SmiJavaCodeNamingStrategy("org.jsmiparser.mib")); // TODO
-        for (String moduleId : SkipStandardException.m_skippedStandardModules) {
-            new SmiModule(m_mib, new IdToken(new Location(moduleId), moduleId));
-        }
 
-        for (ModuleParser moduleParser : m_parserModules) {
-            if (moduleParser.getState() == ModuleParser.State.UNPARSED) {
-                moduleParser.parse();
-            }
+        for (File file : m_options.getInputFileSet()) {
+            parse(file);
         }
 
         if (m_log.isDebugEnabled()) {
@@ -93,52 +84,46 @@ public class FileParserPhase implements Phase {
         return m_mib;
     }
 
+    public void parse(File inputFile) {
+        InputStream is = null;
+        try {
+            m_log.debug("Parsing :" + inputFile);
+            is = new BufferedInputStream(new FileInputStream(inputFile));
+            SMILexer lexer = new SMILexer(is);
+
+            SMIParser parser = new SMIParser(lexer);
+            parser.init(m_mib, inputFile.getPath());
+
+            // TODO should define this in the grammar
+            SmiModule module = parser.module_definition();
+            while (module != null) {
+                module = parser.module_definition();
+            }
+        } catch (Exception e) {
+            throw new PhaseException(inputFile.getPath(), e);
+        } finally {
+            m_log.debug("Finished parsing :" + inputFile);
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    throw new PhaseException(inputFile.getPath(), e);
+                }
+            }
+        }
+    }
+
     private void logMibs(Set<SmiModule> modules) {
         for (SmiModule module : modules) {
             m_log.debug(module + ": #V1 features=" + module.getV1Features() + " #V2 features=" + module.getV2Features());
         }
     }
 
-    private void createParserModules() {
-        for (LexerModule lm : m_lexerMib.getModules()) {
-            m_parserModules.add(new ModuleParser(this, lm));
-        }
-    }
-
-    public ModuleParser use(IdToken idToken) {
-        ModuleParser pm = m_parserModules.find(idToken.getId());
-        if (pm == null) {
-            pm = m_usedParserModules.find(idToken.getId());
-            if (pm == null) {
-                LexerModule lm = null;
-                if (m_lexerMib != null) {
-                    lm = m_lexerMib.find(idToken.getId());
-                }
-                if (lm != null) {
-                    pm = new ModuleParser(this, lm);
-                    m_usedParserModules.add(pm);
-                } else {
-                    m_pr.reportCannotFindModuleFile(idToken);
-                    pm = new ModuleParser(this, new LexerModule(idToken.getId(), null));
-                    m_unresolvedParserModules.add(pm);
-                }
-            }
-        }
-        if (pm.getState() == ModuleParser.State.UNPARSED) {
-            pm.parse();
-        }
-        return pm;
-    }
-
-
     public FileParserOptions getOptions() {
         return m_options;
     }
 
     public SmiMib getMib() {
-        if (m_mib == null) {
-            m_mib = new SmiMib(new SmiJavaCodeNamingStrategy("org.jsmiparser.mib")); // TODO
-        }
         return m_mib;
     }
 

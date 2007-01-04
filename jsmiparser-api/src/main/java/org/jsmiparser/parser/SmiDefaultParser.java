@@ -88,9 +88,9 @@ public class SmiDefaultParser extends CompositePhase implements SmiParser {
         }
     }
 
-    public Phase getLexerPhase() {
-        return m_lexerPhase;
-    }
+//    public Phase getLexerPhase() {
+//        return m_lexerPhase;
+//    }
 
     public Phase getFileParserPhase() {
         return m_fileParserPhase;

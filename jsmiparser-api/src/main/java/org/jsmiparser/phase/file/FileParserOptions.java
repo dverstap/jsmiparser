@@ -27,15 +27,13 @@ public class FileParserOptions {
 
     private static final Logger m_log = Logger.getLogger(FileParserOptions.class);
 
-    private List<File> m_usedDirList = new ArrayList<File>();
-    private List<File> m_inputDirList = new ArrayList<File>();
+    private Set<File> m_usedDirSet = new LinkedHashSet<File>();
+    private Set<File> m_inputDirSet = new LinkedHashSet<File>();
 
-    private List<File> m_usedFileList = new ArrayList<File>();
-    private List<File> m_inputFileList = new ArrayList<File>();
+    private Set<File> m_usedFileSet = new LinkedHashSet<File>();
+    private Set<File> m_inputFileSet = new LinkedHashSet<File>();
 
-    private List<String> m_extensions = new ArrayList<String>();
-
-    private Map<String, File> m_cache = new HashMap<String, File>();
+    private Set<String> m_extensions = new LinkedHashSet<String>();
 
     public FileParserOptions() {
         m_extensions.add(".mib");
@@ -43,40 +41,40 @@ public class FileParserOptions {
         m_extensions.add(".asn");
     }
 
-    public List<File> getUsedDirList() {
-        return m_usedDirList;
+    public Set<File> getUsedDirSet() {
+        return m_usedDirSet;
     }
 
-    public void setUsedDirList(List<File> usedDirList) {
-        m_usedDirList = usedDirList;
+    public void setUsedDirSet(Set<File> usedDirSet) {
+        m_usedDirSet = usedDirSet;
     }
 
-    public List<File> getInputDirList() {
-        return m_inputDirList;
+    public Set<File> getInputDirSet() {
+        return m_inputDirSet;
     }
 
-    public void setInputDirList(List<File> inputDirList) {
-        m_inputDirList = inputDirList;
+    public void setInputDirSet(Set<File> inputDirSet) {
+        m_inputDirSet = inputDirSet;
     }
 
-    public List<File> getUsedFileList() {
-        return m_usedFileList;
+    public Set<File> getUsedFileSet() {
+        return m_usedFileSet;
     }
 
-    public void setUsedFileList(List<File> usedFileList) {
-        m_usedFileList = usedFileList;
+    public void setUsedFileSet(Set<File> usedFileSet) {
+        m_usedFileSet = usedFileSet;
     }
 
-    public List<File> getInputFileList() {
-        return m_inputFileList;
+    public Set<File> getInputFileSet() {
+        return m_inputFileSet;
     }
 
-    public void setInputFileList(List<File> inputFileList) {
-        m_inputFileList = inputFileList;
+    public void setInputFileSet(Set<File> inputFileSet) {
+        m_inputFileSet = inputFileSet;
     }
 
     public void addFile(File file) {
-        m_inputFileList.add(file);
+        m_inputFileSet.add(file);
     }
 
     public void addResource(String path) throws URISyntaxException {
@@ -85,11 +83,11 @@ public class FileParserOptions {
         addFile(pathFile);
     }
 
-    public List<String> getExtensions() {
+    public Set<String> getExtensions() {
         return m_extensions;
     }
 
-    public void setExtensions(List<String> extensions) {
+    public void setExtensions(Set<String> extensions) {
         m_extensions = extensions;
     }
 
@@ -99,12 +97,7 @@ public class FileParserOptions {
             itf = true;
         }
 
-        File result = null; //m_cache.getOne(moduleName);
-        if (result != null) {
-            return result;
-        }
-
-        result = findModuleFile(moduleName, null);
+        File result = findModuleFile(moduleName, null);
         if (result != null) {
             return result;
         }
@@ -192,15 +185,11 @@ public class FileParserOptions {
             fileName += extension;
         }
 
-        File result = doFindFile(fileName);
-        if (result != null) {
-            m_cache.put(moduleName, result);
-        }
-        return result;
+        return doFindFile(fileName);
     }
 
     private File doFindFile(String fileName) {
-        for (File dir : m_usedDirList) {
+        for (File dir : m_usedDirSet) {
             File file = new File(dir, fileName);
             if (file.exists()) {
                 return file;

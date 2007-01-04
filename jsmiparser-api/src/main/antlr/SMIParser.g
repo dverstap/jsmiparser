@@ -23,6 +23,7 @@ import org.jsmiparser.util.token.*;
 import org.jsmiparser.smi.*;
 import org.jsmiparser.phase.file.*;
 import org.jsmiparser.phase.oid.*;
+import org.jsmiparser.util.location.Location;
 
 import antlr.*;
 import java.lang.* ;
@@ -299,16 +300,41 @@ options	{
 }
 
 {
+    private SmiMib m_mib;
+    private String m_locationPath;
 	private ModuleParser m_mp;
 
-	public void init(ModuleParser mp) {
-		m_mp = mp;
-	}
+    public void init(SmiMib mib, String locationPath) {
+        m_mib = mib;
+        m_locationPath = locationPath;
+    }
 
-	public SmiModule getCurrentModule() {
-		return m_mp.getModule();
-	}
+    SmiModule beginModule(Token idToken) {
+        if (m_mp != null) {
+            throw new IllegalStateException("Module " + m_mp.getModule().getIdToken() + " is still being parsed when trying to create new module " + idToken); // TODO
+        }
+        SmiModule module = m_mib.createModule(idt(idToken));
+        m_mp = new ModuleParser(module);
+        return module;
+    }
+
+    private void endModule() {
+        if (m_mp == null) {
+            throw new IllegalStateException("No module is being parsed");
+        }
+        m_mp = null;
+    }
+
+    private Location makeLocation(Token token) {
+        return new Location(m_locationPath, token.getLine(), token.getColumn());
+    }
+
+    private IdToken idt(Token idToken) {
+        return new IdToken(makeLocation(idToken), idToken.getText());
+    }
+
 }
+
 
 
 module_definition returns [SmiModule result = null]
@@ -317,15 +343,14 @@ module_definition returns [SmiModule result = null]
 	result=module_identifier DEFINITIONS_KW ASSIGN_OP
 	BEGIN_KW
 		module_body
-	END_KW
+	END_KW { endModule(); }
 ;
 
 module_identifier returns [SmiModule result = null]
 :
 	u:UPPER
 {
-	SkipStandardException.skip(u.getText());
-	result = m_mp.makeModule(u);
+	result = beginModule(u);
 }
 ;
 

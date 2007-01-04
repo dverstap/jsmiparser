@@ -53,6 +53,9 @@ public class SmiModule implements SmiSymbolContainer {
 
     public SmiModule(SmiMib mib, IdToken idToken) {
         m_mib = mib;
+        if (idToken == null) {
+            throw new IllegalArgumentException();
+        }
 
         if (idToken != null) {
             setIdToken(idToken);
@@ -382,15 +385,8 @@ public class SmiModule implements SmiSymbolContainer {
 
     public void resolveImports() {
         for (SmiImports imports : m_imports) {
-            for (IdToken idToken : imports.getSymbolTokens()) {
-                SmiSymbol symbol = imports.getModule().findSymbol(idToken.getId());
-                if (symbol != null) {
-                    imports.getSymbols().add(symbol);
-                } else {
-                    // TODO
-                    System.err.println("Couldn't resolve import " + idToken);
-                }
-            }
+            imports.resolveImports();
+
         }
         // TODO check for imports with the same id
     }

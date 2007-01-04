@@ -38,6 +38,8 @@ public class IfMibTest extends AbstractMibTestCase {
     }
 
     public void testInterfaceIndex() {
+        assertEquals(7, getMib().getModules().size());
+
         SmiTextualConvention interfaceIndex = getMib().findTextualConvention("InterfaceIndex");
         assertNotNull(interfaceIndex);
         assertEquals("InterfaceIndex", interfaceIndex.getId());

@@ -52,7 +52,7 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         ProblemEventHandler problemEventHandler = new DefaultProblemEventHandler();
         SmiDefaultParser parser = new SmiDefaultParser(problemEventHandler);
         parser.init();
-        FileParserOptions options = (FileParserOptions) parser.getLexerPhase().getOptions();
+        FileParserOptions options = (FileParserOptions) parser.getFileParserPhase().getOptions();
         initFileParserOptions(options, mibsDir, "iana", "ietf", "site", "tubs");
 
         SmiMib mib = parser.parse();
@@ -196,7 +196,7 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
 
             Set<String> v1mibs = new HashSet<String>(Arrays.asList(V1_MIBS));
 
-            options.getUsedDirList().add(dir);
+            options.getUsedDirSet().add(dir);
             File[] files = dir.listFiles();
             for (File file : files) {
                 if (file.isFile()
@@ -221,7 +221,7 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         ProblemEventHandler problemEventHandler = new DefaultProblemEventHandler();
         SmiDefaultParser parser = new SmiDefaultParser(problemEventHandler);
         parser.init();
-        FileParserOptions options = (FileParserOptions) parser.getLexerPhase().getOptions();
+        FileParserOptions options = (FileParserOptions) parser.getFileParserPhase().getOptions();
         options.addFile(mibFile);
 
         try {

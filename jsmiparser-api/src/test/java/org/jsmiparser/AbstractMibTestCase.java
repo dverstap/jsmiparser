@@ -62,7 +62,7 @@ public abstract class AbstractMibTestCase extends TestCase {
         SmiDefaultParser parser = new SmiDefaultParser(problemEventHandler);
         parser.init();
 
-        FileParserOptions options = (FileParserOptions) parser.getLexerPhase().getOptions();
+        FileParserOptions options = (FileParserOptions) parser.getFileParserPhase().getOptions();
 
 
         URL mibsURL = getClass().getClassLoader().getResource("libsmi-0.4.5/mibs/ietf");
