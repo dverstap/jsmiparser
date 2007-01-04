@@ -56,7 +56,8 @@ public class LexerPhase implements Phase {
     }
 
     private void lexFile(File file) {
-
+        m_log.debug("lexFile: " + file);
+        
         InputStream is = null;
         try {
             is = new BufferedInputStream(new FileInputStream(file));

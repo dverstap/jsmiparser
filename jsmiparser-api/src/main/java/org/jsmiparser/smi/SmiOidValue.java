@@ -124,15 +124,16 @@ public class SmiOidValue extends SmiValue {
             SmiOidValue oidValue = null;
             if (isFirst) {
                 if (iterator.hasNext()) {
-                    oidValue = resolveOidComponent(oidComponent, parent, prevOidComponent, isFirst);
+                    oidValue = resolveOidComponent(oidComponent, parent, isFirst);
                 } else {
                     assert(m_oidComponents.size() == 1);
                     assert(parent == null);
                     oidValue = this;
+                    setParent(getModule().getMib().getRootNode());
                 }
                 isFirst = false;
             } else if (iterator.hasNext()) {
-                oidValue = resolveOidComponent(oidComponent, parent, prevOidComponent, isFirst);
+                oidValue = resolveOidComponent(oidComponent, parent, isFirst);
                 if (oidValue == null) {
                     oidValue = createDummyOidValue(oidComponent, prevOidComponent, parent);
                 }
@@ -169,8 +170,8 @@ public class SmiOidValue extends SmiValue {
         return oidValue;
     }
 
-    private SmiOidValue resolveOidComponent(OidComponent oidComponent, SmiOidValue parent, OidComponent prevOidComponent, boolean isFirst) {
-        SmiOidValue oidValue = null;
+    private SmiOidValue resolveOidComponent(OidComponent oidComponent, SmiOidValue parent, boolean isFirst) {
+        SmiOidValue oidValue;
         if (oidComponent.getIdToken() != null) {
             oidValue = getModule().resolveReference(oidComponent.getIdToken());
             if (oidValue != null) {
@@ -184,6 +185,9 @@ public class SmiOidValue extends SmiValue {
         } else {
             if (isFirst) {
                 oidValue = getModule().getMib().getRootNode().m_childMap.get(oidComponent.getValueToken().getValue());
+                if (oidValue == null) {
+                    throw new IllegalStateException(oidComponent.getValueToken().toString());
+                }
             } else if (parent != null) {
                 oidValue = parent.m_childMap.get(oidComponent.getValueToken().getValue());
             } else {
@@ -221,7 +225,9 @@ public class SmiOidValue extends SmiValue {
     }
 
     /**
-     * This method makes no sense; it is used exclusively for unit testing.
+     * This method as such makes no sense; it is used mainly for unit testing.
+     *
+     * @return The root of the oid tree.
      */
     public SmiOidValue getRootNode() {
         SmiOidValue parent = this;

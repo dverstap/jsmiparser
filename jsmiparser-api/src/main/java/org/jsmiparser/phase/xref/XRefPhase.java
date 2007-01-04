@@ -51,6 +51,8 @@ public class XRefPhase implements Phase {
 
         mib.fillTables();
 
+        mib.defineMissingStandardOids();
+
         for (SmiModule module : mib.getModules()) {
             module.resolveImports();
         }

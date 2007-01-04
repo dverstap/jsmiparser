@@ -15,29 +15,28 @@
  */
 package org.jsmiparser.smi;
 
-import org.jsmiparser.util.token.IdToken;
-import org.jsmiparser.util.token.BigIntegerToken;
-import org.jsmiparser.util.location.Location;
-import org.jsmiparser.util.multimap.GenMultiMap;
-import org.jsmiparser.phase.PhaseException;
-import org.apache.log4j.Logger;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.List;
-
 import edu.uci.ics.jung.graph.DirectedGraph;
 import edu.uci.ics.jung.graph.Vertex;
+import edu.uci.ics.jung.graph.impl.DirectedSparseEdge;
 import edu.uci.ics.jung.graph.impl.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.impl.DirectedSparseVertex;
-import edu.uci.ics.jung.graph.impl.DirectedSparseEdge;
 import edu.uci.ics.jung.utils.UserDataContainer;
+import org.apache.log4j.Logger;
+import org.jsmiparser.phase.PhaseException;
+import org.jsmiparser.util.location.Location;
+import org.jsmiparser.util.multimap.GenMultiMap;
+import org.jsmiparser.util.token.BigIntegerToken;
+import org.jsmiparser.util.token.IdToken;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class SmiMib implements SmiSymbolContainer {
 
@@ -60,6 +59,7 @@ public class SmiMib implements SmiSymbolContainer {
     GenMultiMap<String, SmiColumn> m_columnMap = GenMultiMap.hashMap();
 
     int m_dummyOidNodesCount;
+    private SmiModule m_internalModule;
 
     public SmiMib(SmiCodeNamingStrategy codeNamingStrategy) {
         //assert(codeNamingStrategy != null);
@@ -71,30 +71,20 @@ public class SmiMib implements SmiSymbolContainer {
 
     private SmiModule buildInternalMib() {
         Location location = new Location("JSMI_INTERNAL_MIB");
-        SmiModule module = new SmiModule(this, new IdToken(location, "JSMI_INTERNAL_MIB"));
+        m_internalModule = new SmiModule(this, new IdToken(location, "JSMI_INTERNAL_MIB"));
 
-        m_rootNode = new SmiOidValue(new IdToken(location, "JSMI_INTERNAL_ROOT_NODE"), module);
+        m_rootNode = new SmiOidValue(new IdToken(location, "JSMI_INTERNAL_ROOT_NODE"), m_internalModule);
         m_rootNode.setOidComponents(Collections.<OidComponent>emptyList());
 
-        SmiOidValue itu = new SmiOidValue(new IdToken(location, "itu"), module);
-        ArrayList<OidComponent> ituOid = new ArrayList<OidComponent>();
-        ituOid.add(new OidComponent(null, new BigIntegerToken(location, false, "0")));
-        itu.setOidComponents(ituOid);
-        itu.setParent(m_rootNode);
-        module.addSymbol(itu);
-
-        SmiOidValue iso = new SmiOidValue(new IdToken(location, "iso"), module);
-        ArrayList<OidComponent> isoOid = new ArrayList<OidComponent>();
-        isoOid.add(new OidComponent(null, new BigIntegerToken(location, false, "1")));
-        iso.setOidComponents(isoOid);
-        iso.setParent(m_rootNode);
-        module.addSymbol(iso);
-
-        return module;
+        return m_internalModule;
     }
 
     public SmiOidValue getRootNode() {
         return m_rootNode;
+    }
+
+    public SmiModule getInternalModule() {
+        return m_internalModule;
     }
 
     public SmiModule findModule(String id) {
@@ -134,7 +124,7 @@ public class SmiMib implements SmiSymbolContainer {
                     row.addParentRow(indexRow);
                 }
             } else if (row.getIndexes().size() > 1) {
-                SmiIndex lastIndex = row.getIndexes().get(row.getIndexes().size()-1);
+                SmiIndex lastIndex = row.getIndexes().get(row.getIndexes().size() - 1);
                 SmiRow lastIndexRow = lastIndex.getColumn().getRow();
                 if (row != lastIndexRow && row.hasSameIndexes(lastIndexRow)) {
                     row.addParentRow(lastIndexRow);
@@ -192,7 +182,7 @@ public class SmiMib implements SmiSymbolContainer {
             for (SmiModule importedModule : module.getImportedModules()) {
                 Vertex importedVertex = vertexMap.get(importedModule);
                 try {
-                    m_log.debug("Adding dependency from " + module.getId() + " to " + importedModule.getId());                    
+                    m_log.debug("Adding dependency from " + module.getId() + " to " + importedModule.getId());
                     graph.addEdge(new DirectedSparseEdge(v, importedVertex));
                 } catch (Exception e) {
                     String msg = "Exception while added dependency from " + module.getId() + " to " + importedModule.getId();
@@ -307,5 +297,31 @@ public class SmiMib implements SmiSymbolContainer {
             }
         }
         return result;
+    }
+
+    public void defineMissingStandardOids() {
+        Location location = m_internalModule.getIdToken().getLocation();
+
+        if (findSymbols("itu").isEmpty()) {
+            SmiOidValue itu = new SmiOidValue(new IdToken(location, "itu"), m_internalModule);
+            ArrayList<OidComponent> ituOid = new ArrayList<OidComponent>();
+            ituOid.add(new OidComponent(null, new BigIntegerToken(location, false, "0")));
+            itu.setOidComponents(ituOid);
+            itu.setParent(m_rootNode);
+            m_internalModule.addSymbol(itu);
+            m_internalModule.m_symbolMap.put(itu.getId(), itu);
+            m_symbolMap.put(itu.getId(), itu);
+        }
+
+        if (findSymbols("iso").isEmpty()) {
+            SmiOidValue iso = new SmiOidValue(new IdToken(location, "iso"), m_internalModule);
+            ArrayList<OidComponent> isoOid = new ArrayList<OidComponent>();
+            isoOid.add(new OidComponent(null, new BigIntegerToken(location, false, "1")));
+            iso.setOidComponents(isoOid);
+            iso.setParent(m_rootNode);
+            m_internalModule.addSymbol(iso);
+            m_internalModule.m_symbolMap.put(iso.getId(), iso);
+            m_symbolMap.put(iso.getId(), iso);
+        }
     }
 }
