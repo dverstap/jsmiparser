@@ -19,7 +19,6 @@ import org.jsmiparser.phase.CompositePhase;
 import org.jsmiparser.phase.Phase;
 import org.jsmiparser.phase.PhaseException;
 import org.jsmiparser.phase.xref.XRefPhase;
-import org.jsmiparser.phase.lexer.LexerPhase;
 import org.jsmiparser.phase.file.FileParserPhase;
 import org.jsmiparser.phase.oid.OidResolverPhase;
 import org.jsmiparser.phase.quality.MibQualityCheckerPhase;
@@ -34,7 +33,6 @@ public class SmiDefaultParser extends CompositePhase implements SmiParser {
     private Phase m_oidResolverPhase;
     private Phase m_xrefPhase;
     private Phase m_mibQualityCheckerPhase;
-    private Phase m_lexerPhase;
 
     protected SmiDefaultParser() {
         super(new DefaultProblemReporterFactory(new DefaultProblemEventHandler()));
@@ -45,9 +43,6 @@ public class SmiDefaultParser extends CompositePhase implements SmiParser {
     }
 
     public void init() {
-
-        m_lexerPhase = createLexerPhase();
-        addOptionalPhase(m_lexerPhase);
 
         m_fileParserPhase = createFileParserPhase();
         addOptionalPhase(m_fileParserPhase);
@@ -60,10 +55,6 @@ public class SmiDefaultParser extends CompositePhase implements SmiParser {
 
         m_mibQualityCheckerPhase = createMibQualityCheckerPhase();
         addOptionalPhase(m_mibQualityCheckerPhase);
-    }
-
-    protected Phase createLexerPhase() {
-        return new LexerPhase(m_problemReporterFactory);
     }
 
     protected Phase createFileParserPhase() {
@@ -88,12 +79,12 @@ public class SmiDefaultParser extends CompositePhase implements SmiParser {
         }
     }
 
-//    public Phase getLexerPhase() {
-//        return m_lexerPhase;
-//    }
-
     public Phase getFileParserPhase() {
         return m_fileParserPhase;
+    }
+
+    public Phase getXrefPhase() {
+        return m_xrefPhase;
     }
 
     public Phase getOidResolverPhase() {
