@@ -22,21 +22,15 @@ import java.lang.annotation.RetentionPolicy;
 
 /**
  * This annotation can be used to pass an object as a parameter to an error method, but include
- * one of its properties in the message. For example:
+ * one of its properties in the message.
  *
- * @todo example
- * <pre>
- *  void reportListSize(List<?> l)
- * </pre
- *
- * @todo rename to ProblemProperty
  */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ProblemProperty {
 
     /**
-     * The name of the property of the parameter that will be included in the message.
+     * @return The name of the property of the parameter that will be included in the message.
      */
     String value();
 }

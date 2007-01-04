@@ -22,12 +22,4 @@ import org.jsmiparser.util.location.Location;
 
 public interface FileParserProblemReporter {
 
-    @ProblemMethod(message = "Cannot find file for module %s")
-    void reportCannotFindModuleFile(IdToken moduleToken);
-
-    @ProblemMethod(message = "Duplicate assignment %s originally defined at %s")
-    void reportDuplicateAssignment(SmiSymbol duplicate, SmiSymbol original);
-
-    @ProblemMethod(message = "Found %s %s but expected a % instance.")
-    void reportIncompatibleType(Location l, String foundClassName, String id, String expectedClassName);
 }

@@ -32,12 +32,6 @@ public class SmiSymbol implements Serializable, Comparable {
     public SmiSymbol(IdToken idToken, SmiModule module) {
         super();
 
-/* TODO
-        if (idToken == null) {
-            throw new IllegalArgumentException();
-        }
-*/
-
         if (module == null) {
             throw new IllegalArgumentException();
         }

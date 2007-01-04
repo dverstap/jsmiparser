@@ -22,8 +22,6 @@ import org.jsmiparser.util.location.Location;
 import java.util.Formatter;
 
 public class ProblemEvent {
-    private static final Logger m_log = Logger.getLogger(ProblemEvent.class);
-
     private Location m_location;
     private ProblemSeverity m_severity;
     private String m_messageKey;
@@ -56,7 +54,7 @@ public class ProblemEvent {
 
     /**
      * @todo actually implement localization.
-     * @return
+     * @return The localized message
      */
     public String getLocalizedMessage() {
   		Formatter f = new Formatter();

@@ -17,6 +17,7 @@ package org.jsmiparser.smi;
 
 import org.apache.log4j.Logger;
 import org.jsmiparser.util.token.IdToken;
+import org.jsmiparser.phase.xref.XRefProblemReporter;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -383,10 +384,9 @@ public class SmiModule implements SmiSymbolContainer {
         return null;
     }
 
-    public void resolveImports() {
+    public void resolveImports(XRefProblemReporter reporter) {
         for (SmiImports imports : m_imports) {
-            imports.resolveImports();
-
+            imports.resolveImports(reporter);
         }
         // TODO check for imports with the same id
     }

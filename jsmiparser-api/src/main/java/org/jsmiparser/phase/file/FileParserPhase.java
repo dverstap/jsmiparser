@@ -15,8 +15,6 @@
  */
 package org.jsmiparser.phase.file;
 
-import antlr.RecognitionException;
-import antlr.TokenStreamException;
 import org.apache.log4j.Logger;
 import org.jsmiparser.phase.Phase;
 import org.jsmiparser.phase.PhaseException;
@@ -32,7 +30,6 @@ import org.jsmiparser.util.problem.ProblemReporterFactory;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Set;

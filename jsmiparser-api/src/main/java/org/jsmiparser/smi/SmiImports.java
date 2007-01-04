@@ -17,6 +17,7 @@ package org.jsmiparser.smi;
 
 import org.jsmiparser.util.location.Location;
 import org.jsmiparser.util.token.IdToken;
+import org.jsmiparser.phase.xref.XRefProblemReporter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -71,7 +72,7 @@ public class SmiImports {
         return null;
     }
 
-    public void resolveImports() {
+    public void resolveImports(XRefProblemReporter reporter) {
         List<SmiSymbol> symbols = new ArrayList<SmiSymbol>();
         m_module = m_importerModule.getMib().findModule(m_moduleToken.getId());
         if (m_module != null) {
@@ -80,12 +81,11 @@ public class SmiImports {
                 if (symbol != null) {
                     symbols.add(symbol);
                 } else {
-                    // TODO
-                    System.err.println("Couldn't resolve import " + idToken);
+                    reporter.reportCannotFindImportedSymbol(idToken, m_moduleToken);
                 }
             }
         } else {
-            System.err.println("Couldn't resolve imported module " + m_moduleToken);
+            reporter.reportCannotFindModule(m_moduleToken);
         }
         m_symbols = Collections.unmodifiableList(symbols);
     }

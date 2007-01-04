@@ -17,6 +17,5 @@ package org.jsmiparser.util.problem;
 
 public interface ProblemReporterFactory {
 
-    // TODO add LocationFactory as a parameter here?
     <T> T create(ClassLoader classLoader, Class<T> cl);
 }

@@ -28,14 +28,10 @@ public enum AccessAll {
     READ_CREATE,
     NOT_IMPLEMENTED;
 
-    //private Set<MacroType> m_supportedMacroTypes = EnumSet.noneOf(MacroType.class);
     private String m_keyword;
 
     private AccessAll(MacroType... macroTypes) {
         m_keyword = name().toLowerCase().replace('_', '-');
-//        for (MacroType macroType : macroTypes) {
-//            m_supportedMacroTypes.add(macroType);
-//        }
     }
 
     public String toString() {

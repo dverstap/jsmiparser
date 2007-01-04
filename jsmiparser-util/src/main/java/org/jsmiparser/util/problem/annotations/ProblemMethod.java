@@ -26,9 +26,11 @@ import java.lang.annotation.RetentionPolicy;
 public @interface ProblemMethod {
 
     /**
-     * @todo There is still one design flaw here: the message might contain type directives
+     * todo There is still one design flaw here: the message might contain type directives
      * (such as {1,time}) which are incompatible with the type of parameters (or parameter property)
      * of the method).
+     *
+     * @return The error message.
      */
     String message();
 
