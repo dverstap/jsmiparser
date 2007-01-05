@@ -51,11 +51,11 @@ public class SmiMib implements SmiSymbolContainer {
 
     GenMultiMap<String, SmiType> m_typeMap = GenMultiMap.hashMap();
     GenMultiMap<String, SmiSymbol> m_symbolMap = GenMultiMap.hashMap();
-    GenMultiMap<String, SmiAttribute> m_attributeMap = GenMultiMap.hashMap();
-    GenMultiMap<String, SmiAttribute> m_scalarMap = GenMultiMap.hashMap();
+    GenMultiMap<String, SmiVariable> m_variableMap = GenMultiMap.hashMap();
+    GenMultiMap<String, SmiVariable> m_scalarMap = GenMultiMap.hashMap();
     GenMultiMap<String, SmiTable> m_tableMap = GenMultiMap.hashMap();
     GenMultiMap<String, SmiRow> m_rowMap = GenMultiMap.hashMap();
-    GenMultiMap<String, SmiAttribute> m_columnMap = GenMultiMap.hashMap();
+    GenMultiMap<String, SmiVariable> m_columnMap = GenMultiMap.hashMap();
 
     int m_dummyOidNodesCount;
     private SmiModule m_internalModule;
@@ -147,7 +147,7 @@ public class SmiMib implements SmiSymbolContainer {
         // TODO deal with double defines
         for (SmiModule module : m_moduleMap.values()) {
             m_typeMap.putAll(module.m_typeMap);
-            m_attributeMap.putAll(module.m_attributeMap);
+            m_variableMap.putAll(module.m_variableMap);
             m_rowMap.putAll(module.m_rowMap);
             m_tableMap.putAll(module.m_tableMap);
             m_scalarMap.putAll(module.m_scalarMap);
@@ -218,27 +218,27 @@ public class SmiMib implements SmiSymbolContainer {
         return m_typeMap.values();
     }
 
-    public List<SmiAttribute> findAttributes(String id) {
-        return m_attributeMap.getAll(id);
+    public List<SmiVariable> findVariables(String id) {
+        return m_variableMap.getAll(id);
     }
 
-    public SmiAttribute findAttribute(String id) {
-        return m_attributeMap.getOne(id);
+    public SmiVariable findVariable(String id) {
+        return m_variableMap.getOne(id);
     }
 
-    public Collection<SmiAttribute> getAttributes() {
-        return m_attributeMap.values();
+    public Collection<SmiVariable> getVariables() {
+        return m_variableMap.values();
     }
 
-    public List<SmiAttribute> findScalars(String id) {
+    public List<SmiVariable> findScalars(String id) {
         return m_scalarMap.getAll(id);
     }
 
-    public SmiAttribute findScalar(String id) {
+    public SmiVariable findScalar(String id) {
         return m_scalarMap.getOne(id);
     }
 
-    public Collection<SmiAttribute> getScalars() {
+    public Collection<SmiVariable> getScalars() {
         return m_scalarMap.values();
     }
 
@@ -266,15 +266,15 @@ public class SmiMib implements SmiSymbolContainer {
         return m_rowMap.values();
     }
 
-    public List<SmiAttribute> findColumns(String id) {
+    public List<SmiVariable> findColumns(String id) {
         return m_columnMap.getAll(id);
     }
 
-    public SmiAttribute findColumn(String id) {
+    public SmiVariable findColumn(String id) {
         return m_columnMap.getOne(id);
     }
 
-    public Collection<SmiAttribute> getColumns() {
+    public Collection<SmiVariable> getColumns() {
         return m_columnMap.values();
     }
 

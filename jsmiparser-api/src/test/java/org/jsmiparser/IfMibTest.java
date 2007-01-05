@@ -15,7 +15,7 @@
  */
 package org.jsmiparser;
 
-import org.jsmiparser.smi.SmiAttribute;
+import org.jsmiparser.smi.SmiVariable;
 import org.jsmiparser.smi.SmiConstants;
 import org.jsmiparser.smi.SmiMib;
 import org.jsmiparser.smi.SmiModule;
@@ -28,6 +28,7 @@ import org.jsmiparser.smi.SmiVersion;
 import org.jsmiparser.smi.StatusV2;
 
 import java.net.URISyntaxException;
+import java.util.List;
 
 public class IfMibTest extends AbstractMibTestCase {
 
@@ -75,18 +76,25 @@ public class IfMibTest extends AbstractMibTestCase {
 
         SmiRow ifEntry = mib.findRow("ifEntry");
         assertNotNull(ifEntry);
+        assertSame(ifTable, ifEntry.getParent());
+        assertSame(ifTable, ifEntry.getTable());
+        assertSame(ifEntry, ifTable.getRow());
         assertEquals("1.3.6.1.2.1.2.2.1", ifEntry.getOid());
         assertSame(ifTable, ifEntry.getTable());
 
-        SmiAttribute ifIndex = mib.findAttribute("ifIndex");
+        SmiVariable ifIndex = mib.findVariable("ifIndex");
         assertNotNull(ifIndex);
+        assertSame(ifEntry, ifIndex.getParent());
+        assertSame(ifTable, ifIndex.getParent().getParent());
         assertEquals("1.3.6.1.2.1.2.2.1.1", ifIndex.getOid());
         SmiTextualConvention interfaceIndex = getMib().findTextualConvention("InterfaceIndex");
         assertNotNull(interfaceIndex);
         assertSame(interfaceIndex, ifIndex.getType());
 
-        SmiAttribute ifAdminStatus = mib.findAttribute("ifAdminStatus");
+        SmiVariable ifAdminStatus = mib.findVariable("ifAdminStatus");
         assertNotNull(ifAdminStatus);
+        assertEquals(ifEntry, ifAdminStatus.getRow());
+        assertEquals(ifTable, ifAdminStatus.getTable());
         assertEquals("1.3.6.1.2.1.2.2.1.7", ifAdminStatus.getOid());
         assertSame(ifEntry, ifAdminStatus.getParent());
 
@@ -104,9 +112,14 @@ public class IfMibTest extends AbstractMibTestCase {
 
         // mib.getRootNode().dumpTree(System.out, "");
 
+        List<SmiVariable> columns = ifTable.getRow().getColumns();
+        assertEquals(22, columns.size());
+        assertTrue(columns.contains(ifIndex));
+        assertTrue(columns.contains(ifAdminStatus));
+
         SmiModule ifMib = mib.findModule("IF-MIB");
         assertNotNull(ifMib);
-        System.out.println(mib.getAttributes().size() + mib.getTables().size() + mib.getRows().size());
+        System.out.println(mib.getVariables().size() + mib.getTables().size() + mib.getRows().size());
 
         checkOidTree(mib);
     }

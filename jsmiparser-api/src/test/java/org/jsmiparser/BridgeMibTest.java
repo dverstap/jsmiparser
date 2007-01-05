@@ -17,7 +17,7 @@ package org.jsmiparser;
 
 import org.jsmiparser.smi.SmiTextualConvention;
 import org.jsmiparser.smi.SmiPrimitiveType;
-import org.jsmiparser.smi.SmiAttribute;
+import org.jsmiparser.smi.SmiVariable;
 import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.SmiModule;
 import org.jsmiparser.smi.SmiRange;
@@ -46,7 +46,7 @@ public class BridgeMibTest extends AbstractMibTestCase {
         assertEquals(SmiPrimitiveType.INTEGER_32, timeout.getPrimitiveType());
         assertNull(timeout.getRangeConstraints());
 
-        SmiAttribute dot1dStpBridgeMaxAge = getMib().findAttribute("dot1dStpBridgeMaxAge");
+        SmiVariable dot1dStpBridgeMaxAge = getMib().findVariable("dot1dStpBridgeMaxAge");
         assertNotNull(dot1dStpBridgeMaxAge);
         assertSame(integer32, dot1dStpBridgeMaxAge.getType().getBaseType());
         assertEquals(SmiPrimitiveType.INTEGER_32, dot1dStpBridgeMaxAge.getType().getPrimitiveType());

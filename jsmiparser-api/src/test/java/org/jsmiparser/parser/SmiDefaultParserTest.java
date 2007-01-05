@@ -18,7 +18,7 @@ package org.jsmiparser.parser;
 import org.jsmiparser.AbstractMibTestCase;
 import org.jsmiparser.exception.SmiException;
 import org.jsmiparser.phase.file.FileParserOptions;
-import org.jsmiparser.smi.SmiAttribute;
+import org.jsmiparser.smi.SmiVariable;
 import org.jsmiparser.smi.SmiMib;
 import org.jsmiparser.smi.SmiModule;
 import org.jsmiparser.smi.SmiOidValue;
@@ -60,7 +60,7 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         assertEquals(1888, mib.getTypes().size());
         assertEquals(1265, mib.getTables().size());
         assertEquals(1265, mib.getRows().size());
-        assertEquals(12590, mib.getAttributes().size());
+        assertEquals(12590, mib.getVariables().size());
         assertEquals(0, mib.getScalars().size());
         assertEquals(0, mib.getColumns().size());
 
@@ -118,7 +118,7 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         assertEquals("1.3.6.1.2.1.2.2.1", ifEntry.getOid());
         assertSame(ifEntry.getTable(), ifTable);
 
-        SmiAttribute ifAdminStatus = ifModule.findAttribute("ifAdminStatus");
+        SmiVariable ifAdminStatus = ifModule.findVariable("ifAdminStatus");
         assertNotNull(ifAdminStatus);
         assertEquals("1.3.6.1.2.1.2.2.1.7", ifAdminStatus.getOid());
     }

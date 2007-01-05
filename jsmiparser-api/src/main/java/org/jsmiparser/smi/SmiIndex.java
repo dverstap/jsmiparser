@@ -18,10 +18,10 @@ package org.jsmiparser.smi;
 public class SmiIndex {
 
 	private SmiRow m_row;
-	private SmiAttribute m_column;
+	private SmiVariable m_column;
 	private boolean m_implied;
 	
-	public SmiIndex(SmiRow row, SmiAttribute column, boolean implied) {
+	public SmiIndex(SmiRow row, SmiVariable column, boolean implied) {
 		super();
 		assert(column != null);
 		
@@ -39,7 +39,7 @@ public class SmiIndex {
 		m_implied = isImplied;
 	}
 
-	public SmiAttribute getColumn() {
+	public SmiVariable getColumn() {
 		return m_column;
 	}
 

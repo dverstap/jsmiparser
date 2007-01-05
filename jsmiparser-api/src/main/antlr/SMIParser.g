@@ -733,7 +733,7 @@ objecttype_macro[IdToken idToken] returns [SmiObjectType ot = null]
 {
     SmiType sequenceOfType = null;
 	SmiType type = null;
-	SmiAttribute attr = null;
+	SmiVariable var = null;
 	SmiRow row = null;
 	SmiTable table = null;
 	boolean isRow = false;
@@ -745,7 +745,7 @@ objecttype_macro[IdToken idToken] returns [SmiObjectType ot = null]
 	"OBJECT-TYPE" "SYNTAX"
 		( type=leaf_type[null]
 		  | sequenceOfType = sequenceof_type )
-	("UNITS" C_STRING)? // TODO only on SmiAttribute
+	("UNITS" C_STRING)? // TODO only on SmiVariable
 	( ("ACCESS" accessV1=objecttype_access_v1)
 		| ("MAX-ACCESS"  accessV2=objecttype_access_v2) )?
 	"STATUS" status=status_all
@@ -761,7 +761,7 @@ objecttype_macro[IdToken idToken] returns [SmiObjectType ot = null]
 	    } else if (isRow) {
 	        ot = row = m_mp.createRow(idToken, type);
 	    } else {
-	        ot = attr = m_mp.createVariable(idToken, type);
+	        ot = var = m_mp.createVariable(idToken, type);
 	    }
 	    ot.setAccessV1(accessV1);
 	    ot.setAccessV2(accessV2);

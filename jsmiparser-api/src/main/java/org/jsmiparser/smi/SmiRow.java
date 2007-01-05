@@ -19,16 +19,13 @@ import org.jsmiparser.util.token.IdToken;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 public class SmiRow extends SmiObjectType {
 
     // TODO remove?
     private List<SmiRow> m_parentRows = new ArrayList<SmiRow>();
     private List<SmiRow> m_childRows = new ArrayList<SmiRow>();
-    private List<SmiAttribute> m_columns = new ArrayList<SmiAttribute>();
     private SmiRow m_augments;
     private List<SmiIndex> m_indexes = new ArrayList<SmiIndex>();
 
@@ -40,8 +37,9 @@ public class SmiRow extends SmiObjectType {
         return (SmiTable) getParent();
     }
 
-    public List<SmiAttribute> getColumns() {
-        return m_columns;
+    @SuppressWarnings("unchecked")
+    public List<SmiVariable> getColumns() {
+        return new ArrayList(getChildren());
     }
 
     public SmiRow getAugments() {
@@ -57,39 +55,6 @@ public class SmiRow extends SmiObjectType {
         return m_indexes;
     }
 
-    public SmiAttribute findAttribute(String id) {
-        return null; // TODO
-    }
-
-    public List<SmiAttribute> getAttributes() {
-        return m_columns;
-    }
-
-    public Set<SmiAttribute> getAllAttributes() {
-        return getAllColumns();
-    }
-
-    public boolean isRowClass() {
-        return true;
-    }
-
-    public boolean isScalarsClass() {
-        return false;
-    }
-
-    private Set<SmiAttribute> getAllColumns() {
-        Set<SmiAttribute> result = new LinkedHashSet<SmiAttribute>();
-        addAllColumns(result);
-        return result;
-    }
-
-    private void addAllColumns(Set<SmiAttribute> allColumns) {
-        for (SmiRow parent : m_parentRows) {
-            parent.addAllColumns(allColumns);
-        }
-        allColumns.addAll(m_columns);
-    }
-
     public List<SmiRow> getChildRows() {
         return m_childRows;
     }
@@ -98,8 +63,8 @@ public class SmiRow extends SmiObjectType {
         return m_parentRows;
     }
 
-    public SmiAttribute findColumn(String id) {
-        for (SmiAttribute c : m_columns) {
+    public SmiVariable findColumn(String id) {
+        for (SmiVariable c : getColumns()) {
             if (c.getId().equals(id)) {
                 return c;
             }
@@ -107,7 +72,7 @@ public class SmiRow extends SmiObjectType {
         return null;
     }
 
-    public SmiIndex addIndex(SmiAttribute col, boolean isImplied) {
+    public SmiIndex addIndex(SmiVariable col, boolean isImplied) {
         SmiIndex index = new SmiIndex(this, col, isImplied);
         m_indexes.add(index);
         return index;

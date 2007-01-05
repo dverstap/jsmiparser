@@ -41,12 +41,12 @@ public class SmiJavaCodeNamingStrategy implements SmiCodeNamingStrategy {
 		return packagePrefix_ + "." + getModuleId(module).toLowerCase();
 	}
 
-	public String getCodeConstantId(SmiAttribute attribute) {
-		return makeConstant(attribute.getId());
+	public String getCodeConstantId(SmiVariable variable) {
+		return makeConstant(variable.getId());
 	}
 
-	public String getFullCodeConstantId(SmiAttribute attribute) {
-		return attribute.getModule().getFullAttributeOidClassId() + "." + attribute.getCodeConstantId();
+	public String getFullCodeConstantId(SmiVariable variable) {
+		return variable.getModule().getFullVariableOidClassId() + "." + variable.getCodeConstantId();
 	}
 	
 	private enum Category { UPPER, LOWER, DIGIT, OTHER }
@@ -135,27 +135,27 @@ public class SmiJavaCodeNamingStrategy implements SmiCodeNamingStrategy {
 		return type.getId();
 	}
 
-	public String getSingleAttributeEnumId(SmiAttribute attr) {
+	public String getSingleVariableEnumId(SmiVariable attr) {
 		return SmiUtil.ucFirst(attr.getCodeId());
 	}
 
-	public String getAttributeId(SmiAttribute attribute) {
-		return attribute.getId();
+	public String getVariableId(SmiVariable variable) {
+		return variable.getId();
 	}
 
 	public String getEnumValueId(SmiNamedNumber ev) {
 		return makeConstant(ev.getId());
 	}
 
-	public String getRequestMethodId(SmiAttribute attr) {
+	public String getRequestMethodId(SmiVariable attr) {
 		return "req" + SmiUtil.ucFirst(attr.getCodeId());
 	}
 	
-	public String getGetterMethodId(SmiAttribute attr) {
+	public String getGetterMethodId(SmiVariable attr) {
 		return "get" + SmiUtil.ucFirst(attr.getCodeId());
 	}
 
-	public String getSetterMethodId(SmiAttribute attr) {
+	public String getSetterMethodId(SmiVariable attr) {
 		return "set" + SmiUtil.ucFirst(attr.getCodeId());
 	}
 
@@ -167,11 +167,11 @@ public class SmiJavaCodeNamingStrategy implements SmiCodeNamingStrategy {
 		return table.getId();
 	}
 
-	public String getFullAttributeOidClassId(SmiModule module) {
-		return module.getFullCodeId() + "." + module.getAttributeOidClassId();
+	public String getFullVariableOidClassId(SmiModule module) {
+		return module.getFullCodeId() + "." + module.getVariableOidClassId();
 	}
 
-	public String getAttributeOidClassId(SmiModule module) {
+	public String getVariableOidClassId(SmiModule module) {
 		return module.getCodeId().toUpperCase() + ATTR_OIDS;
 	}
 

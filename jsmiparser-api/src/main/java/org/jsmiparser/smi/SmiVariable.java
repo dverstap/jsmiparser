@@ -17,11 +17,9 @@ package org.jsmiparser.smi;
 
 import org.jsmiparser.util.token.IdToken;
 
-public class SmiAttribute extends SmiObjectType {
+public class SmiVariable extends SmiObjectType {
 
-    private SmiRow m_row;
-
-    public SmiAttribute(IdToken idToken, SmiModule module) {
+    public SmiVariable(IdToken idToken, SmiModule module) {
 		super(idToken, module);
 	}
 
@@ -38,7 +36,7 @@ public class SmiAttribute extends SmiObjectType {
 	}
 
 	public String getCodeId() {
-		return getModule().getMib().getCodeNamingStrategy().getAttributeId(this);
+		return getModule().getMib().getCodeNamingStrategy().getVariableId(this);
 	}
 
     public String getRequestMethodId() {
@@ -54,18 +52,26 @@ public class SmiAttribute extends SmiObjectType {
 	}
 
     public SmiRow getRow() {
-        return m_row;
+        SmiOidValue parent = getParent();
+        if (parent instanceof SmiRow) {
+            return (SmiRow) parent;
+        }
+        return null;
     }
 
-    public void setRow(SmiRow row) {
-        m_row = row;
+    public SmiTable getTable() {
+        SmiRow row = getRow();
+        if (row != null) {
+            return row.getTable();
+        }
+        return null;
     }
 
     public boolean isColumn() {
-        return m_row != null;
+        return getRow() != null;
     }
 
     public boolean isScalar() {
-        return m_row == null;
+        return getRow() == null;
     }
 }

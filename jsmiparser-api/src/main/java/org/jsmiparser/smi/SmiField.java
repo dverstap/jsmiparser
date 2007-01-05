@@ -22,7 +22,7 @@ public class SmiField {
 
     private SmiType m_parentType;
     private IdToken m_columnIdToken;
-    private SmiAttribute m_column;
+    private SmiVariable m_column;
     private SmiType m_type;
 
     public SmiField(SmiType parentType, IdToken columnIdToken, SmiType type) {
@@ -39,7 +39,7 @@ public class SmiField {
         return m_columnIdToken;
     }
 
-    public SmiAttribute getColumn() {
+    public SmiVariable getColumn() {
         return m_column;
     }
 

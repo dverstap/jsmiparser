@@ -21,28 +21,28 @@ public interface SmiCodeNamingStrategy {
 
 	String getFullModuleId(SmiModule module);
 
-	String getCodeConstantId(SmiAttribute attribute);
-	String getFullCodeConstantId(SmiAttribute attribute);
+	String getCodeConstantId(SmiVariable variable);
+	String getFullCodeConstantId(SmiVariable variable);
 	
 	String getTypeId(SmiType type);
 
-	String getSingleAttributeEnumId(SmiAttribute attr);
+	String getSingleVariableEnumId(SmiVariable attr);
 
-	String getAttributeId(SmiAttribute attribute);
+	String getVariableId(SmiVariable variable);
 
 	String getEnumValueId(SmiNamedNumber value);
 
-	String getRequestMethodId(SmiAttribute attr);
-	String getGetterMethodId(SmiAttribute attr);
-	String getSetterMethodId(SmiAttribute attr);
+	String getRequestMethodId(SmiVariable attr);
+	String getGetterMethodId(SmiVariable attr);
+	String getSetterMethodId(SmiVariable attr);
 
 	String getFullCodeId(SmiSymbol symbol);
 
 	String getTableId(SmiTable table);
 
-	String getFullAttributeOidClassId(SmiModule module);
+	String getFullVariableOidClassId(SmiModule module);
 
-	String getAttributeOidClassId(SmiModule module);
+	String getVariableOidClassId(SmiModule module);
 
 
 

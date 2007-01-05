@@ -19,15 +19,12 @@ import org.jsmiparser.util.token.IdToken;
 
 public class SmiTable extends SmiObjectType {
 
-    SmiRow row_;
-
     public SmiTable(IdToken idToken, SmiModule module) {
         super(idToken, module);
     }
 
-    public SmiRow getRow()
-    {
-        return row_;
+    public SmiRow getRow() {
+        return (SmiRow) getChildren().iterator().next();
     }
 
     public String getCodeId() {

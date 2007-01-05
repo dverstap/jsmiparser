@@ -27,13 +27,13 @@ public interface SmiSymbolContainer {
 	
 	public SmiSymbol findSymbol(String id);
 
-	public SmiAttribute findAttribute(String id);
+	public SmiVariable findVariable(String id);
 
-	public Collection<SmiAttribute> getAttributes();
+	public Collection<SmiVariable> getVariables();
 	
-	public SmiAttribute findScalar(String id);
+	public SmiVariable findScalar(String id);
 	
-	public Collection<SmiAttribute> getScalars();
+	public Collection<SmiVariable> getScalars();
 
 	public SmiTable findTable(String id);
 	
@@ -43,8 +43,8 @@ public interface SmiSymbolContainer {
 	
 	public Collection<SmiRow> getRows();
 
-    public SmiAttribute findColumn(String id);
+    public SmiVariable findColumn(String id);
 
-    public Collection<SmiAttribute> getColumns();
+    public Collection<SmiVariable> getColumns();
 
 }

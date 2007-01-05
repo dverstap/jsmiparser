@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
 import org.jsmiparser.smi.ObjectTypeAccessV1;
 import org.jsmiparser.smi.ObjectTypeAccessV2;
 import org.jsmiparser.smi.OidComponent;
-import org.jsmiparser.smi.SmiAttribute;
+import org.jsmiparser.smi.SmiVariable;
 import org.jsmiparser.smi.SmiConstants;
 import org.jsmiparser.smi.SmiImports;
 import org.jsmiparser.smi.SmiMacro;
@@ -150,11 +150,11 @@ public class ModuleParser {
         return new SmiOidMacro(idToken, m_module);
     }
 
-    public SmiAttribute createVariable(IdToken idToken, SmiType t) {
+    public SmiVariable createVariable(IdToken idToken, SmiType t) {
         final String methodWithParams = "createVariable(" + idToken.getId() + ")";
         m_log.debug(methodWithParams);
 
-        SmiAttribute result = new SmiAttribute(idToken, m_module);
+        SmiVariable result = new SmiVariable(idToken, m_module);
         //result = m_valueMap.create()
         result.setType(t);
         return result;

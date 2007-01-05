@@ -39,11 +39,11 @@ public class SmiModule implements SmiSymbolContainer {
 
     Map<String, SmiType> m_typeMap = new LinkedHashMap<String, SmiType>();
     Map<String, SmiSymbol> m_symbolMap = new LinkedHashMap<String, SmiSymbol>();
-    Map<String, SmiAttribute> m_attributeMap = new LinkedHashMap<String, SmiAttribute>();
-    Map<String, SmiAttribute> m_scalarMap = new LinkedHashMap<String, SmiAttribute>();
+    Map<String, SmiVariable> m_variableMap = new LinkedHashMap<String, SmiVariable>();
+    Map<String, SmiVariable> m_scalarMap = new LinkedHashMap<String, SmiVariable>();
     Map<String, SmiTable> m_tableMap = new LinkedHashMap<String, SmiTable>();
     Map<String, SmiRow> m_rowMap = new LinkedHashMap<String, SmiRow>();
-    Map<String, SmiAttribute> m_columnMap = new LinkedHashMap<String, SmiAttribute>();
+    Map<String, SmiVariable> m_columnMap = new LinkedHashMap<String, SmiVariable>();
 
     private int m_v1Features = 0;
     private int m_v2Features = 0;
@@ -114,19 +114,19 @@ public class SmiModule implements SmiSymbolContainer {
         return m_symbolMap.get(id);
     }
 
-    public SmiAttribute findAttribute(String id) {
-        return m_attributeMap.get(id);
+    public SmiVariable findVariable(String id) {
+        return m_variableMap.get(id);
     }
 
-    public Collection<SmiAttribute> getAttributes() {
-        return m_attributeMap.values();
+    public Collection<SmiVariable> getVariables() {
+        return m_variableMap.values();
     }
 
-    public SmiAttribute findScalar(String id) {
+    public SmiVariable findScalar(String id) {
         return m_scalarMap.get(id);
     }
 
-    public Collection<SmiAttribute> getScalars() {
+    public Collection<SmiVariable> getScalars() {
         return m_scalarMap.values();
     }
 
@@ -146,11 +146,11 @@ public class SmiModule implements SmiSymbolContainer {
         return m_rowMap.values();
     }
 
-    public SmiAttribute findColumn(String id) {
+    public SmiVariable findColumn(String id) {
         return m_columnMap.get(id);
     }
 
-    public Collection<SmiAttribute> getColumns() {
+    public Collection<SmiVariable> getColumns() {
         return m_columnMap.values();
     }
 
@@ -187,12 +187,6 @@ public class SmiModule implements SmiSymbolContainer {
     }
 */
 
-    public SmiSingleAttributeEnum createSingleAttributeEnum(SmiAttribute attribute) {
-        SmiSingleAttributeEnum result = new SmiSingleAttributeEnum(attribute);
-        m_typeMap.put(result.getId(), result);
-        return result;
-    }
-
     public String getCodeId() {
         return getMib().getCodeNamingStrategy().getModuleId(this);
     }
@@ -213,20 +207,12 @@ public class SmiModule implements SmiSymbolContainer {
         return row;
     }
 
-    public String getFullAttributeOidClassId() {
-        return getMib().getCodeNamingStrategy().getFullAttributeOidClassId(this);
+    public String getFullVariableOidClassId() {
+        return getMib().getCodeNamingStrategy().getFullVariableOidClassId(this);
     }
 
-    public String getAttributeOidClassId() {
-        return getMib().getCodeNamingStrategy().getAttributeOidClassId(this);
-    }
-
-    public void setMocMib(IdToken idToken) {
-        setIdToken(idToken);
-    }
-
-    public void setMocRootOid(String oid) {
-        // ignore
+    public String getVariableOidClassId() {
+        return getMib().getCodeNamingStrategy().getVariableOidClassId(this);
     }
 
     /**
@@ -251,7 +237,7 @@ public class SmiModule implements SmiSymbolContainer {
     public void fillTables() {
         for (SmiSymbol symbol : m_symbols) {
             put(m_tableMap, SmiTable.class, symbol);
-            put(m_attributeMap, SmiAttribute.class, symbol);
+            put(m_variableMap, SmiVariable.class, symbol);
             put(m_typeMap, SmiType.class, symbol);
             // TODO put(m_scalarMap, SmiScalar.class, symbol);
             // TODO put(m_columnMap, SmiColumn.class, symbol);

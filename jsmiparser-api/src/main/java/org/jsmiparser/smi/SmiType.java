@@ -20,9 +20,6 @@ import org.jsmiparser.util.token.IdToken;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * TODO it should be possible to split this up into SmiSequenceType, SmiSequenceOfType and SmiAttributeType
- */
 public class SmiType extends SmiSymbol {
 
     private SmiType m_baseType;

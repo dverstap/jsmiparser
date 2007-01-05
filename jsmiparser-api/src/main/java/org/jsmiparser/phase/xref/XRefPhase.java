@@ -20,7 +20,7 @@ import edu.uci.ics.jung.graph.Vertex;
 import org.apache.log4j.Logger;
 import org.jsmiparser.phase.Phase;
 import org.jsmiparser.exception.SmiException;
-import org.jsmiparser.smi.SmiAttribute;
+import org.jsmiparser.smi.SmiVariable;
 import org.jsmiparser.smi.SmiMib;
 import org.jsmiparser.smi.SmiModule;
 import org.jsmiparser.smi.SmiOidValue;
@@ -72,8 +72,8 @@ public class XRefPhase implements Phase {
         }
 
         for (SmiModule module : modules) {
-            for (SmiAttribute attribute : module.getAttributes()) {
-                attribute.resolveReferences();
+            for (SmiVariable variable : module.getVariables()) {
+                variable.resolveReferences();
             }
         }
 
