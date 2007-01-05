@@ -32,8 +32,6 @@ public interface SmiCodeNamingStrategy {
 
 	String getEnumValueId(SmiNamedNumber value);
 
-	String getClassId(SmiClass cl);
-
 	String getRequestMethodId(SmiAttribute attr);
 	String getGetterMethodId(SmiAttribute attr);
 	String getSetterMethodId(SmiAttribute attr);

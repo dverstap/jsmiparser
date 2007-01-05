@@ -19,7 +19,7 @@ import edu.uci.ics.jung.graph.DirectedEdge;
 import edu.uci.ics.jung.graph.Vertex;
 import org.apache.log4j.Logger;
 import org.jsmiparser.phase.Phase;
-import org.jsmiparser.phase.PhaseException;
+import org.jsmiparser.exception.SmiException;
 import org.jsmiparser.smi.SmiAttribute;
 import org.jsmiparser.smi.SmiMib;
 import org.jsmiparser.smi.SmiModule;
@@ -46,7 +46,7 @@ public class XRefPhase implements Phase {
         return null;
     }
 
-    public SmiMib process(SmiMib mib) throws PhaseException {
+    public SmiMib process(SmiMib mib) throws SmiException {
         for (SmiModule module : mib.getModules()) {
             module.fillTables();
         }
@@ -127,7 +127,7 @@ public class XRefPhase implements Phase {
                 }
                 m_log.debug(sb);
             }
-            throw new PhaseException(e);
+            throw new SmiException(e);
         }
     }
 

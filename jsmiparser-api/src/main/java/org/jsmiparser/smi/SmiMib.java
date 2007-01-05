@@ -22,7 +22,7 @@ import edu.uci.ics.jung.graph.impl.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.impl.DirectedSparseVertex;
 import edu.uci.ics.jung.utils.UserDataContainer;
 import org.apache.log4j.Logger;
-import org.jsmiparser.phase.PhaseException;
+import org.jsmiparser.exception.SmiException;
 import org.jsmiparser.util.location.Location;
 import org.jsmiparser.util.multimap.GenMultiMap;
 import org.jsmiparser.util.token.BigIntegerToken;
@@ -51,12 +51,11 @@ public class SmiMib implements SmiSymbolContainer {
 
     GenMultiMap<String, SmiType> m_typeMap = GenMultiMap.hashMap();
     GenMultiMap<String, SmiSymbol> m_symbolMap = GenMultiMap.hashMap();
-    GenMultiMap<String, SmiClass> m_classMap = GenMultiMap.hashMap();
     GenMultiMap<String, SmiAttribute> m_attributeMap = GenMultiMap.hashMap();
-    GenMultiMap<String, SmiScalar> m_scalarMap = GenMultiMap.hashMap();
+    GenMultiMap<String, SmiAttribute> m_scalarMap = GenMultiMap.hashMap();
     GenMultiMap<String, SmiTable> m_tableMap = GenMultiMap.hashMap();
     GenMultiMap<String, SmiRow> m_rowMap = GenMultiMap.hashMap();
-    GenMultiMap<String, SmiColumn> m_columnMap = GenMultiMap.hashMap();
+    GenMultiMap<String, SmiAttribute> m_columnMap = GenMultiMap.hashMap();
 
     int m_dummyOidNodesCount;
     private SmiModule m_internalModule;
@@ -153,7 +152,6 @@ public class SmiMib implements SmiSymbolContainer {
             m_tableMap.putAll(module.m_tableMap);
             m_scalarMap.putAll(module.m_scalarMap);
             m_columnMap.putAll(module.m_columnMap);
-            m_classMap.putAll(module.m_classMap);
             m_symbolMap.putAll(module.m_symbolMap);
         }
     }
@@ -189,7 +187,7 @@ public class SmiMib implements SmiSymbolContainer {
                     graph.addEdge(new DirectedSparseEdge(v, importedVertex));
                 } catch (Exception e) {
                     String msg = "Exception while added dependency from " + module.getId() + " to " + importedModule.getId();
-                    throw new PhaseException(msg, e);
+                    throw new SmiException(msg, e);
                 }
             }
         }
@@ -220,18 +218,6 @@ public class SmiMib implements SmiSymbolContainer {
         return m_typeMap.values();
     }
 
-    public List<SmiClass> findClasses(String id) {
-        return m_classMap.getAll(id);
-    }
-
-    public SmiClass findClass(String id) {
-        return m_classMap.getOne(id);
-    }
-
-    public Collection<SmiClass> getClasses() {
-        return m_classMap.values();
-    }
-
     public List<SmiAttribute> findAttributes(String id) {
         return m_attributeMap.getAll(id);
     }
@@ -244,15 +230,15 @@ public class SmiMib implements SmiSymbolContainer {
         return m_attributeMap.values();
     }
 
-    public List<SmiScalar> findScalars(String id) {
+    public List<SmiAttribute> findScalars(String id) {
         return m_scalarMap.getAll(id);
     }
 
-    public SmiScalar findScalar(String id) {
+    public SmiAttribute findScalar(String id) {
         return m_scalarMap.getOne(id);
     }
 
-    public Collection<SmiScalar> getScalars() {
+    public Collection<SmiAttribute> getScalars() {
         return m_scalarMap.values();
     }
 
@@ -280,15 +266,15 @@ public class SmiMib implements SmiSymbolContainer {
         return m_rowMap.values();
     }
 
-    public List<SmiColumn> findColumns(String id) {
+    public List<SmiAttribute> findColumns(String id) {
         return m_columnMap.getAll(id);
     }
 
-    public SmiColumn findColumn(String id) {
+    public SmiAttribute findColumn(String id) {
         return m_columnMap.getOne(id);
     }
 
-    public Collection<SmiColumn> getColumns() {
+    public Collection<SmiAttribute> getColumns() {
         return m_columnMap.values();
     }
 

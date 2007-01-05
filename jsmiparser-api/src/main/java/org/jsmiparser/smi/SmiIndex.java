@@ -17,34 +17,34 @@ package org.jsmiparser.smi;
 
 public class SmiIndex {
 
-	private SmiRow row_;
-	private SmiColumn column_;
-	private boolean isImplied_;
+	private SmiRow m_row;
+	private SmiAttribute m_column;
+	private boolean m_implied;
 	
-	public SmiIndex(SmiRow row, SmiColumn column, boolean implied) {
+	public SmiIndex(SmiRow row, SmiAttribute column, boolean implied) {
 		super();
 		assert(column != null);
 		
-		row_ = row;
-		column_ = column;
-		column_.getIndexes().add(this);
-		isImplied_ = implied;
+		m_row = row;
+		m_column = column;
+		// TODO m_column.getIndexes().add(this);
+		m_implied = implied;
 	}
 
 	public boolean isImplied() {
-		return isImplied_;
+		return m_implied;
 	}
 
 	public void setImplied(boolean isImplied) {
-		isImplied_ = isImplied;
+		m_implied = isImplied;
 	}
 
-	public SmiColumn getColumn() {
-		return column_;
+	public SmiAttribute getColumn() {
+		return m_column;
 	}
 
 	public SmiRow getRow() {
-		return row_;
+		return m_row;
 	}
 	
 	

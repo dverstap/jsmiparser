@@ -13,22 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jsmiparser.phase;
+package org.jsmiparser.exception;
 
-public class PhaseException extends RuntimeException {
+public class SmiException extends RuntimeException {
 
-    public PhaseException() {
+    public SmiException() {
     }
 
-    public PhaseException(String message) {
+    public SmiException(String message) {
         super(message);
     }
 
-    public PhaseException(String message, Throwable cause) {
+    public SmiException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public PhaseException(Throwable cause) {
+    public SmiException(Throwable cause) {
         super(cause);
     }
 }

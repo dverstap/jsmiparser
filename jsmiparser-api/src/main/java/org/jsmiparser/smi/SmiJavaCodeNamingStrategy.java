@@ -147,10 +147,6 @@ public class SmiJavaCodeNamingStrategy implements SmiCodeNamingStrategy {
 		return makeConstant(ev.getId());
 	}
 
-	public String getClassId(SmiClass cl) {
-		return SmiUtil.ucFirst(cl.getId());
-	}
-
 	public String getRequestMethodId(SmiAttribute attr) {
 		return "req" + SmiUtil.ucFirst(attr.getCodeId());
 	}

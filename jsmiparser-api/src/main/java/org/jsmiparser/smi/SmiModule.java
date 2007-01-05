@@ -16,8 +16,8 @@
 package org.jsmiparser.smi;
 
 import org.apache.log4j.Logger;
-import org.jsmiparser.util.token.IdToken;
 import org.jsmiparser.phase.xref.XRefProblemReporter;
+import org.jsmiparser.util.token.IdToken;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,18 +34,16 @@ public class SmiModule implements SmiSymbolContainer {
     private SmiMib m_mib;
     private IdToken m_idToken;
 
-    private SmiScalarsClass m_scalarsClass;
     private List<SmiImports> m_imports = new ArrayList<SmiImports>();
     private List<SmiSymbol> m_symbols = new ArrayList<SmiSymbol>();
 
     Map<String, SmiType> m_typeMap = new LinkedHashMap<String, SmiType>();
     Map<String, SmiSymbol> m_symbolMap = new LinkedHashMap<String, SmiSymbol>();
-    Map<String, SmiClass> m_classMap = new LinkedHashMap<String, SmiClass>();
     Map<String, SmiAttribute> m_attributeMap = new LinkedHashMap<String, SmiAttribute>();
-    Map<String, SmiScalar> m_scalarMap = new LinkedHashMap<String, SmiScalar>();
+    Map<String, SmiAttribute> m_scalarMap = new LinkedHashMap<String, SmiAttribute>();
     Map<String, SmiTable> m_tableMap = new LinkedHashMap<String, SmiTable>();
     Map<String, SmiRow> m_rowMap = new LinkedHashMap<String, SmiRow>();
-    Map<String, SmiColumn> m_columnMap = new LinkedHashMap<String, SmiColumn>();
+    Map<String, SmiAttribute> m_columnMap = new LinkedHashMap<String, SmiAttribute>();
 
     private int m_v1Features = 0;
     private int m_v2Features = 0;
@@ -57,19 +55,7 @@ public class SmiModule implements SmiSymbolContainer {
         if (idToken == null) {
             throw new IllegalArgumentException();
         }
-
-        if (idToken != null) {
-            setIdToken(idToken);
-
-            // TODO  remove this ScalarsClass thing
-            if (m_mib.getCodeNamingStrategy() != null) {
-                String classId = m_mib.getCodeNamingStrategy().getModuleId(this) + "Scalars"; //TextUtil.makeTypeName(id);
-                IdToken classIdToken = new IdToken(idToken.getLocation(), classId);
-                // TODO move to ConceptualModelBuilderPhase
-                m_scalarsClass = new SmiScalarsClass(classIdToken, this);
-                m_classMap.put(classId, m_scalarsClass);
-            }
-        }
+        setIdToken(idToken);
     }
 
 
@@ -128,14 +114,6 @@ public class SmiModule implements SmiSymbolContainer {
         return m_symbolMap.get(id);
     }
 
-    public SmiClass findClass(String id) {
-        return m_classMap.get(id);
-    }
-
-    public Collection<SmiClass> getClasses() {
-        return m_classMap.values();
-    }
-
     public SmiAttribute findAttribute(String id) {
         return m_attributeMap.get(id);
     }
@@ -144,11 +122,11 @@ public class SmiModule implements SmiSymbolContainer {
         return m_attributeMap.values();
     }
 
-    public SmiScalar findScalar(String id) {
+    public SmiAttribute findScalar(String id) {
         return m_scalarMap.get(id);
     }
 
-    public Collection<SmiScalar> getScalars() {
+    public Collection<SmiAttribute> getScalars() {
         return m_scalarMap.values();
     }
 
@@ -168,11 +146,11 @@ public class SmiModule implements SmiSymbolContainer {
         return m_rowMap.values();
     }
 
-    public SmiColumn findColumn(String id) {
+    public SmiAttribute findColumn(String id) {
         return m_columnMap.get(id);
     }
 
-    public Collection<SmiColumn> getColumns() {
+    public Collection<SmiAttribute> getColumns() {
         return m_columnMap.values();
     }
 
@@ -195,10 +173,6 @@ public class SmiModule implements SmiSymbolContainer {
         return m_mib;
     }
 
-    public SmiScalarsClass getScalarsClass() {
-        return m_scalarsClass;
-    }
-
     public SmiType createType(IdToken idToken) {
         SmiType type = new SmiType(idToken, this);
         m_typeMap.put(idToken.getId(), type);
@@ -219,13 +193,6 @@ public class SmiModule implements SmiSymbolContainer {
         return result;
     }
 
-    public SmiScalar createScalar(IdToken idToken) {
-        SmiScalar scalar = new SmiScalar(idToken, m_scalarsClass);
-        m_scalarMap.put(idToken.getId(), scalar);
-        m_attributeMap.put(idToken.getId(), scalar);
-        return scalar;
-    }
-
     public String getCodeId() {
         return getMib().getCodeNamingStrategy().getModuleId(this);
     }
@@ -243,15 +210,7 @@ public class SmiModule implements SmiSymbolContainer {
     public SmiRow createRow(IdToken idToken) {
         SmiRow row = new SmiRow(idToken, this);
         m_rowMap.put(idToken.getId(), row);
-        m_classMap.put(idToken.getId(), row);
         return row;
-    }
-
-    public SmiColumn createColumn(IdToken idToken) {
-        SmiColumn col = new SmiColumn(idToken, this);
-        m_columnMap.put(idToken.getId(), col);
-        m_attributeMap.put(idToken.getId(), col);
-        return col;
     }
 
     public String getFullAttributeOidClassId() {
@@ -269,19 +228,6 @@ public class SmiModule implements SmiSymbolContainer {
     public void setMocRootOid(String oid) {
         // ignore
     }
-
-    public SmiMultiRowClass createSmiMultiRowClass(IdToken idToken) {
-        SmiMultiRowClass cl = new SmiMultiRowClass(this, idToken);
-        m_classMap.put(idToken.getId(), cl); // TODO unique check
-        return cl;
-    }
-
-    public SmiScalarsClass createSnmpGroupObject(IdToken idToken) {
-        SmiScalarsClass cl = new SmiScalarsClass(idToken, this);
-        m_classMap.put(idToken.getId(), cl); // TODO unique check
-        return cl;
-    }
-
 
     /**
      * @return The list of IMPORTS statements. Note that there may be more than one IMPORTS statement per module,
@@ -307,8 +253,8 @@ public class SmiModule implements SmiSymbolContainer {
             put(m_tableMap, SmiTable.class, symbol);
             put(m_attributeMap, SmiAttribute.class, symbol);
             put(m_typeMap, SmiType.class, symbol);
-            put(m_scalarMap, SmiScalar.class, symbol);
-            put(m_columnMap, SmiColumn.class, symbol);
+            // TODO put(m_scalarMap, SmiScalar.class, symbol);
+            // TODO put(m_columnMap, SmiColumn.class, symbol);
             put(m_rowMap, SmiRow.class, symbol);
         }
     }

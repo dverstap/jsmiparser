@@ -1,7 +1,7 @@
 package org.jsmiparser.phase.check;
 
 import org.jsmiparser.phase.Phase;
-import org.jsmiparser.phase.PhaseException;
+import org.jsmiparser.exception.SmiException;
 import org.jsmiparser.smi.SmiMib;
 
 /*
@@ -31,7 +31,7 @@ public class ErrorCheckPhase implements Phase {
         return null;
     }
 
-    public SmiMib process(SmiMib mib) throws PhaseException {
+    public SmiMib process(SmiMib mib) throws SmiException {
 
         // TODO
 

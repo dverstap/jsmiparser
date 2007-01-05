@@ -19,13 +19,11 @@ import org.jsmiparser.util.token.IdToken;
 
 public class SmiAttribute extends SmiObjectType {
 
+    private SmiRow m_row;
+
     public SmiAttribute(IdToken idToken, SmiModule module) {
 		super(idToken, module);
 	}
-
-	public SmiClass getSmiClass() {
-        return null; // TODO
-    }
 
     public String getCodeConstantId() {
 		return getModule().getMib().getCodeNamingStrategy().getCodeConstantId(this);
@@ -55,4 +53,19 @@ public class SmiAttribute extends SmiObjectType {
 		return getModule().getMib().getCodeNamingStrategy().getSetterMethodId(this);
 	}
 
+    public SmiRow getRow() {
+        return m_row;
+    }
+
+    public void setRow(SmiRow row) {
+        m_row = row;
+    }
+
+    public boolean isColumn() {
+        return m_row != null;
+    }
+
+    public boolean isScalar() {
+        return m_row == null;
+    }
 }

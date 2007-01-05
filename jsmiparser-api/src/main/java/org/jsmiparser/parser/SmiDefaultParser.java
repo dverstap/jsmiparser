@@ -16,7 +16,7 @@
 package org.jsmiparser.parser;
 
 import org.jsmiparser.phase.Phase;
-import org.jsmiparser.phase.PhaseException;
+import org.jsmiparser.exception.SmiException;
 import org.jsmiparser.phase.check.ErrorCheckPhase;
 import org.jsmiparser.phase.file.FileParserPhase;
 import org.jsmiparser.phase.file.FileParserProblemReporter;
@@ -38,7 +38,7 @@ public class SmiDefaultParser implements SmiParser {
     protected Phase m_xRefPhase;
     protected Phase m_errorCheckPhase;
 
-    public SmiMib parse() throws PhaseException {
+    public SmiMib parse() throws SmiException {
         SmiMib mib = new SmiMib(new SmiJavaCodeNamingStrategy("org.jsmiparser.mib")); // TODO
         
         Phase[] phases = new Phase[]{getFileParserPhase(), getXRefPhase(), getErrorCheckPhase()};
@@ -47,7 +47,7 @@ public class SmiDefaultParser implements SmiParser {
         }
 
         if (m_failOnError && m_problemEventHandler.isNotOk()) {
-            throw new PhaseException();
+            throw new SmiException();
         }
         return mib;
     }

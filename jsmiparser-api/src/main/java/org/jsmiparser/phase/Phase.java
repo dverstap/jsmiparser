@@ -16,10 +16,11 @@
 package org.jsmiparser.phase;
 
 import org.jsmiparser.smi.SmiMib;
+import org.jsmiparser.exception.SmiException;
 
 public interface Phase {
 
     Object getOptions();
     
-    SmiMib process(SmiMib mib) throws PhaseException;
+    SmiMib process(SmiMib mib) throws SmiException;
 }

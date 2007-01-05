@@ -15,12 +15,12 @@
  */
 package org.jsmiparser.parser;
 
-import org.jsmiparser.phase.PhaseException;
+import org.jsmiparser.exception.SmiException;
 import org.jsmiparser.smi.SmiMib;
 
 
 public interface SmiParser {
 
-    SmiMib parse() throws PhaseException; // TODO SmiException
+    SmiMib parse() throws SmiException;
 
 }

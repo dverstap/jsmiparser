@@ -19,7 +19,7 @@ import antlr.RecognitionException;
 import antlr.TokenStreamException;
 import org.apache.log4j.Logger;
 import org.jsmiparser.phase.Phase;
-import org.jsmiparser.phase.PhaseException;
+import org.jsmiparser.exception.SmiException;
 import org.jsmiparser.phase.file.antlr.SMILexer;
 import org.jsmiparser.phase.file.antlr.SMIParser;
 import org.jsmiparser.smi.SmiMib;
@@ -52,7 +52,7 @@ public class FileParserPhase implements Phase {
         return m_reporter;
     }
 
-    public SmiMib process(SmiMib mib) throws PhaseException {
+    public SmiMib process(SmiMib mib) throws SmiException {
         for (File file : m_options.getInputFileSet()) {
             parse(mib, file);
         }

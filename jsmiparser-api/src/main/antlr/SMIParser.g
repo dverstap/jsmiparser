@@ -310,7 +310,7 @@ options	{
 
     SmiModule beginModule(Token idToken) {
         if (m_mp != null) {
-            throw new IllegalStateException("Module " + m_mp.getModule().getIdToken() + " is still being parsed when trying to create new module " + idToken); // TODO
+            throw new IllegalStateException("Module " + m_mp.getModule().getIdToken() + " is still being parsed when trying to create new module " + idToken);
         }
         SmiModule module = m_mib.createModule(idt(idToken));
         m_mp = new ModuleParser(module);
@@ -732,7 +732,7 @@ defined_value
 objecttype_macro[IdToken idToken] returns [SmiObjectType ot = null]
 {
     SmiType sequenceOfType = null;
-	SmiType type = null; // TODO fill in
+	SmiType type = null;
 	SmiAttribute attr = null;
 	SmiRow row = null;
 	SmiTable table = null;
@@ -743,7 +743,7 @@ objecttype_macro[IdToken idToken] returns [SmiObjectType ot = null]
 }
 :
 	"OBJECT-TYPE" "SYNTAX"
-		( type=leaf_type[null] {  }
+		( type=leaf_type[null]
 		  | sequenceOfType = sequenceof_type )
 	("UNITS" C_STRING)? // TODO only on SmiAttribute
 	( ("ACCESS" accessV1=objecttype_access_v1)

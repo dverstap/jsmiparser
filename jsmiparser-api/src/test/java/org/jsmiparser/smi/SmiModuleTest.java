@@ -27,9 +27,4 @@ public class SmiModuleTest extends TestCase {
         assertEquals("IfMib", m_module.getCodeId());
     }
 
-    public void testMakeClassName() {
-        assertEquals("IfMibScalars", m_module.getScalarsClass().getId());
-    }
-
-
 }

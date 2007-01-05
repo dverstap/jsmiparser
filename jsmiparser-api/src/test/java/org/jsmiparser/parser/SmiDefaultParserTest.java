@@ -16,7 +16,7 @@
 package org.jsmiparser.parser;
 
 import org.jsmiparser.AbstractMibTestCase;
-import org.jsmiparser.phase.PhaseException;
+import org.jsmiparser.exception.SmiException;
 import org.jsmiparser.phase.file.FileParserOptions;
 import org.jsmiparser.smi.SmiAttribute;
 import org.jsmiparser.smi.SmiMib;
@@ -27,6 +27,7 @@ import org.jsmiparser.smi.SmiSymbol;
 import org.jsmiparser.smi.SmiTable;
 import org.jsmiparser.smi.SmiTextualConvention;
 import org.jsmiparser.smi.SmiType;
+import org.jsmiparser.smi.SmiVarBindField;
 import org.jsmiparser.util.jung.DirectedCycleException;
 
 import java.io.File;
@@ -56,7 +57,6 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         //xStream.toXML(mib, System.out);
 
         assertEquals(255, mib.getModules().size());
-        // TODO assertEquals(1815, mib.getTypes().size());
         assertEquals(1888, mib.getTypes().size());
         assertEquals(1265, mib.getTables().size());
         assertEquals(1265, mib.getRows().size());
@@ -104,6 +104,7 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         assertEquals(SmiTextualConvention.class, interfaceIndex.getClass());
         assertNotNull(interfaceIndex.getRangeConstraints());
         assertEquals(1, interfaceIndex.getRangeConstraints().size());
+        assertEquals(SmiVarBindField.INTEGER_VALUE, interfaceIndex.getVarBindField());
 
         SmiTable ifTable = ifModule.findTable("ifTable");
         assertNotNull(ifTable);
@@ -120,14 +121,6 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         SmiAttribute ifAdminStatus = ifModule.findAttribute("ifAdminStatus");
         assertNotNull(ifAdminStatus);
         assertEquals("1.3.6.1.2.1.2.2.1.7", ifAdminStatus.getOid());
-
-        /*
-            SmiType ifIndexType = mib.findType("InterfaceIndex");
-            assertNotNull(ifIndexType);
-            assertEquals(79, ifIndexType.getLocation().getLine());
-            assertEquals(1, ifIndexType.getLocation().getColumn());
-            //TODO assertEquals(SmiVarBindField.INTEGER_VALUE, ifIndexType.getVarBindField());
-        */
     }
 
     private void checkJobMonitoringMib(SmiMib mib) {
@@ -216,7 +209,7 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         try {
             parser.parse();
             fail();
-        } catch (PhaseException expected) {
+        } catch (SmiException expected) {
             //expected.printStackTrace();
             assertNotNull(expected.getCause());
             assertTrue(expected.getCause() instanceof DirectedCycleException);
