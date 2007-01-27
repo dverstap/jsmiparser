@@ -22,7 +22,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SmiSymbol implements Serializable, Comparable {
+public abstract class SmiSymbol implements Serializable, Comparable {
 
     private IdToken m_idToken;
     private SmiModule m_module;
@@ -129,6 +129,10 @@ public class SmiSymbol implements Serializable, Comparable {
             result = getId().compareTo(other.getId());
         }
         return result;
+    }
+
+    public void resolveReferences() {
+        // do nothing
     }
 
 }

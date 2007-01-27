@@ -40,6 +40,7 @@ import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.SmiVersion;
 import org.jsmiparser.smi.StatusV1;
 import org.jsmiparser.smi.StatusV2;
+import org.jsmiparser.smi.ScopedId;
 import org.jsmiparser.util.location.Location;
 import org.jsmiparser.util.token.BigIntegerToken;
 import org.jsmiparser.util.token.BinaryStringToken;
@@ -336,5 +337,8 @@ public class ModuleParser {
         return StatusV2.find(text);
     }
 
+    public ScopedId makeScopedId(Token moduleToken, Token symbolToken) {
+        return new ScopedId(m_module, moduleToken != null ? idt(moduleToken) : null, idt(symbolToken));
+    }
 }
 

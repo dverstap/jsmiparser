@@ -17,7 +17,7 @@ package org.jsmiparser.smi;
 
 import org.jsmiparser.util.token.IdToken;
 
-public class SmiValue extends SmiSymbol {
+public abstract class SmiValue extends SmiSymbol {
 
     public SmiValue(IdToken idToken, SmiModule module) {
         super(idToken, module);

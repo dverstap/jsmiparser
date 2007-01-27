@@ -720,12 +720,12 @@ bits_value
 	L_BRACE (LOWER (COMMA LOWER)*)? R_BRACE
 ;
 
-defined_value
+defined_value returns [ScopedId id=null]
 :
-	(UPPER DOT)? LOWER
+	(u:UPPER DOT)? l:LOWER { id = m_mp.makeScopedId(u, l); }
 ;
 
-// TODO: it might be possible to split this this up into several
+// TODO: it might be possible to split this up into several
 // definitions, thereby syntactically guaranteeing that INDEX/AUGMENTS
 // belong only to rows, UNITS and DEFVAL only for variables. And
 // REFERENCE?
@@ -736,7 +736,6 @@ objecttype_macro[IdToken idToken] returns [SmiObjectType ot = null]
 	SmiVariable var = null;
 	SmiRow row = null;
 	SmiTable table = null;
-	boolean isRow = false;
 	StatusAll status = null;
 	ObjectTypeAccessV1 accessV1 = null;
 	ObjectTypeAccessV2 accessV2 = null;
@@ -751,15 +750,15 @@ objecttype_macro[IdToken idToken] returns [SmiObjectType ot = null]
 	"STATUS" status=status_all
 	( "DESCRIPTION" desc:C_STRING )? /* TODO optional only for SMIv1 */
 	( "REFERENCE" C_STRING )? 	  
-	( ("INDEX" objecttype_macro_index
-          | "AUGMENTS" objecttype_macro_augments) { isRow = true; } )?
+	( ("INDEX" row=objecttype_macro_index[idToken, type]
+          | "AUGMENTS" row=objecttype_macro_augments[idToken, type]) )?
 	( "DEFVAL" L_BRACE leaf_value R_BRACE )?
 
 	{
 	    if (sequenceOfType != null) {
 	        ot = table = m_mp.createTable(idToken, sequenceOfType);
-	    } else if (isRow) {
-	        ot = row = m_mp.createRow(idToken, type);
+	    } else if (row != null) {
+	        ot = row;
 	    } else {
 	        ot = var = m_mp.createVariable(idToken, type);
 	    }
@@ -811,26 +810,34 @@ status_v2 returns [StatusV2 status = null]
 ;
 
 
-objecttype_macro_index
+objecttype_macro_index[IdToken idToken, SmiType type] returns [SmiRow row = m_mp.createRow(idToken, type)]
 :
 	L_BRACE
-		objecttype_macro_indextype
-		(COMMA objecttype_macro_indextype)*
+		objecttype_macro_indextype[row]
+		(COMMA objecttype_macro_indextype[row])*
 	R_BRACE
 ;    
    
-objecttype_macro_indextype
-:
-	("IMPLIED")? defined_value
-;
-
-objecttype_macro_augments
+objecttype_macro_indextype[SmiRow row]
 {
-    IdToken mt = null;
-    IdToken idt = null;
+    boolean implied=false;
+    ScopedId id;
 }
 :
-	L_BRACE (mt=upper)? idt=lower R_BRACE
+	("IMPLIED" { implied=true; } )?
+	id=defined_value
+	{ row.addIndex(id, implied); }
+;
+
+objecttype_macro_augments[IdToken idToken, SmiType type] returns [SmiRow row = m_mp.createRow(idToken, type)]
+{
+    ScopedId id;
+}
+:
+	L_BRACE id=defined_value R_BRACE
+	{
+	    row.setAugmentsId(id);
+	}
 ;
 
 

@@ -26,6 +26,7 @@ import org.jsmiparser.smi.SmiTextualConvention;
 import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.SmiVersion;
 import org.jsmiparser.smi.StatusV2;
+import org.jsmiparser.smi.SmiIndex;
 
 import java.net.URISyntaxException;
 import java.util.List;
@@ -90,6 +91,13 @@ public class IfMibTest extends AbstractMibTestCase {
         SmiTextualConvention interfaceIndex = getMib().findTextualConvention("InterfaceIndex");
         assertNotNull(interfaceIndex);
         assertSame(interfaceIndex, ifIndex.getType());
+
+        List<SmiIndex> ifIndexes = ifEntry.getIndexes();
+        assertEquals(1, ifIndexes.size());
+        SmiIndex index = ifIndexes.get(0);
+        assertSame(ifIndex, index.getColumn());
+        assertSame(ifEntry, index.getRow());
+        assertEquals(false, index.isImplied());
 
         SmiVariable ifAdminStatus = mib.findVariable("ifAdminStatus");
         assertNotNull(ifAdminStatus);

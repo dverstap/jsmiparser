@@ -28,6 +28,7 @@ import org.jsmiparser.smi.SmiTable;
 import org.jsmiparser.smi.SmiTextualConvention;
 import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.SmiVarBindField;
+import org.jsmiparser.smi.SmiIndex;
 import org.jsmiparser.util.jung.DirectedCycleException;
 
 import java.io.File;
@@ -81,6 +82,8 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         checkJobMonitoringMib(mib);
         checkDlswMib(mib);
         checkDismanPingMib(mib);
+
+        checkComplexIndex(mib);
 
         // doesn't work yet because there are duplicates from the v1 and v2 mibs
         //checkOidTree(mib);
@@ -156,6 +159,39 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         assertEquals(mib.getRootNode(), tubsPingMIB.getRootNode());
         assertEquals(2, tubsPingMIB.getChildren().size());
         assertTrue(pingMIBs.contains(tubsPingMIB));
+
+    }
+
+    private void checkComplexIndex(SmiMib mib) {
+        for (SmiRow row : mib.getRows()) {
+            if (row.getAugments() == null) {
+                assertNotNull(row.getIndexes());
+                assertTrue(row.getId(), !row.getIndexes().isEmpty());
+            }
+        }
+
+        SmiRow row = mib.findRow("mallocScopeNameEntry");
+        assertNotNull(row);
+        assertEquals(3, row.getIndexes().size());
+        SmiIndex index1 = row.getIndexes().get(0);
+        SmiIndex index2 = row.getIndexes().get(1);
+        SmiIndex index3 = row.getIndexes().get(2);
+
+
+        assertEquals("mallocScopeAddressType", index1.getColumn().getId());
+        assertFalse(index1.isImplied());
+        assertNotNull(index1.getColumn().getRow());
+        assertNotSame(row, index1.getColumn().getRow());
+
+        assertEquals("mallocScopeFirstAddress", index2.getColumn().getId());
+        assertFalse(index2.isImplied());
+        assertNotNull(index2.getColumn().getRow());
+        assertNotSame(row, index2.getColumn().getRow());
+
+        assertEquals("mallocScopeNameLangName", index3.getColumn().getId());
+        assertTrue(index3.isImplied());
+        assertNotNull(index3.getColumn().getRow());
+        assertSame(row, index3.getColumn().getRow());
 
     }
 

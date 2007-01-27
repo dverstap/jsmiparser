@@ -15,38 +15,40 @@
  */
 package org.jsmiparser.smi;
 
+/**
+ * Indexes belong to a row and refer to a column.
+ * Note that it is possible that the column belongs to another table!
+ */
 public class SmiIndex {
 
-	private SmiRow m_row;
-	private SmiVariable m_column;
-	private boolean m_implied;
+    private final ScopedId m_scopedId;
+    private final SmiRow m_row;
+    private final boolean m_implied;
 	
-	public SmiIndex(SmiRow row, SmiVariable column, boolean implied) {
-		super();
-		assert(column != null);
-		
-		m_row = row;
-		m_column = column;
-		// TODO m_column.getIndexes().add(this);
-		m_implied = implied;
+	public SmiIndex(SmiRow row, ScopedId scopedId, boolean implied) {
+        m_row = row;
+        m_scopedId = scopedId;
+        m_implied = implied;
 	}
 
 	public boolean isImplied() {
 		return m_implied;
 	}
 
-	public void setImplied(boolean isImplied) {
-		m_implied = isImplied;
-	}
-
 	public SmiVariable getColumn() {
-		return m_column;
+		return (SmiVariable) m_scopedId.getSymbol();
 	}
 
 	public SmiRow getRow() {
 		return m_row;
 	}
-	
-	
+
+    public boolean isColumnFromOtherTable() {
+        return m_row.getTable() != getColumn().getTable();
+    }
+
+    public void resolveReferences() {
+        m_scopedId.resolveReferences();
+    }
 
 }

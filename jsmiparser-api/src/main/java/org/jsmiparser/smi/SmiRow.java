@@ -26,8 +26,9 @@ public class SmiRow extends SmiObjectType {
     // TODO remove?
     private List<SmiRow> m_parentRows = new ArrayList<SmiRow>();
     private List<SmiRow> m_childRows = new ArrayList<SmiRow>();
-    private SmiRow m_augments;
-    private List<SmiIndex> m_indexes = new ArrayList<SmiIndex>();
+
+    private List<SmiIndex> m_indexes;
+    private ScopedId m_augmentsId;
 
     public SmiRow(IdToken idToken, SmiModule module) {
         super(idToken, module);
@@ -43,12 +44,16 @@ public class SmiRow extends SmiObjectType {
     }
 
     public SmiRow getAugments() {
-        return m_augments;
+        if (m_augmentsId != null) {
+            // TODO type safety check when resolving
+            return (SmiRow) m_augmentsId.getSymbol();
+        } else {
+            return null;
+        }
     }
 
-    public void setAugments(SmiRow augments) {
-        m_augments = augments;
-        m_augments.m_childRows.add(this);
+    public void setAugmentsId(ScopedId augmentsId) {
+        m_augmentsId = augmentsId;
     }
 
     public List<SmiIndex> getIndexes() {
@@ -72,8 +77,11 @@ public class SmiRow extends SmiObjectType {
         return null;
     }
 
-    public SmiIndex addIndex(SmiVariable col, boolean isImplied) {
-        SmiIndex index = new SmiIndex(this, col, isImplied);
+    public SmiIndex addIndex(ScopedId scopedId, boolean isImplied) {
+        if (m_indexes == null) {
+            m_indexes = new ArrayList<SmiIndex>();
+        }
+        SmiIndex index = new SmiIndex(this, scopedId, isImplied);
         m_indexes.add(index);
         return index;
     }
@@ -105,5 +113,23 @@ public class SmiRow extends SmiObjectType {
     public void addParentRow(SmiRow row) {
         m_parentRows.add(row);
         row.m_childRows.add(this);
+    }
+
+
+    @Override
+    public void resolveReferences() {
+        super.resolveReferences();
+        if (m_indexes != null) {
+            for (SmiIndex index : m_indexes) {
+                index.resolveReferences();
+            }
+        } else {
+            m_augmentsId.resolveReferences();
+            SmiRow augmentedRow = getAugments();
+            if (augmentedRow != null) {
+                augmentedRow.m_childRows.add(this);
+                m_parentRows.add(augmentedRow);
+            }
+        }
     }
 }

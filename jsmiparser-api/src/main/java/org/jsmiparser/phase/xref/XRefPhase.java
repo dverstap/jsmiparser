@@ -66,18 +66,10 @@ public class XRefPhase implements Phase {
 
     private void resolveReferences(List<SmiModule> modules) {
         for (SmiModule module : modules) {
-            for (SmiType type : module.getTypes()) {
-                type.resolveReferences();
+            for (SmiSymbol symbol : module.getSymbols()) {
+                symbol.resolveReferences();
             }
         }
-
-        for (SmiModule module : modules) {
-            for (SmiVariable variable : module.getVariables()) {
-                variable.resolveReferences();
-            }
-        }
-
-        // TODO much more resolving to do
     }
 
     private void resolveOids(List<SmiModule> modules) {
