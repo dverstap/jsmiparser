@@ -100,7 +100,7 @@ public class SmiOidValue extends SmiValue {
             SmiOidValue oidValue;
             if (isFirst) {
                 if (iterator.hasNext()) {
-                    oidValue = resolveOidComponent(oidComponent, parent, isFirst);
+                    oidValue = resolveOidComponent(oidComponent, parent, isFirst, reporter);
                 } else {
                     assert (m_oidComponents.size() == 1);
                     oidValue = this;
@@ -108,7 +108,7 @@ public class SmiOidValue extends SmiValue {
                 }
                 isFirst = false;
             } else if (iterator.hasNext()) {
-                oidValue = resolveOidComponent(oidComponent, parent, isFirst);
+                oidValue = resolveOidComponent(oidComponent, parent, isFirst, reporter);
                 if (oidValue == null) {
                     oidValue = createDummyOidValue(oidComponent, prevOidComponent, parent);
                 }
@@ -145,17 +145,25 @@ public class SmiOidValue extends SmiValue {
         return oidValue;
     }
 
-    private SmiOidValue resolveOidComponent(OidComponent oidComponent, SmiOidValue parent, boolean isFirst) {
+    private SmiOidValue resolveOidComponent(OidComponent oidComponent, SmiOidValue parent, boolean isFirst, XRefProblemReporter reporter) {
         SmiOidValue oidValue;
         if (oidComponent.getIdToken() != null) {
-            oidValue = getModule().resolveReference(oidComponent.getIdToken());
-            if (oidValue != null) {
-                if (oidComponent.getValueToken() != null) {
-                    // TODO compare
+            SmiSymbol symbol = getModule().resolveReference(oidComponent.getIdToken(), null);
+            if (symbol != null) {
+                if (symbol instanceof SmiOidValue) {
+                    oidValue = (SmiOidValue) symbol;
+                    if (oidComponent.getValueToken() != null) {
+                        // TODO compare
+                    }
+                } else {
+                    reporter.reportFoundSymbolButWrongType(oidComponent.getIdToken(), SmiOidValue.class, symbol.getClass());
+                    oidValue = null;
                 }
             } else if (parent != null && oidComponent.getValueToken() != null) {
                 BigInteger value = oidComponent.getValueToken().getValue();
                 oidValue = parent.m_childMap.get(value);
+            } else {
+                oidValue = null;
             }
         } else {
             if (isFirst) {

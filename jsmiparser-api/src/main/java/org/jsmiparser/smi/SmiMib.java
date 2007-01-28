@@ -27,6 +27,7 @@ import org.jsmiparser.util.location.Location;
 import org.jsmiparser.util.multimap.GenMultiMap;
 import org.jsmiparser.util.token.BigIntegerToken;
 import org.jsmiparser.util.token.IdToken;
+import org.jsmiparser.phase.xref.XRefProblemReporter;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -312,5 +313,13 @@ public class SmiMib implements SmiSymbolContainer {
             m_internalModule.m_symbolMap.put(iso.getId(), iso);
             m_symbolMap.put(iso.getId(), iso);
         }
+    }
+
+    public SmiModule resolveModule(IdToken moduleToken, XRefProblemReporter reporter) {
+        SmiModule result = m_moduleMap.get(moduleToken.getId());
+        if (result == null) {
+            reporter.reportCannotFindModule(moduleToken);
+        }
+        return result;
     }
 }

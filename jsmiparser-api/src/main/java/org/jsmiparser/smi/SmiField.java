@@ -17,6 +17,7 @@
 package org.jsmiparser.smi;
 
 import org.jsmiparser.util.token.IdToken;
+import org.jsmiparser.phase.xref.XRefProblemReporter;
 
 public class SmiField {
 
@@ -47,8 +48,8 @@ public class SmiField {
         return m_type;
     }
 
-    public void resolveReferences() {
-        m_column = m_parentType.getModule().resolveReference(m_columnIdToken); // TODO error msg?
+    public void resolveReferences(XRefProblemReporter reporter) {
+        m_column = m_parentType.getModule().resolveReference(m_columnIdToken, SmiVariable.class, reporter);
     }
 
     // TODO resolve type?

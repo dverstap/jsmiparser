@@ -17,6 +17,7 @@
 package org.jsmiparser.smi;
 
 import org.jsmiparser.util.token.IdToken;
+import org.jsmiparser.phase.xref.XRefProblemReporter;
 
 public class SmiObjectType extends SmiOidMacro {
 
@@ -51,8 +52,8 @@ public class SmiObjectType extends SmiOidMacro {
 		m_type = type;
 	}
 
-    public void resolveReferences() {
-        m_type = m_type.resolveThis();
+    public void resolveReferences(XRefProblemReporter reporter) {
+        m_type = m_type.resolveThis(reporter);
     }
 
     public String getDescription() {

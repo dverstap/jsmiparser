@@ -20,12 +20,10 @@ import edu.uci.ics.jung.graph.Vertex;
 import org.apache.log4j.Logger;
 import org.jsmiparser.phase.Phase;
 import org.jsmiparser.exception.SmiException;
-import org.jsmiparser.smi.SmiVariable;
 import org.jsmiparser.smi.SmiMib;
 import org.jsmiparser.smi.SmiModule;
 import org.jsmiparser.smi.SmiOidValue;
 import org.jsmiparser.smi.SmiSymbol;
-import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.util.jung.DirectedCycleException;
 import org.jsmiparser.util.jung.TopologicalSort;
 
@@ -67,7 +65,7 @@ public class XRefPhase implements Phase {
     private void resolveReferences(List<SmiModule> modules) {
         for (SmiModule module : modules) {
             for (SmiSymbol symbol : module.getSymbols()) {
-                symbol.resolveReferences();
+                symbol.resolveReferences(m_reporter);
             }
         }
     }

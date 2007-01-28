@@ -247,7 +247,7 @@ public class SmiModule implements SmiSymbolContainer {
 
     private <T extends SmiSymbol> void put(Map<String, T> map, Class<T> clazz, SmiSymbol symbol) {
         if (clazz.isInstance(symbol)) {
-            map.put(symbol.getId(), (T) symbol);
+            map.put(symbol.getId(), clazz.cast(symbol));
         }
     }
 
@@ -259,8 +259,11 @@ public class SmiModule implements SmiSymbolContainer {
     /**
      * Resolves a reference from within this module to a symbol in the same module, an imported module
      * or in the whole mib
+     * @param idToken Token of the identifier that has to be resolved.
+     * @param reporter If not null, the reporter will be used to reporter the not found error message.
+     * @return The symbol that was found, or null.
      */
-    public <T extends SmiSymbol> T resolveReference(IdToken idToken) {
+    public SmiSymbol resolveReference(IdToken idToken, XRefProblemReporter reporter) {
         if (!idToken.getLocation().getSource().equals(getIdToken().getLocation().getSource())) {
             // note this check is not entirely fool-proof in case multiple modules are located in one file
             throw new IllegalArgumentException("Resolving references is only allowed from inside the same module");
@@ -278,8 +281,23 @@ public class SmiModule implements SmiSymbolContainer {
                 result = determineBestMatch(idToken, symbols);
             }
         }
+        if (result == null && reporter != null) {
+            reporter.reportCannotFindSymbol(idToken);
+        }
 
-        return (T) result;
+        return result;
+    }
+
+    public <T extends SmiSymbol> T resolveReference(IdToken idToken, Class<T> expectedClass, XRefProblemReporter reporter) {
+        SmiSymbol result = resolveReference(idToken, reporter);
+        if (result != null) {
+            if (expectedClass.isInstance(result)) {
+                return expectedClass.cast(result);
+            } else {
+                reporter.reportFoundSymbolButWrongType(idToken, expectedClass, result.getClass());
+            }
+        }
+        return null;
     }
 
     private SmiSymbol determineBestMatch(IdToken idToken, List<SmiSymbol> symbols) {

@@ -16,6 +16,7 @@
 package org.jsmiparser.smi;
 
 import org.jsmiparser.util.token.IdToken;
+import org.jsmiparser.phase.xref.XRefProblemReporter;
 
 import java.util.List;
 
@@ -55,10 +56,10 @@ public class SmiReferencedType extends SmiType {
     }
 
     @Override
-    public SmiType resolveThis() {
+    public SmiType resolveThis(XRefProblemReporter reporter) {
         SmiType result = this;
 
-        SmiType type = getModule().resolveReference(getIdToken());
+        SmiType type = getModule().resolveReference(getIdToken(), SmiType.class, reporter);
         if (type != null) {
             // TODO check compatibility
             // TODO verify
@@ -74,13 +75,6 @@ public class SmiReferencedType extends SmiType {
             } else {
                 result = type;
             }
-        } else {
-            // TODO
-            System.err.println("Couldn't find type during XRef phase: " + getIdToken());
-        }
-
-        if (result == null) {
-            throw new IllegalStateException();
         }
         return result;
     }

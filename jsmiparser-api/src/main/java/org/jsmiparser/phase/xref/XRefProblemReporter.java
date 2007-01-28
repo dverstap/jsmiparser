@@ -2,6 +2,7 @@ package org.jsmiparser.phase.xref;
 
 import org.jsmiparser.util.problem.annotations.ProblemMethod;
 import org.jsmiparser.util.token.IdToken;
+import org.jsmiparser.smi.SmiSymbol;
 
 /*
 * Copyright 2006 Davy Verstappen.
@@ -25,4 +26,10 @@ public interface XRefProblemReporter {
 
     @ProblemMethod(message = "Cannot find imported symbol %s in module %s")
     void reportCannotFindImportedSymbol(IdToken idToken, IdToken moduleToken);
+
+    @ProblemMethod(message = "Cannot find symbol %s")
+    void reportCannotFindSymbol(IdToken idToken);
+
+    @ProblemMethod(message = "Found symbol %s but expected a %s instead of %s")
+    void reportFoundSymbolButWrongType(IdToken idToken, Class<? extends SmiSymbol> expectedClass, Class<? extends SmiSymbol> actualClass);
 }

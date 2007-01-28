@@ -1,6 +1,7 @@
 package org.jsmiparser.smi;
 
 import org.jsmiparser.util.token.IdToken;
+import org.jsmiparser.phase.xref.XRefProblemReporter;
 
 /*
 * Copyright 2007 Davy Verstappen.
@@ -52,15 +53,14 @@ public class ScopedId {
         return m_symbol;
     }
 
-    public void resolveReferences() {
+    public void resolveReferences(XRefProblemReporter reporter) {
         if (m_moduleToken != null) {
-            m_module = m_localModule.getMib().findModule(m_moduleToken.getId());
-            // TODO error msg
+            m_module = m_localModule.getMib().resolveModule(m_moduleToken, reporter);
         }
         if (m_module != null) {
-            m_symbol = m_module.resolveReference(m_symbolToken);
+            m_symbol = m_module.resolveReference(m_symbolToken, reporter);
         } else {
-            m_symbol = m_localModule.resolveReference(m_symbolToken);
+            m_symbol = m_localModule.resolveReference(m_symbolToken, reporter);
         }
     }
 }

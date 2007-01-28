@@ -16,6 +16,7 @@
 package org.jsmiparser.smi;
 
 import org.jsmiparser.util.token.IdToken;
+import org.jsmiparser.phase.xref.XRefProblemReporter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -224,24 +225,21 @@ public class SmiType extends SmiSymbol {
     }
 
 
-    public SmiType resolveThis() {
+    public SmiType resolveThis(XRefProblemReporter reporter) {
         if (m_baseType != null) {
-            m_baseType = m_baseType.resolveThis();
+            m_baseType = m_baseType.resolveThis(reporter);
         }
         return this;
     }
 
-    public void resolveReferences() {
-        resolveThis();
+    public void resolveReferences(XRefProblemReporter reporter) {
+        resolveThis(reporter);
         if (m_elementTypeToken != null) {
-            m_elementType = getModule().resolveReference(m_elementTypeToken);
-            if (m_elementType != null) {
-                // TODO error
-            }
+            m_elementType = getModule().resolveReference(m_elementTypeToken, SmiType.class, reporter);
         }
         if (m_fields != null) {
             for (SmiField field : m_fields) {
-                field.resolveReferences();
+                field.resolveReferences(reporter);
             }
         }
     }

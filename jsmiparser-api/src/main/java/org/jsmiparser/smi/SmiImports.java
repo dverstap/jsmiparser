@@ -74,7 +74,7 @@ public class SmiImports {
 
     public void resolveImports(XRefProblemReporter reporter) {
         List<SmiSymbol> symbols = new ArrayList<SmiSymbol>();
-        m_module = m_importerModule.getMib().findModule(m_moduleToken.getId());
+        m_module = m_importerModule.getMib().resolveModule(m_moduleToken, reporter);
         if (m_module != null) {
             for (IdToken idToken : getSymbolTokens()) {
                 SmiSymbol symbol = getModule().findSymbol(idToken.getId());
@@ -84,8 +84,6 @@ public class SmiImports {
                     reporter.reportCannotFindImportedSymbol(idToken, m_moduleToken);
                 }
             }
-        } else {
-            reporter.reportCannotFindModule(m_moduleToken);
         }
         m_symbols = Collections.unmodifiableList(symbols);
     }

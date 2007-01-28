@@ -15,6 +15,8 @@
  */
 package org.jsmiparser.smi;
 
+import org.jsmiparser.phase.xref.XRefProblemReporter;
+
 /**
  * Indexes belong to a row and refer to a column.
  * Note that it is possible that the column belongs to another table!
@@ -47,8 +49,8 @@ public class SmiIndex {
         return m_row.getTable() != getColumn().getTable();
     }
 
-    public void resolveReferences() {
-        m_scopedId.resolveReferences();
+    public void resolveReferences(XRefProblemReporter reporter) {
+        m_scopedId.resolveReferences(reporter);
     }
 
 }
