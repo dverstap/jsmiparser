@@ -47,6 +47,7 @@ import org.jsmiparser.util.token.BinaryStringToken;
 import org.jsmiparser.util.token.HexStringToken;
 import org.jsmiparser.util.token.IdToken;
 import org.jsmiparser.util.token.IntegerToken;
+import org.jsmiparser.util.token.QuotedStringToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -151,14 +152,15 @@ public class ModuleParser {
         return new SmiOidMacro(idToken, m_module);
     }
 
-    public SmiVariable createVariable(IdToken idToken, SmiType t) {
+    public SmiVariable createVariable(IdToken idToken, SmiType t, Token units) {
         final String methodWithParams = "createVariable(" + idToken.getId() + ")";
         m_log.debug(methodWithParams);
 
-        SmiVariable result = new SmiVariable(idToken, m_module);
-        //result = m_valueMap.create()
-        result.setType(t);
-        return result;
+        QuotedStringToken unitsToken = null;
+        if (units != null) {
+            unitsToken = new QuotedStringToken(makeLocation(units), units.getText(), '\"');
+        }
+        return new SmiVariable(idToken, m_module, t, unitsToken);
     }
 
     public SmiRow createRow(IdToken idToken, SmiType t) {

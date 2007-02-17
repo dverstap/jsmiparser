@@ -18,7 +18,7 @@ package org.jsmiparser.util.token;
 import org.jsmiparser.util.location.Location;
 
 public class GenericToken<Value> extends AbstractToken {
-    private Value m_value;
+    protected Value m_value;
 
     public GenericToken(Location location, Value value) {
         super(location);

@@ -15,7 +15,6 @@
  */
 package org.jsmiparser.parser;
 
-import org.jsmiparser.AbstractMibTestCase;
 import org.jsmiparser.exception.SmiException;
 import org.jsmiparser.phase.file.FileParserOptions;
 import org.jsmiparser.smi.SmiVariable;
@@ -36,7 +35,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collection;
 
-public class SmiDefaultParserTest extends AbstractMibTestCase {
+import junit.framework.TestCase;
+
+public class SmiDefaultParserTest extends TestCase {
 
     public SmiDefaultParserTest() {
         super(null);
@@ -87,6 +88,16 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
 
         // doesn't work yet because there are duplicates from the v1 and v2 mibs
         //checkOidTree(mib);
+
+        checkUnits(mib);
+    }
+
+    private void checkUnits(SmiMib mib) {
+        SmiModule ipModule = mib.findModule("IP-MIB");
+        SmiVariable ipReasmTimeout = ipModule.findVariable("ipReasmTimeout");
+        assertNotNull(ipReasmTimeout);
+        assertNotNull(ipReasmTimeout.getUnitsToken());
+        assertEquals("seconds", ipReasmTimeout.getUnits());
     }
 
 

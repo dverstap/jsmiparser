@@ -16,12 +16,17 @@
 package org.jsmiparser.smi;
 
 import org.jsmiparser.util.token.IdToken;
+import org.jsmiparser.util.token.QuotedStringToken;
 
 public class SmiVariable extends SmiObjectType {
 
-    public SmiVariable(IdToken idToken, SmiModule module) {
+    private QuotedStringToken m_unitsToken;
+
+    public SmiVariable(IdToken idToken, SmiModule module, SmiType type, QuotedStringToken unitsToken) {
 		super(idToken, module);
-	}
+        setType(type);
+        m_unitsToken = unitsToken;
+    }
 
     public String getCodeConstantId() {
 		return getModule().getMib().getCodeNamingStrategy().getCodeConstantId(this);
@@ -73,5 +78,13 @@ public class SmiVariable extends SmiObjectType {
 
     public boolean isScalar() {
         return getRow() == null;
+    }
+
+    public String getUnits() {
+        return m_unitsToken != null ? m_unitsToken.getValue() : null;
+    }
+
+    public QuotedStringToken getUnitsToken() {
+        return m_unitsToken;
     }
 }
