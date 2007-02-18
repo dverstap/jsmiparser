@@ -1,11 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jsmiparser</groupId>
     <artifactId>jsmiparser</artifactId>
     <packaging>pom</packaging>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1</version>
     <name>Java SMI Parser</name>
     <url>http://www.jsmiparser.org</url>
     <inceptionYear>2005</inceptionYear>
@@ -32,9 +30,9 @@
     </modules>
 
     <scm>
-        <connection>scm:svn:http://svn.berlios.de/svnroot/repos/jsmiparser/trunk</connection>
-        <developerConnection>scm:svn:https://svn.berlios.de/svnroot/repos/jsmiparser/trunk</developerConnection>
-        <url>http://svn.berlios.de/viewcvs/jsmiparser</url>
+        <connection>scm:svn:http://svn.berlios.de/svnroot/repos/jsmiparser/tags/jsmiparser-0.1</connection>
+        <developerConnection>scm:svn:https://svn.berlios.de/svnroot/repos/jsmiparser/tags/jsmiparser-0.1</developerConnection>
+        <url>http://svn.berlios.de/viewcvs/jsmiparser/tags/jsmiparser-0.1</url>
     </scm>
 
     <issueManagement>
