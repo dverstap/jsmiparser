@@ -11,23 +11,17 @@
     </bannerRight>
 -->
     <body>
-        <links>
-            <item name="Util" href="jsmiparser-util/"/>
-            <item name="API" href="jsmiparser-api/"/>
-        </links>
 
-        <menu name="Java SMI Parser">
+
+<!--        <menu name="Java SMI Parser">
             <item name="Home" href="index.html"/>
             <item name="SMI V1/V2 Differences" href="smiv1v2diff.html"/>
-            <!--
-            <item name="Release Notes" href="release-notes.html"/>
-            <item name="General Information" href="about.html"/>
-            <item name="For Maven 1.0 Users" href="maven1.html"/>
-            <item name="Road Map" href="roadmap.html"/>
--->
-        </menu>
+        </menu>-->
 
-        ${reports}
+        <menu ref="modules"/>
+
+        <menu ref="reports"/>
+
 
     </body>
 </project>

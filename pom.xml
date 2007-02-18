@@ -8,6 +8,7 @@
     <version>0.1-SNAPSHOT</version>
     <name>Java SMI Parser</name>
     <url>http://www.jsmiparser.org</url>
+    <inceptionYear>2005</inceptionYear>
 
     <developers>
         <developer>
@@ -47,6 +48,11 @@
             <url>scp://shell.berlios.de:/home/groups/jsmiparser/htdocs/</url>
             <!-- note the trailing slash is significant!!! -->
         </site>
+        <repository>
+            <id>jsmiparser.maven.repo</id>
+            <name>JSMIParser Maven Repository</name>
+            <url>scp://shell.berlios.de:/home/groups/jsmiparser/htdocs/maven2/</url>
+        </repository>
     </distributionManagement>
 
     <build>
@@ -84,10 +90,12 @@
                             <artifactId>maven-changelog-plugin</artifactId>
                         </plugin>
             -->
+<!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
             </plugin>
+-->
             <!--
                         <plugin>
                             <groupId>org.apache.maven.plugins</groupId>
