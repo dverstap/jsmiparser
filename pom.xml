@@ -3,7 +3,7 @@
     <groupId>org.jsmiparser</groupId>
     <artifactId>jsmiparser</artifactId>
     <packaging>pom</packaging>
-    <version>0.1</version>
+    <version>0.1-SNAPSHOT</version>
     <name>Java SMI Parser</name>
     <url>http://www.jsmiparser.org</url>
     <inceptionYear>2005</inceptionYear>
