@@ -15,7 +15,6 @@
  */
 package org.jsmiparser.parser;
 
-import junit.framework.TestCase;
 import org.jsmiparser.exception.SmiException;
 import org.jsmiparser.phase.file.FileParserOptions;
 import org.jsmiparser.smi.SmiIndex;
@@ -30,6 +29,7 @@ import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.SmiVarBindField;
 import org.jsmiparser.smi.SmiVariable;
 import org.jsmiparser.util.jung.DirectedCycleException;
+import org.jsmiparser.AbstractMibTestCase;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -37,7 +37,7 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 
-public class SmiDefaultParserTest extends TestCase {
+public class SmiDefaultParserTest extends AbstractMibTestCase {
 
     public SmiDefaultParserTest() {
         super(null);
@@ -68,6 +68,7 @@ public class SmiDefaultParserTest extends TestCase {
         assertEquals(11125, mib.getColumns().size());
         assertEquals(mib.getVariables().size(), mib.getScalars().size() + mib.getColumns().size());
         assertEquals(18936, mib.getOidValues().size());
+        assertEquals(mib.getTables().size() + mib.getRows().size() + mib.getVariables().size(), mib.getObjectTypes().size());
 
         //checkBridgeMib(mib);
         checkIfMib(mib);
@@ -95,6 +96,7 @@ public class SmiDefaultParserTest extends TestCase {
         checkUnits(mib);
 
         checkFindMethods(mib);
+        checkObjectTypeAccessAll(mib);
     }
 
     private void checkFindMethods(SmiMib mib) {

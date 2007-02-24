@@ -26,6 +26,7 @@ import org.jsmiparser.smi.SmiPrimitiveType;
 import org.jsmiparser.smi.SmiSymbol;
 import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.SmiVersion;
+import org.jsmiparser.smi.SmiObjectType;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -181,5 +182,11 @@ public abstract class AbstractMibTestCase extends TestCase {
         //assertTrue(count + " < " +  totalChildCount, count < totalChildCount);
         //System.out.println("totalChildCount: " + totalChildCount);
         assertEquals(count + mib.getDummyOidNodesCount(), totalChildCount);
+    }
+
+    protected void checkObjectTypeAccessAll(SmiMib mib) {
+        for (SmiObjectType objectType : mib.getObjectTypes()) {
+            assertNotNull(objectType.getId(), objectType.getAccessAll());
+        }
     }
 }

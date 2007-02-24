@@ -92,4 +92,12 @@ public class SmiObjectType extends SmiOidMacro {
         m_accessV2 = accessV2;
     }
 
+    public AccessAll getAccessAll() {
+        if (m_accessV1 != null) {
+            return m_accessV1.getAccessAll();
+        } else {
+            return m_accessV2.getAccessAll();
+        }
+    }
+
 }

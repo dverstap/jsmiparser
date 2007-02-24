@@ -46,6 +46,7 @@ public class SmiModule {
     Map<String, SmiRow> m_rowMap = new LinkedHashMap<String, SmiRow>();
     Map<String, SmiVariable> m_columnMap = new LinkedHashMap<String, SmiVariable>();
     Map<String, SmiOidValue> m_oidValueMap = new LinkedHashMap<String, SmiOidValue>();
+    Map<String, SmiObjectType> m_objectTypeMap = new LinkedHashMap<String, SmiObjectType>();
 
     private int m_v1Features = 0;
     private int m_v2Features = 0;
@@ -172,6 +173,14 @@ public class SmiModule {
         return m_oidValueMap.values();
     }
 
+    public SmiObjectType findObjectType(String id) {
+        return m_objectTypeMap.get(id);
+    }
+
+    public Collection<SmiObjectType> getObjectTypes() {
+        return m_objectTypeMap.values();
+    }
+
     public void setIdToken(IdToken id) {
         assert (m_idToken == null);
         m_idToken = id;
@@ -259,6 +268,7 @@ public class SmiModule {
             put(m_textualConventionMap, SmiTextualConvention.class, symbol);
             put(m_rowMap, SmiRow.class, symbol);
             put(m_oidValueMap, SmiOidValue.class, symbol);
+            put(m_objectTypeMap, SmiObjectType.class, symbol);
         }
     }
 

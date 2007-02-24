@@ -57,6 +57,7 @@ public class SmiMib {
     SmiSymbolMapImpl<SmiVariable> m_columnMap = new SmiSymbolMapImpl<SmiVariable>(SmiVariable.class, m_moduleMap);
     SmiSymbolMapImpl<SmiVariable> m_scalarMap = new SmiSymbolMapImpl<SmiVariable>(SmiVariable.class, m_moduleMap);
     SmiSymbolMapImpl<SmiOidValue> m_oidValueMap = new SmiSymbolMapImpl<SmiOidValue>(SmiOidValue.class, m_moduleMap);
+    SmiSymbolMapImpl<SmiObjectType> m_objectTypesMap = new SmiSymbolMapImpl<SmiObjectType>(SmiObjectType.class, m_moduleMap);
 
     int m_dummyOidNodesCount;
     private SmiModule m_internalModule;
@@ -155,6 +156,7 @@ public class SmiMib {
             m_tableMap.putAll(module.m_tableMap);
             m_symbolMap.putAll(module.m_symbolMap);
             m_oidValueMap.putAll(module.m_oidValueMap);
+            m_objectTypesMap.putAll(module.m_objectTypeMap);
         }
     }
 
@@ -232,6 +234,10 @@ public class SmiMib {
 
     public SmiSymbolMap<SmiOidValue> getOidValues() {
         return m_oidValueMap;
+    }
+
+    public SmiSymbolMap<SmiObjectType> getObjectTypes() {
+        return m_objectTypesMap;
     }
 
     /**
