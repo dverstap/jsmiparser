@@ -16,15 +16,15 @@
 package org.jsmiparser.smi;
 
 import org.jsmiparser.util.token.IdToken;
-import org.jsmiparser.util.token.BigIntegerToken;
+import org.jsmiparser.util.token.IntegerToken;
 
 public class OidComponent {
 
-    private IdToken m_idToken;
-    private BigIntegerToken m_valueToken;
+    private final IdToken m_idToken;
+    private final IntegerToken m_valueToken;
     private SmiOidValue m_symbol;
 
-    public OidComponent(IdToken idToken, BigIntegerToken intToken) {
+    public OidComponent(IdToken idToken, IntegerToken intToken) {
         m_idToken = idToken;
         m_valueToken = intToken;
     }
@@ -42,23 +42,15 @@ public class OidComponent {
         return m_idToken;
     }
 
-    public void setIdToken(IdToken idToken) {
-        m_idToken = idToken;
-    }
-
-    public BigIntegerToken getValueToken() {
+    public IntegerToken getValueToken() {
         return m_valueToken;
-    }
-
-    public void setValueToken(BigIntegerToken valueToken) {
-        m_valueToken = valueToken;
     }
 
     public SmiOidValue getSymbol() {
         return m_symbol;
     }
 
-    public void setSymbol(SmiOidValue symbol) {
+    void setSymbol(SmiOidValue symbol) {
         m_symbol = symbol;
     }
 

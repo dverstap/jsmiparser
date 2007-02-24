@@ -22,7 +22,6 @@ import org.jsmiparser.util.token.IdToken;
 import org.jsmiparser.util.token.Token;
 
 import java.io.PrintStream;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -38,7 +37,7 @@ public class SmiOidValue extends SmiValue {
     private SmiOidValue m_parent;
     private int[] m_oid;
     private String m_oidStr;
-    private Map<BigInteger, SmiOidValue> m_childMap = new TreeMap<BigInteger, SmiOidValue>();
+    private Map<Integer, SmiOidValue> m_childMap = new TreeMap<Integer, SmiOidValue>();
 
     public SmiOidValue(IdToken idToken, SmiModule module) {
         super(idToken, module);
@@ -133,11 +132,11 @@ public class SmiOidValue extends SmiValue {
                 if (parentOid != null) {
                     m_oid = new int[parentOid.length + 1];
                     System.arraycopy(parentOid, 0, m_oid, 0, parentOid.length);
-                    m_oid[m_oid.length-1] = getLastOid().intValue();
+                    m_oid[m_oid.length-1] = getLastOid();
                     m_oidStr = parent.getOidStr() + "." + getLastOid();
                 } else {
-                    m_oid = new int[] { getLastOid().intValue() };
-                    m_oidStr = getLastOid().toString();
+                    m_oid = new int[] {getLastOid()};
+                    m_oidStr = String.valueOf(getLastOid());
                 }
             }
         }
@@ -176,7 +175,7 @@ public class SmiOidValue extends SmiValue {
                     oidValue = null;
                 }
             } else if (parent != null && oidComponent.getValueToken() != null) {
-                BigInteger value = oidComponent.getValueToken().getValue();
+                int value = oidComponent.getValueToken().getValue();
                 oidValue = parent.m_childMap.get(value);
             } else {
                 oidValue = null;
@@ -204,9 +203,9 @@ public class SmiOidValue extends SmiValue {
         return result;
     }
 
-    public BigInteger getLastOid() {
+    public int getLastOid() {
         if (m_oidComponents.isEmpty()) {
-            return null;
+            return -1;
         } else {
             return m_oidComponents.get(m_oidComponents.size() - 1).getValueToken().getValue();
         }
@@ -241,7 +240,7 @@ public class SmiOidValue extends SmiValue {
         return result != null && result == oidValue;
     }
 
-    public SmiOidValue findChild(BigInteger id) {
+    public SmiOidValue findChild(int id) {
         return m_childMap.get(id);
     }
 

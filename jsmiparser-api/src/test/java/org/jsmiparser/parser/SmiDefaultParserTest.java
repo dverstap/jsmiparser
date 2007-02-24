@@ -15,9 +15,10 @@
  */
 package org.jsmiparser.parser;
 
+import junit.framework.TestCase;
 import org.jsmiparser.exception.SmiException;
 import org.jsmiparser.phase.file.FileParserOptions;
-import org.jsmiparser.smi.SmiVariable;
+import org.jsmiparser.smi.SmiIndex;
 import org.jsmiparser.smi.SmiMib;
 import org.jsmiparser.smi.SmiModule;
 import org.jsmiparser.smi.SmiOidValue;
@@ -27,7 +28,7 @@ import org.jsmiparser.smi.SmiTable;
 import org.jsmiparser.smi.SmiTextualConvention;
 import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.SmiVarBindField;
-import org.jsmiparser.smi.SmiIndex;
+import org.jsmiparser.smi.SmiVariable;
 import org.jsmiparser.util.jung.DirectedCycleException;
 
 import java.io.File;
@@ -35,9 +36,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.List;
-import java.math.BigInteger;
-
-import junit.framework.TestCase;
 
 public class SmiDefaultParserTest extends TestCase {
 
@@ -129,12 +127,12 @@ public class SmiDefaultParserTest extends TestCase {
         SmiOidValue dismanPingMIB = mib.getOidValues().find("DISMAN-PING-MIB", "pingMIB");
         assertNotNull(dismanPingMIB);
         assertEquals("DISMAN-PING-MIB", dismanPingMIB.getModule().getId());
-        assertEquals(new BigInteger("80"), dismanPingMIB.getLastOid());
+        assertEquals(80, dismanPingMIB.getLastOid());
 
         SmiOidValue tubsIbrPingMIB = mib.getOidValues().find("TUBS-IBR-PING-MIB", "pingMIB");
         assertNotNull(tubsIbrPingMIB);
         assertEquals("TUBS-IBR-PING-MIB", tubsIbrPingMIB.getModule().getId());
-        assertEquals(new BigInteger("8"), tubsIbrPingMIB.getLastOid());
+        assertEquals(8, tubsIbrPingMIB.getLastOid());
     }
 
     private void checkUnits(SmiMib mib) {

@@ -134,7 +134,7 @@ public class ModuleParser {
 
     public void addOidComponent(List<OidComponent> ocs, Token id, Token value) {
         IdToken idToken = id != null ? idt(id) : null;
-        BigIntegerToken valueToken = value != null ? bintt(value) : null;
+        IntegerToken valueToken = value != null ? intt(value) : null;
         ocs.add(new OidComponent(idToken, valueToken));
     }
 
