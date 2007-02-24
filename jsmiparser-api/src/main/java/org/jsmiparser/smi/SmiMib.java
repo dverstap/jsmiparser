@@ -23,11 +23,11 @@ import edu.uci.ics.jung.graph.impl.DirectedSparseVertex;
 import edu.uci.ics.jung.utils.UserDataContainer;
 import org.apache.log4j.Logger;
 import org.jsmiparser.exception.SmiException;
+import org.jsmiparser.phase.xref.XRefProblemReporter;
 import org.jsmiparser.util.location.Location;
 import org.jsmiparser.util.multimap.GenMultiMap;
 import org.jsmiparser.util.token.BigIntegerToken;
 import org.jsmiparser.util.token.IdToken;
-import org.jsmiparser.phase.xref.XRefProblemReporter;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -203,12 +203,39 @@ public class SmiMib implements SmiSymbolContainer {
         return graph;
     }
 
+    /**
+     * @param id The required id of the symbols.
+     * @return All the SmiSymbol with the required id, or an empty list if none are found.
+     */
     public List<SmiSymbol> findSymbols(String id) {
         return m_symbolMap.getAll(id);
     }
 
-    public SmiSymbol findSymbol(String id) {
+    /**
+     * @param id The required id of the unique symbol.
+     * @return The unique symbol with the required id, or null if it is not found.
+     * @throws IllegalArgumentException if there is more than one symbol with the required id.
+     */
+    public SmiSymbol findSymbol(String id) throws IllegalArgumentException {
         return m_symbolMap.getOne(id);
+    }
+
+    /**
+     * @param moduleId The module where you want to look for the symbol, or null if you want to look through the whole mib.
+     * @param id The required id of the unique symbol.
+     * @return The unique symbol with the required id, or null if it is not found.
+     * @throws IllegalArgumentException if the module is not found or if there is more than one symbol with the required id.
+     */
+    public SmiSymbol findSymbol(String moduleId, String id) throws IllegalArgumentException {
+        if (moduleId != null) {
+            SmiModule module = findModule(moduleId);
+            if (module == null) {
+                throw new IllegalArgumentException("Module " + moduleId + " could not be found.");
+            }
+            return module.findSymbol(id);
+        } else {
+            return m_symbolMap.getOne(id);
+        }
     }
 
     public Collection<SmiSymbol> getSymbols() {

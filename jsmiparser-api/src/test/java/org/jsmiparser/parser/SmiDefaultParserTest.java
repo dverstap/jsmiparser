@@ -34,6 +34,8 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collection;
+import java.util.List;
+import java.math.BigInteger;
 
 import junit.framework.TestCase;
 
@@ -91,6 +93,46 @@ public class SmiDefaultParserTest extends TestCase {
         //checkOidTree(mib);
 
         checkUnits(mib);
+
+        checkFindMethods(mib);
+    }
+
+    private void checkFindMethods(SmiMib mib) {
+        List<SmiSymbol> pingMibs = mib.findSymbols("pingMIB");
+        assertEquals(2, pingMibs.size());
+
+        try {
+            mib.findSymbol("pingMIB");
+            fail();
+        } catch (IllegalArgumentException expected) {
+            // do nothing comment to shut up IntelliJ
+        }
+
+        try {
+            mib.findSymbol(null, "pingMIB");
+            fail();
+        } catch (IllegalArgumentException expected) {
+            // do nothing comment to shut up IntelliJ
+        }
+
+        try {
+            mib.findSymbol("IF-MIBBBBB", "pingMIB");
+            fail();
+        } catch (IllegalArgumentException e) {
+            // do nothing
+        }
+
+        assertNull(mib.findSymbol("IF-MIB", "pingMIB"));
+
+        SmiOidValue dismanPingMIB = (SmiOidValue) mib.findSymbol("DISMAN-PING-MIB", "pingMIB");
+        assertNotNull(dismanPingMIB);
+        assertEquals("DISMAN-PING-MIB", dismanPingMIB.getModule().getId());
+        assertEquals(new BigInteger("80"), dismanPingMIB.getLastOid());
+
+        SmiOidValue tubsIbrPingMIB = (SmiOidValue) mib.findSymbol("TUBS-IBR-PING-MIB", "pingMIB");
+        assertNotNull(tubsIbrPingMIB);
+        assertEquals("TUBS-IBR-PING-MIB", tubsIbrPingMIB.getModule().getId());
+        assertEquals(new BigInteger("8"), tubsIbrPingMIB.getLastOid());
     }
 
     private void checkUnits(SmiMib mib) {

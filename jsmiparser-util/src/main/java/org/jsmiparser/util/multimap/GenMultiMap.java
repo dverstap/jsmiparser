@@ -73,7 +73,7 @@ public class GenMultiMap<K, V> implements Serializable {
         return result;
     }
 
-    public V getOne(K key) {
+    public V getOne(K key) throws IllegalArgumentException {
         List<V> all = (List<V>) m_impl.get(key);
         if (all == null) {
             return null;
