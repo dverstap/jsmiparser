@@ -26,8 +26,6 @@ import org.jsmiparser.smi.SmiPrimitiveType;
 import org.jsmiparser.smi.SmiSymbol;
 import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.SmiVersion;
-import org.jsmiparser.util.problem.DefaultProblemEventHandler;
-import org.jsmiparser.util.problem.ProblemEventHandler;
 
 import java.io.File;
 import java.net.URISyntaxException;

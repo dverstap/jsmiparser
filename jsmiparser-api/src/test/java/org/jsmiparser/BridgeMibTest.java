@@ -40,7 +40,7 @@ public class BridgeMibTest extends AbstractMibTestCase {
         SmiModule bridgeMib = getMib().findModule("BRIDGE-MIB");
         assertEquals("BRIDGE-MIB", bridgeMib.getId());
 
-        SmiTextualConvention timeout = getMib().findTextualConvention("Timeout");
+        SmiTextualConvention timeout = getMib().getTextualConventions().find("Timeout");
         assertNotNull(timeout);
         assertEquals(integer32, timeout.getBaseType());
         assertEquals(SmiPrimitiveType.INTEGER_32, timeout.getPrimitiveType());

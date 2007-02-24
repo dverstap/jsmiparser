@@ -62,12 +62,14 @@ public class SmiDefaultParserTest extends TestCase {
 
         assertEquals(255, mib.getModules().size());
         assertEquals(1888, mib.getTypes().size());
+        assertEquals(559, mib.getTextualConventions().size());
         assertEquals(1265, mib.getTables().size());
         assertEquals(1265, mib.getRows().size());
         assertEquals(12590, mib.getVariables().size());
         assertEquals(1465, mib.getScalars().size());
         assertEquals(11125, mib.getColumns().size());
         assertEquals(mib.getVariables().size(), mib.getScalars().size() + mib.getColumns().size());
+        assertEquals(18936, mib.getOidValues().size());
 
         //checkBridgeMib(mib);
         checkIfMib(mib);
@@ -124,12 +126,12 @@ public class SmiDefaultParserTest extends TestCase {
 
         assertNull(mib.getSymbols().find("IF-MIB", "pingMIB"));
 
-        SmiOidValue dismanPingMIB = (SmiOidValue) mib.getSymbols().find("DISMAN-PING-MIB", "pingMIB");
+        SmiOidValue dismanPingMIB = mib.getOidValues().find("DISMAN-PING-MIB", "pingMIB");
         assertNotNull(dismanPingMIB);
         assertEquals("DISMAN-PING-MIB", dismanPingMIB.getModule().getId());
         assertEquals(new BigInteger("80"), dismanPingMIB.getLastOid());
 
-        SmiOidValue tubsIbrPingMIB = (SmiOidValue) mib.getSymbols().find("TUBS-IBR-PING-MIB", "pingMIB");
+        SmiOidValue tubsIbrPingMIB = mib.getOidValues().find("TUBS-IBR-PING-MIB", "pingMIB");
         assertNotNull(tubsIbrPingMIB);
         assertEquals("TUBS-IBR-PING-MIB", tubsIbrPingMIB.getModule().getId());
         assertEquals(new BigInteger("8"), tubsIbrPingMIB.getLastOid());
@@ -181,13 +183,13 @@ public class SmiDefaultParserTest extends TestCase {
     }
 
     private void checkJobMonitoringMib(SmiMib mib) {
-        SmiOidValue jobmonMIB = (SmiOidValue) mib.getSymbols().find("jobmonMIB");
+        SmiOidValue jobmonMIB = mib.getOidValues().find("jobmonMIB");
         assertNotNull(jobmonMIB);
         assertEquals("1.3.6.1.4.1.2699.1.1", jobmonMIB.getOid());
     }
 
     private void checkDlswMib(SmiMib mib) {
-        SmiOidValue nullSymbol = (SmiOidValue) mib.getSymbols().find("null");
+        SmiOidValue nullSymbol = mib.getOidValues().find("null");
         assertNotNull(nullSymbol);
         assertEquals("0.0", nullSymbol.getOid());
     }
@@ -197,7 +199,7 @@ public class SmiDefaultParserTest extends TestCase {
         assertEquals(2, pingMIBs.size());
 
         SmiModule dismanPingModule = mib.findModule("DISMAN-PING-MIB");
-        SmiOidValue dismanPingMIB = (SmiOidValue) dismanPingModule.findSymbol("pingMIB");
+        SmiOidValue dismanPingMIB = dismanPingModule.findOidValue("pingMIB");
         assertNotNull(dismanPingMIB);
         assertNotNull(dismanPingMIB.getParent());
         assertEquals(mib.getRootNode(), dismanPingMIB.getRootNode());
@@ -207,7 +209,7 @@ public class SmiDefaultParserTest extends TestCase {
         //tubsPingMIB.dumpTree(System.out, "");
 
         SmiModule tubsPingModule = mib.findModule("TUBS-IBR-PING-MIB");
-        SmiOidValue tubsPingMIB = (SmiOidValue) tubsPingModule.findSymbol("pingMIB");
+        SmiOidValue tubsPingMIB = tubsPingModule.findOidValue("pingMIB");
         assertNotNull(tubsPingMIB);
         assertNotNull(tubsPingMIB.getParent());
         assertEquals(mib.getRootNode(), tubsPingMIB.getRootNode());

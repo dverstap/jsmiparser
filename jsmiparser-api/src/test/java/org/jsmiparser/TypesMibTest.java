@@ -41,7 +41,7 @@ public class TypesMibTest extends AbstractMibTestCase {
     }
 
     public void testTCMyINTEGER() {
-        SmiTextualConvention tc = getMib().findTextualConvention("TCMyINTEGER");
+        SmiTextualConvention tc = getMib().getTextualConventions().find("TCMyINTEGER");
         assertEquals(tc.getId() + " Desc", tc.getDescription());
         assertEquals("255a", tc.getDisplayHint());
         assertEquals(StatusV2.DEPRECATED, tc.getStatusV2());
@@ -85,7 +85,7 @@ public class TypesMibTest extends AbstractMibTestCase {
     }
 
     public void testTCMyINTEGERFromMinus3To4() {
-        SmiTextualConvention tc = getMib().findTextualConvention("TCMyINTEGERFromMinus3To4");
+        SmiTextualConvention tc = getMib().getTextualConventions().find("TCMyINTEGERFromMinus3To4");
         assertEquals(tc.getId() + " Desc", tc.getDescription());
         assertEquals("255a", tc.getDisplayHint());
         assertEquals(StatusV2.DEPRECATED, tc.getStatusV2());
@@ -121,7 +121,7 @@ public class TypesMibTest extends AbstractMibTestCase {
     }
 
     public void testTCMyInteger32() {
-        SmiTextualConvention tc = getMib().findTextualConvention("TCMyInteger32");
+        SmiTextualConvention tc = getMib().getTextualConventions().find("TCMyInteger32");
         assertEquals(tc.getId() + " Desc", tc.getDescription());
         assertEquals("255a", tc.getDisplayHint());
         assertEquals(StatusV2.DEPRECATED, tc.getStatusV2());
@@ -160,7 +160,7 @@ public class TypesMibTest extends AbstractMibTestCase {
     }
 
     public void testTCMyInteger32FromMinus5To6() {
-        SmiTextualConvention tc = getMib().findTextualConvention("TCMyInteger32FromMinus5To6");
+        SmiTextualConvention tc = getMib().getTextualConventions().find("TCMyInteger32FromMinus5To6");
         assertEquals(tc.getId() + " Desc", tc.getDescription());
         assertEquals("255a", tc.getDisplayHint());
         assertEquals(StatusV2.DEPRECATED, tc.getStatusV2());
@@ -195,7 +195,7 @@ public class TypesMibTest extends AbstractMibTestCase {
     }
 
     public void testTCMyEnum() {
-        SmiTextualConvention tc = getMib().findTextualConvention("TCMyEnum");
+        SmiTextualConvention tc = getMib().getTextualConventions().find("TCMyEnum");
         assertEquals(tc.getId() + " Desc", tc.getDescription());
         assertEquals("255a", tc.getDisplayHint());
         assertEquals(StatusV2.DEPRECATED, tc.getStatusV2());
@@ -235,7 +235,7 @@ public class TypesMibTest extends AbstractMibTestCase {
     }
 
     public void testTCMyBits() {
-        SmiTextualConvention tc = getMib().findTextualConvention("TCMyBits");
+        SmiTextualConvention tc = getMib().getTextualConventions().find("TCMyBits");
         assertEquals(tc.getId() + " Desc", tc.getDescription());
         assertEquals("255a", tc.getDisplayHint());
         assertEquals(StatusV2.DEPRECATED, tc.getStatusV2());
@@ -275,7 +275,7 @@ public class TypesMibTest extends AbstractMibTestCase {
     }
 
     public void testTCMyOctetString() {
-        SmiTextualConvention tc = getMib().findTextualConvention("TCMyOctetString");
+        SmiTextualConvention tc = getMib().getTextualConventions().find("TCMyOctetString");
         assertEquals(tc.getId() + " Desc", tc.getDescription());
         assertEquals("255a", tc.getDisplayHint());
         assertEquals(StatusV2.DEPRECATED, tc.getStatusV2());
@@ -320,7 +320,7 @@ public class TypesMibTest extends AbstractMibTestCase {
     public void testTCMyOctetStringBetweenSize9And5() {
         // TODO should check for error message
 
-        SmiTextualConvention tc = getMib().findTextualConvention("TCMyOctetStringBetweenSize9And5");
+        SmiTextualConvention tc = getMib().getTextualConventions().find("TCMyOctetStringBetweenSize9And5");
         assertEquals(tc.getId() + " Desc", tc.getDescription());
         assertEquals("255a", tc.getDisplayHint());
         assertEquals(StatusV2.DEPRECATED, tc.getStatusV2());
@@ -357,7 +357,7 @@ public class TypesMibTest extends AbstractMibTestCase {
     }
 
     public void testTCMyCounter() {
-        SmiTextualConvention tc = getMib().findTextualConvention("TCMyCounter");
+        SmiTextualConvention tc = getMib().getTextualConventions().find("TCMyCounter");
         assertEquals(tc.getId() + " Desc", tc.getDescription());
         assertEquals("255a", tc.getDisplayHint());
         assertEquals(StatusV2.DEPRECATED, tc.getStatusV2());
@@ -396,7 +396,7 @@ public class TypesMibTest extends AbstractMibTestCase {
     }
 
     public void testTCMyCounterFromMinus5To6() {
-        SmiTextualConvention tc = getMib().findTextualConvention("TCMyCounterFromMinus100To100");
+        SmiTextualConvention tc = getMib().getTextualConventions().find("TCMyCounterFromMinus100To100");
         assertEquals(tc.getId() + " Desc", tc.getDescription());
         assertEquals("255a", tc.getDisplayHint());
         assertEquals(StatusV2.DEPRECATED, tc.getStatusV2());

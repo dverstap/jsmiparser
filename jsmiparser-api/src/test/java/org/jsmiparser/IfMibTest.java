@@ -59,7 +59,7 @@ public class IfMibTest extends AbstractMibTestCase {
     public void testInterfaceIndex() {
         assertEquals(7, getMib().getModules().size());
 
-        SmiTextualConvention interfaceIndex = getMib().findTextualConvention("InterfaceIndex");
+        SmiTextualConvention interfaceIndex = getMib().getTextualConventions().find("InterfaceIndex");
         assertNotNull(interfaceIndex);
         assertEquals("InterfaceIndex", interfaceIndex.getId());
         assertEquals("IF-MIB", interfaceIndex.getModule().getId());
@@ -105,7 +105,7 @@ public class IfMibTest extends AbstractMibTestCase {
         assertSame(ifEntry, ifIndex.getParent());
         assertSame(ifTable, ifIndex.getParent().getParent());
         assertEquals("1.3.6.1.2.1.2.2.1.1", ifIndex.getOid());
-        SmiTextualConvention interfaceIndex = getMib().findTextualConvention("InterfaceIndex");
+        SmiTextualConvention interfaceIndex = getMib().getTextualConventions().find("InterfaceIndex");
         assertNotNull(interfaceIndex);
         assertSame(interfaceIndex, ifIndex.getType());
 

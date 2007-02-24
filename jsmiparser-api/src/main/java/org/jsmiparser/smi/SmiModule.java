@@ -38,12 +38,14 @@ public class SmiModule {
     private List<SmiSymbol> m_symbols = new ArrayList<SmiSymbol>();
 
     Map<String, SmiType> m_typeMap = new LinkedHashMap<String, SmiType>();
+    Map<String, SmiTextualConvention> m_textualConventionMap = new LinkedHashMap<String, SmiTextualConvention>();
     Map<String, SmiSymbol> m_symbolMap = new LinkedHashMap<String, SmiSymbol>();
     Map<String, SmiVariable> m_variableMap = new LinkedHashMap<String, SmiVariable>();
     Map<String, SmiVariable> m_scalarMap = new LinkedHashMap<String, SmiVariable>();
     Map<String, SmiTable> m_tableMap = new LinkedHashMap<String, SmiTable>();
     Map<String, SmiRow> m_rowMap = new LinkedHashMap<String, SmiRow>();
     Map<String, SmiVariable> m_columnMap = new LinkedHashMap<String, SmiVariable>();
+    Map<String, SmiOidValue> m_oidValueMap = new LinkedHashMap<String, SmiOidValue>();
 
     private int m_v1Features = 0;
     private int m_v2Features = 0;
@@ -101,6 +103,14 @@ public class SmiModule {
         return m_typeMap.values();
     }
 
+    public SmiTextualConvention findTextualConvention(String id) {
+        return m_textualConventionMap.get(id);
+    }
+
+    public Collection<SmiTextualConvention> getTextualConventions() {
+        return m_textualConventionMap.values();
+    }
+
     public Collection<SmiSymbol> getSymbols() {
         // TODO when the symbols have been resolved, set the m_symbols list to null?
         if (m_symbols != null) {
@@ -154,6 +164,13 @@ public class SmiModule {
         return m_columnMap.values();
     }
 
+    public SmiOidValue findOidValue(String id) {
+        return m_oidValueMap.get(id);
+    }
+
+    public Collection<SmiOidValue> getOidValues() {
+        return m_oidValueMap.values();
+    }
 
     public void setIdToken(IdToken id) {
         assert (m_idToken == null);
@@ -239,7 +256,9 @@ public class SmiModule {
             put(m_tableMap, SmiTable.class, symbol);
             put(m_variableMap, SmiVariable.class, symbol);
             put(m_typeMap, SmiType.class, symbol);
+            put(m_textualConventionMap, SmiTextualConvention.class, symbol);
             put(m_rowMap, SmiRow.class, symbol);
+            put(m_oidValueMap, SmiOidValue.class, symbol);
         }
     }
 

@@ -18,8 +18,8 @@ package org.jsmiparser.phase.xref;
 import edu.uci.ics.jung.graph.DirectedEdge;
 import edu.uci.ics.jung.graph.Vertex;
 import org.apache.log4j.Logger;
-import org.jsmiparser.phase.Phase;
 import org.jsmiparser.exception.SmiException;
+import org.jsmiparser.phase.Phase;
 import org.jsmiparser.smi.SmiMib;
 import org.jsmiparser.smi.SmiModule;
 import org.jsmiparser.smi.SmiOidValue;
@@ -71,11 +71,8 @@ public class XRefPhase implements Phase {
     private void resolveOids(List<SmiModule> modules) {
         for (SmiModule module : modules) {
             m_log.debug("Resolving oids in module: " + module.getId() + " hash=" + module.getId().hashCode());
-            for (SmiSymbol symbol : module.getSymbols()) {
-                if (symbol instanceof SmiOidValue) {
-                    SmiOidValue oidValue = (SmiOidValue) symbol;
-                    oidValue.resolveOid(m_reporter);
-                }
+            for (SmiOidValue oidValue : module.getOidValues()) {
+                oidValue.resolveOid(m_reporter);
             }
         }
     }

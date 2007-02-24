@@ -49,13 +49,14 @@ public class SmiMib {
     private SmiOidValue m_rootNode;
 
     SmiSymbolMapImpl<SmiType> m_typeMap = new SmiSymbolMapImpl<SmiType>(SmiType.class, m_moduleMap);
-    // TODO textual convention
+    SmiSymbolMapImpl<SmiTextualConvention> m_textualConventionMap = new SmiSymbolMapImpl<SmiTextualConvention>(SmiTextualConvention.class, m_moduleMap);
     SmiSymbolMapImpl<SmiSymbol> m_symbolMap = new SmiSymbolMapImpl<SmiSymbol>(SmiSymbol.class, m_moduleMap);
     SmiSymbolMapImpl<SmiVariable> m_variableMap = new SmiSymbolMapImpl<SmiVariable>(SmiVariable.class, m_moduleMap);
     SmiSymbolMapImpl<SmiTable> m_tableMap = new SmiSymbolMapImpl<SmiTable>(SmiTable.class, m_moduleMap);
     SmiSymbolMapImpl<SmiRow> m_rowMap = new SmiSymbolMapImpl<SmiRow>(SmiRow.class, m_moduleMap);
     SmiSymbolMapImpl<SmiVariable> m_columnMap = new SmiSymbolMapImpl<SmiVariable>(SmiVariable.class, m_moduleMap);
     SmiSymbolMapImpl<SmiVariable> m_scalarMap = new SmiSymbolMapImpl<SmiVariable>(SmiVariable.class, m_moduleMap);
+    SmiSymbolMapImpl<SmiOidValue> m_oidValueMap = new SmiSymbolMapImpl<SmiOidValue>(SmiOidValue.class, m_moduleMap);
 
     int m_dummyOidNodesCount;
     private SmiModule m_internalModule;
@@ -148,10 +149,12 @@ public class SmiMib {
         for (SmiModule module : m_moduleMap.values()) {
             module.fillTables();
             m_typeMap.putAll(module.m_typeMap);
+            m_textualConventionMap.putAll(module.m_textualConventionMap);
             m_variableMap.putAll(module.m_variableMap);
             m_rowMap.putAll(module.m_rowMap);
             m_tableMap.putAll(module.m_tableMap);
             m_symbolMap.putAll(module.m_symbolMap);
+            m_oidValueMap.putAll(module.m_oidValueMap);
         }
     }
 
@@ -195,18 +198,12 @@ public class SmiMib {
         return graph;
     }
 
-    // TODO replace with SmiSymbolMap
-    public SmiTextualConvention findTextualConvention(String id) {
-        SmiType type = m_typeMap.find(id);
-        if (type instanceof SmiTextualConvention) {
-            return (SmiTextualConvention) type;
-        }
-        return null;
-    }
-
-
     public SmiSymbolMap<SmiType> getTypes() {
         return m_typeMap;
+    }
+
+    public SmiSymbolMap<SmiTextualConvention> getTextualConventions() {
+        return m_textualConventionMap;
     }
 
     public SmiSymbolMap<SmiSymbol> getSymbols() {
@@ -231,6 +228,10 @@ public class SmiMib {
 
     public SmiSymbolMap<SmiVariable> getScalars() {
         return m_scalarMap;
+    }
+
+    public SmiSymbolMap<SmiOidValue> getOidValues() {
+        return m_oidValueMap;
     }
 
     public Set<SmiModule> findModules(SmiVersion version) {
