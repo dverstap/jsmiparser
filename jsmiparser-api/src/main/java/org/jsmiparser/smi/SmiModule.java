@@ -239,9 +239,17 @@ public class SmiModule implements SmiSymbolContainer {
             put(m_tableMap, SmiTable.class, symbol);
             put(m_variableMap, SmiVariable.class, symbol);
             put(m_typeMap, SmiType.class, symbol);
-            // TODO put(m_scalarMap, SmiScalar.class, symbol);
-            // TODO put(m_columnMap, SmiColumn.class, symbol);
             put(m_rowMap, SmiRow.class, symbol);
+        }
+    }
+
+    public void fillExtraTables() {
+        for (SmiVariable variable : m_variableMap.values()) {
+            if (variable.isColumn()) {
+                m_columnMap.put(variable.getId(), variable);
+            } else {
+                m_scalarMap.put(variable.getId(), variable);
+            }
         }
     }
 

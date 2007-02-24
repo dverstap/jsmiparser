@@ -45,9 +45,6 @@ public class XRefPhase implements Phase {
     }
 
     public SmiMib process(SmiMib mib) throws SmiException {
-        for (SmiModule module : mib.getModules()) {
-            module.fillTables();
-        }
         mib.fillTables();
         mib.defineMissingStandardOids();
 
@@ -58,6 +55,7 @@ public class XRefPhase implements Phase {
         List<SmiModule> modules = sortModules(mib);
         resolveReferences(modules);
         resolveOids(modules);
+        mib.fillExtraTables();
 
         return mib;
     }

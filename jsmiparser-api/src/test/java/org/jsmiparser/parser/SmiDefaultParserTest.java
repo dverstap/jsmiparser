@@ -63,8 +63,9 @@ public class SmiDefaultParserTest extends TestCase {
         assertEquals(1265, mib.getTables().size());
         assertEquals(1265, mib.getRows().size());
         assertEquals(12590, mib.getVariables().size());
-        assertEquals(0, mib.getScalars().size());
-        assertEquals(0, mib.getColumns().size());
+        assertEquals(1465, mib.getScalars().size());
+        assertEquals(11125, mib.getColumns().size());
+        assertEquals(mib.getVariables().size(), mib.getScalars().size() + mib.getColumns().size());
 
         //checkBridgeMib(mib);
         checkIfMib(mib);

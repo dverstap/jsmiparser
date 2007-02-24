@@ -147,13 +147,21 @@ public class SmiMib implements SmiSymbolContainer {
     public void fillTables() {
         // TODO deal with double defines
         for (SmiModule module : m_moduleMap.values()) {
+            module.fillTables();
             m_typeMap.putAll(module.m_typeMap);
             m_variableMap.putAll(module.m_variableMap);
             m_rowMap.putAll(module.m_rowMap);
             m_tableMap.putAll(module.m_tableMap);
+            m_symbolMap.putAll(module.m_symbolMap);
+        }
+    }
+
+    public void fillExtraTables() {
+        // TODO deal with double defines
+        for (SmiModule module : m_moduleMap.values()) {
+            module.fillExtraTables();
             m_scalarMap.putAll(module.m_scalarMap);
             m_columnMap.putAll(module.m_columnMap);
-            m_symbolMap.putAll(module.m_symbolMap);
         }
     }
 

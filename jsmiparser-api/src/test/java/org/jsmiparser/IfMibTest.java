@@ -39,6 +39,23 @@ public class IfMibTest extends AbstractMibTestCase {
                 "libsmi-0.4.5/mibs/ietf/IF-MIB");
     }
 
+    public void testSizes() {
+        assertEquals(44, getMib().getScalars().size());
+        assertEquals(57, getMib().getColumns().size());
+
+        SmiModule ifMib = getMib().findModule("IF-MIB");
+        assertNotNull(ifMib);
+
+        assertEquals(3, ifMib.getScalars().size());
+        assertEquals(22+19+3+3+6, ifMib.getColumns().size());
+
+        assertNotNull(ifMib.findScalar("ifNumber"));
+        assertNull(ifMib.findColumn("ifNumber"));
+
+        assertNotNull(ifMib.findColumn("ifName"));
+        assertNull(ifMib.findScalar("ifName"));
+    }
+
     public void testInterfaceIndex() {
         assertEquals(7, getMib().getModules().size());
 
