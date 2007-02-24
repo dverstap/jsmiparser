@@ -36,7 +36,8 @@ public class SmiOidValue extends SmiValue {
 
     private List<OidComponent> m_oidComponents;
     private SmiOidValue m_parent;
-    private String m_oid;
+    private int[] m_oid;
+    private String m_oidStr;
     private Map<BigInteger, SmiOidValue> m_childMap = new TreeMap<BigInteger, SmiOidValue>();
 
     public SmiOidValue(IdToken idToken, SmiModule module) {
@@ -51,24 +52,16 @@ public class SmiOidValue extends SmiValue {
         m_oidComponents = oidComponents;
     }
 
+    public int[] getOid() {
+        return m_oid;
+    }
+
     /**
-     * TODO this isn't thread-safe!
      *
      * @return null for the root node; the OID in decimal dotted notation for all other nodes
      */
-    public String getOid() {
-        if (m_oid == null) {
-            SmiOidValue parent = getParent();
-            if (parent != null) {
-                String parentOid = parent.getOid();
-                if (parentOid != null) {
-                    m_oid = parent.getOid() + "." + getLastOid();
-                } else {
-                    m_oid = getLastOid().toString();
-                }
-            }
-        }
-        return m_oid;
+    public String getOidStr() {
+        return m_oidStr;
     }
 
     public SmiOidValue getParent() {
@@ -89,6 +82,10 @@ public class SmiOidValue extends SmiValue {
 
     public Collection<? extends SmiOidValue> getChildren() {
         return m_childMap.values();
+    }
+
+    public boolean hasChildren() {
+        return m_childMap != null && !m_childMap.isEmpty();
     }
 
     public void resolveOid(XRefProblemReporter reporter) {
@@ -126,6 +123,25 @@ public class SmiOidValue extends SmiValue {
             parent = oidValue;
             prevOidComponent = oidComponent;
         }
+    }
+
+    public int[] determineFullOid() {
+        if (m_oid == null) {
+            SmiOidValue parent = getParent();
+            if (parent != null) {
+                int[] parentOid = parent.determineFullOid();
+                if (parentOid != null) {
+                    m_oid = new int[parentOid.length + 1];
+                    System.arraycopy(parentOid, 0, m_oid, 0, parentOid.length);
+                    m_oid[m_oid.length-1] = getLastOid().intValue();
+                    m_oidStr = parent.getOidStr() + "." + getLastOid();
+                } else {
+                    m_oid = new int[] { getLastOid().intValue() };
+                    m_oidStr = getLastOid().toString();
+                }
+            }
+        }
+        return m_oid;
     }
 
     private SmiOidValue createDummyOidValue(OidComponent oidComponent, OidComponent prevOidComponent, SmiOidValue parent) {

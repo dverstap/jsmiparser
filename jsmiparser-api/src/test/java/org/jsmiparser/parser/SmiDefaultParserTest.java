@@ -167,31 +167,31 @@ public class SmiDefaultParserTest extends TestCase {
 
         SmiTable ifTable = ifModule.findTable("ifTable");
         assertNotNull(ifTable);
-        assertEquals("1.3.6.1.2.1.2.2", ifTable.getOid());
+        assertEquals("1.3.6.1.2.1.2.2", ifTable.getOidStr());
         Collection<SmiTable> ifTables = mib.getTables().findAll("ifTable");
         assertEquals(2, ifTables.size());
         assertTrue(ifTables.contains(ifTable));
 
         SmiRow ifEntry = ifModule.findRow("ifEntry");
         assertNotNull(ifEntry);
-        assertEquals("1.3.6.1.2.1.2.2.1", ifEntry.getOid());
+        assertEquals("1.3.6.1.2.1.2.2.1", ifEntry.getOidStr());
         assertSame(ifEntry.getTable(), ifTable);
 
         SmiVariable ifAdminStatus = ifModule.findVariable("ifAdminStatus");
         assertNotNull(ifAdminStatus);
-        assertEquals("1.3.6.1.2.1.2.2.1.7", ifAdminStatus.getOid());
+        assertEquals("1.3.6.1.2.1.2.2.1.7", ifAdminStatus.getOidStr());
     }
 
     private void checkJobMonitoringMib(SmiMib mib) {
         SmiOidValue jobmonMIB = mib.getOidValues().find("jobmonMIB");
         assertNotNull(jobmonMIB);
-        assertEquals("1.3.6.1.4.1.2699.1.1", jobmonMIB.getOid());
+        assertEquals("1.3.6.1.4.1.2699.1.1", jobmonMIB.getOidStr());
     }
 
     private void checkDlswMib(SmiMib mib) {
         SmiOidValue nullSymbol = mib.getOidValues().find("null");
         assertNotNull(nullSymbol);
-        assertEquals("0.0", nullSymbol.getOid());
+        assertEquals("0.0", nullSymbol.getOidStr());
     }
 
     private void checkDismanPingMib(SmiMib mib) {
@@ -258,7 +258,7 @@ public class SmiDefaultParserTest extends TestCase {
                 String msg = module.getId() + ": " + symbol.getId() + ": " + symbol.getClass().getSimpleName();
                 if (symbol instanceof SmiOidValue) {
                     SmiOidValue oidValue = (SmiOidValue) symbol;
-                    msg += ": " + oidValue.getOid();
+                    msg += ": " + oidValue.getOidStr();
                 }
                 System.out.println(msg);
             }

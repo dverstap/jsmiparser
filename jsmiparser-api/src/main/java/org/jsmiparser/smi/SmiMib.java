@@ -36,6 +36,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.math.BigInteger;
 
 public class SmiMib {
 
@@ -232,6 +233,26 @@ public class SmiMib {
 
     public SmiSymbolMap<SmiOidValue> getOidValues() {
         return m_oidValueMap;
+    }
+
+    /**
+     * This method can be used to find the best match for an OID.
+     * By comparing the length of the OID of the result and the input OID you can
+     * determine how many and which subIds where not matched.
+     *
+     * @param oid For which the best match is searched.
+     * @return Best matching SmiOidValue, or null if none is found.
+     */
+    public SmiOidValue findByOidPrefix(int[] oid) {
+        SmiOidValue parent = getRootNode();
+        for (int subId : oid) {
+            SmiOidValue result = parent.findChild(new BigInteger(String.valueOf(subId)));
+            if (result == null) {
+                return parent;
+            }
+            parent = result;
+        }
+        return null;
     }
 
     public Set<SmiModule> findModules(SmiVersion version) {

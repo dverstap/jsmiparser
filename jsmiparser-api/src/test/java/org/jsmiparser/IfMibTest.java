@@ -27,6 +27,7 @@ import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.SmiVersion;
 import org.jsmiparser.smi.StatusV2;
 import org.jsmiparser.smi.SmiIndex;
+import org.jsmiparser.smi.SmiOidValue;
 
 import java.net.URISyntaxException;
 import java.util.List;
@@ -90,21 +91,21 @@ public class IfMibTest extends AbstractMibTestCase {
 
         SmiTable ifTable = mib.getTables().find("ifTable");
         assertNotNull(ifTable);
-        assertEquals("1.3.6.1.2.1.2.2", ifTable.getOid());
+        assertEquals("1.3.6.1.2.1.2.2", ifTable.getOidStr());
 
         SmiRow ifEntry = mib.getRows().find("ifEntry");
         assertNotNull(ifEntry);
         assertSame(ifTable, ifEntry.getParent());
         assertSame(ifTable, ifEntry.getTable());
         assertSame(ifEntry, ifTable.getRow());
-        assertEquals("1.3.6.1.2.1.2.2.1", ifEntry.getOid());
+        assertEquals("1.3.6.1.2.1.2.2.1", ifEntry.getOidStr());
         assertSame(ifTable, ifEntry.getTable());
 
         SmiVariable ifIndex = mib.getVariables().find("ifIndex");
         assertNotNull(ifIndex);
         assertSame(ifEntry, ifIndex.getParent());
         assertSame(ifTable, ifIndex.getParent().getParent());
-        assertEquals("1.3.6.1.2.1.2.2.1.1", ifIndex.getOid());
+        assertEquals("1.3.6.1.2.1.2.2.1.1", ifIndex.getOidStr());
         SmiTextualConvention interfaceIndex = getMib().getTextualConventions().find("InterfaceIndex");
         assertNotNull(interfaceIndex);
         assertSame(interfaceIndex, ifIndex.getType());
@@ -120,7 +121,7 @@ public class IfMibTest extends AbstractMibTestCase {
         assertNotNull(ifAdminStatus);
         assertEquals(ifEntry, ifAdminStatus.getRow());
         assertEquals(ifTable, ifAdminStatus.getTable());
-        assertEquals("1.3.6.1.2.1.2.2.1.7", ifAdminStatus.getOid());
+        assertEquals("1.3.6.1.2.1.2.2.1.7", ifAdminStatus.getOidStr());
         assertSame(ifEntry, ifAdminStatus.getParent());
 
         SmiType ifAdminStatusType = ifAdminStatus.getType();
@@ -147,6 +148,19 @@ public class IfMibTest extends AbstractMibTestCase {
         System.out.println(mib.getVariables().size() + mib.getTables().size() + mib.getRows().size());
 
         checkOidTree(mib);
+    }
+
+    public void testFindByOidPrefix() {
+        SmiMib mib = getMib();
+
+        SmiVariable ifAdminStatus = mib.getVariables().find("ifAdminStatus");
+        assertNotNull(ifAdminStatus);
+        assertEquals("1.3.6.1.2.1.2.2.1.7", ifAdminStatus.getOidStr());
+
+        int[] adminStatusOfInterface0x1101 = new int[]{1, 3, 6, 1, 2, 1, 2, 2, 1, 7, 0x1101};
+        SmiOidValue result = mib.findByOidPrefix(adminStatusOfInterface0x1101);
+        assertSame(ifAdminStatus, result);
+        assertEquals(adminStatusOfInterface0x1101.length, result.getOid().length + 1);
     }
 
 }

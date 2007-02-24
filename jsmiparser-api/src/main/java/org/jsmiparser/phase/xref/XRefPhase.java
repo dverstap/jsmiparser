@@ -75,6 +75,11 @@ public class XRefPhase implements Phase {
                 oidValue.resolveOid(m_reporter);
             }
         }
+        for (SmiModule module : modules) {
+            for (SmiOidValue oidValue : module.getOidValues()) {
+                oidValue.determineFullOid();
+            }
+        }
     }
 
 

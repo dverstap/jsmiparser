@@ -37,7 +37,7 @@ public class SmiVariable extends SmiObjectType {
 	}
 
 	public String getCodeOid() {
-		return getOid();
+		return getOidStr();
 	}
 
 	public String getCodeId() {

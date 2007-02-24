@@ -132,7 +132,7 @@ public abstract class AbstractMibTestCase extends TestCase {
                 String msg = module.getId() + ": " + symbol.getId() + ": " + symbol.getClass().getSimpleName();
                 if (symbol instanceof SmiOidValue) {
                     SmiOidValue oidValue = (SmiOidValue) symbol;
-                    msg += ": " + oidValue.getOid();
+                    msg += ": " + oidValue.getOidStr();
                 }
                 System.out.println(msg);
             }
