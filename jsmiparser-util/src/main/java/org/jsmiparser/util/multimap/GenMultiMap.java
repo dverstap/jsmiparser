@@ -35,7 +35,7 @@ public class GenMultiMap<K, V> implements Serializable {
 
     static final long serialVersionUID = 1;
 
-    private MultiMap m_impl;
+    protected MultiMap m_impl;
 
     public static <K, V> GenMultiMap<K, V> hashMap() {
         return new GenMultiMap<K,V>(MultiValueMap.decorate(new HashMap(), ArrayList.class));
@@ -45,12 +45,14 @@ public class GenMultiMap<K, V> implements Serializable {
         return new GenMultiMap<K,V>(MultiValueMap.decorate(new TreeMap(), ArrayList.class));
     }
 
-    private GenMultiMap(MultiMap impl) {
+    public GenMultiMap(MultiMap impl) {
         m_impl = impl;
     }
 
     public int size() {
-        return m_impl.size();
+        // olala this is tricky stuff: the Commons MultiMap size is the number of entries in the map
+        // but what we really want is the total number of symbols in our symbol maps
+        return m_impl.values().size();
     }
 
     public boolean isEmpty() {

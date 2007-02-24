@@ -98,38 +98,38 @@ public class SmiDefaultParserTest extends TestCase {
     }
 
     private void checkFindMethods(SmiMib mib) {
-        List<SmiSymbol> pingMibs = mib.findSymbols("pingMIB");
+        List<SmiSymbol> pingMibs = mib.getSymbols().findAll("pingMIB");
         assertEquals(2, pingMibs.size());
 
         try {
-            mib.findSymbol("pingMIB");
+            mib.getSymbols().find("pingMIB");
             fail();
         } catch (IllegalArgumentException expected) {
             // do nothing comment to shut up IntelliJ
         }
 
         try {
-            mib.findSymbol(null, "pingMIB");
+            mib.getSymbols().find(null, "pingMIB");
             fail();
         } catch (IllegalArgumentException expected) {
             // do nothing comment to shut up IntelliJ
         }
 
         try {
-            mib.findSymbol("IF-MIBBBBB", "pingMIB");
+            mib.getSymbols().find("IF-MIBBBBB", "pingMIB");
             fail();
         } catch (IllegalArgumentException e) {
             // do nothing
         }
 
-        assertNull(mib.findSymbol("IF-MIB", "pingMIB"));
+        assertNull(mib.getSymbols().find("IF-MIB", "pingMIB"));
 
-        SmiOidValue dismanPingMIB = (SmiOidValue) mib.findSymbol("DISMAN-PING-MIB", "pingMIB");
+        SmiOidValue dismanPingMIB = (SmiOidValue) mib.getSymbols().find("DISMAN-PING-MIB", "pingMIB");
         assertNotNull(dismanPingMIB);
         assertEquals("DISMAN-PING-MIB", dismanPingMIB.getModule().getId());
         assertEquals(new BigInteger("80"), dismanPingMIB.getLastOid());
 
-        SmiOidValue tubsIbrPingMIB = (SmiOidValue) mib.findSymbol("TUBS-IBR-PING-MIB", "pingMIB");
+        SmiOidValue tubsIbrPingMIB = (SmiOidValue) mib.getSymbols().find("TUBS-IBR-PING-MIB", "pingMIB");
         assertNotNull(tubsIbrPingMIB);
         assertEquals("TUBS-IBR-PING-MIB", tubsIbrPingMIB.getModule().getId());
         assertEquals(new BigInteger("8"), tubsIbrPingMIB.getLastOid());
@@ -151,7 +151,7 @@ public class SmiDefaultParserTest extends TestCase {
 
         SmiType interfaceIndex = ifModule.findType("InterfaceIndex");
         assertNotNull(interfaceIndex);
-        Collection<SmiType> interfaceIndexes = mib.findTypes("InterfaceIndex");
+        Collection<SmiType> interfaceIndexes = mib.getTypes().findAll("InterfaceIndex");
         assertEquals(3, interfaceIndexes.size());
         assertTrue(interfaceIndexes.contains(interfaceIndex));
         assertEquals("InterfaceIndex", interfaceIndex.getId());
@@ -166,7 +166,7 @@ public class SmiDefaultParserTest extends TestCase {
         SmiTable ifTable = ifModule.findTable("ifTable");
         assertNotNull(ifTable);
         assertEquals("1.3.6.1.2.1.2.2", ifTable.getOid());
-        Collection<SmiTable> ifTables = mib.findTables("ifTable");
+        Collection<SmiTable> ifTables = mib.getTables().findAll("ifTable");
         assertEquals(2, ifTables.size());
         assertTrue(ifTables.contains(ifTable));
 
@@ -181,19 +181,19 @@ public class SmiDefaultParserTest extends TestCase {
     }
 
     private void checkJobMonitoringMib(SmiMib mib) {
-        SmiOidValue jobmonMIB = (SmiOidValue) mib.findSymbol("jobmonMIB");
+        SmiOidValue jobmonMIB = (SmiOidValue) mib.getSymbols().find("jobmonMIB");
         assertNotNull(jobmonMIB);
         assertEquals("1.3.6.1.4.1.2699.1.1", jobmonMIB.getOid());
     }
 
     private void checkDlswMib(SmiMib mib) {
-        SmiOidValue nullSymbol = (SmiOidValue) mib.findSymbol("null");
+        SmiOidValue nullSymbol = (SmiOidValue) mib.getSymbols().find("null");
         assertNotNull(nullSymbol);
         assertEquals("0.0", nullSymbol.getOid());
     }
 
     private void checkDismanPingMib(SmiMib mib) {
-        Collection<SmiSymbol> pingMIBs = mib.findSymbols("pingMIB");
+        Collection<SmiSymbol> pingMIBs = mib.getSymbols().findAll("pingMIB");
         assertEquals(2, pingMIBs.size());
 
         SmiModule dismanPingModule = mib.findModule("DISMAN-PING-MIB");
@@ -224,7 +224,7 @@ public class SmiDefaultParserTest extends TestCase {
             }
         }
 
-        SmiRow row = mib.findRow("mallocScopeNameEntry");
+        SmiRow row = mib.getRows().find("mallocScopeNameEntry");
         assertNotNull(row);
         assertEquals(3, row.getIndexes().size());
         SmiIndex index1 = row.getIndexes().get(0);

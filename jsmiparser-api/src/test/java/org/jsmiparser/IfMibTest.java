@@ -88,11 +88,11 @@ public class IfMibTest extends AbstractMibTestCase {
 
         SmiMib mib = getMib();
 
-        SmiTable ifTable = mib.findTable("ifTable");
+        SmiTable ifTable = mib.getTables().find("ifTable");
         assertNotNull(ifTable);
         assertEquals("1.3.6.1.2.1.2.2", ifTable.getOid());
 
-        SmiRow ifEntry = mib.findRow("ifEntry");
+        SmiRow ifEntry = mib.getRows().find("ifEntry");
         assertNotNull(ifEntry);
         assertSame(ifTable, ifEntry.getParent());
         assertSame(ifTable, ifEntry.getTable());
@@ -100,7 +100,7 @@ public class IfMibTest extends AbstractMibTestCase {
         assertEquals("1.3.6.1.2.1.2.2.1", ifEntry.getOid());
         assertSame(ifTable, ifEntry.getTable());
 
-        SmiVariable ifIndex = mib.findVariable("ifIndex");
+        SmiVariable ifIndex = mib.getVariables().find("ifIndex");
         assertNotNull(ifIndex);
         assertSame(ifEntry, ifIndex.getParent());
         assertSame(ifTable, ifIndex.getParent().getParent());
@@ -116,7 +116,7 @@ public class IfMibTest extends AbstractMibTestCase {
         assertSame(ifEntry, index.getRow());
         assertEquals(false, index.isImplied());
 
-        SmiVariable ifAdminStatus = mib.findVariable("ifAdminStatus");
+        SmiVariable ifAdminStatus = mib.getVariables().find("ifAdminStatus");
         assertNotNull(ifAdminStatus);
         assertEquals(ifEntry, ifAdminStatus.getRow());
         assertEquals(ifTable, ifAdminStatus.getTable());

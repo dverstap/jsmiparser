@@ -25,7 +25,6 @@ import org.apache.log4j.Logger;
 import org.jsmiparser.exception.SmiException;
 import org.jsmiparser.phase.xref.XRefProblemReporter;
 import org.jsmiparser.util.location.Location;
-import org.jsmiparser.util.multimap.GenMultiMap;
 import org.jsmiparser.util.token.BigIntegerToken;
 import org.jsmiparser.util.token.IdToken;
 
@@ -35,11 +34,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class SmiMib implements SmiSymbolContainer {
+public class SmiMib {
 
     private static final Logger m_log = Logger.getLogger(SmiMib.class);
 
@@ -50,13 +48,14 @@ public class SmiMib implements SmiSymbolContainer {
     private SmiCodeNamingStrategy m_codeNamingStrategy;
     private SmiOidValue m_rootNode;
 
-    GenMultiMap<String, SmiType> m_typeMap = GenMultiMap.hashMap();
-    GenMultiMap<String, SmiSymbol> m_symbolMap = GenMultiMap.hashMap();
-    GenMultiMap<String, SmiVariable> m_variableMap = GenMultiMap.hashMap();
-    GenMultiMap<String, SmiVariable> m_scalarMap = GenMultiMap.hashMap();
-    GenMultiMap<String, SmiTable> m_tableMap = GenMultiMap.hashMap();
-    GenMultiMap<String, SmiRow> m_rowMap = GenMultiMap.hashMap();
-    GenMultiMap<String, SmiVariable> m_columnMap = GenMultiMap.hashMap();
+    SmiSymbolMapImpl<SmiType> m_typeMap = new SmiSymbolMapImpl<SmiType>(SmiType.class, m_moduleMap);
+    // TODO textual convention
+    SmiSymbolMapImpl<SmiSymbol> m_symbolMap = new SmiSymbolMapImpl<SmiSymbol>(SmiSymbol.class, m_moduleMap);
+    SmiSymbolMapImpl<SmiVariable> m_variableMap = new SmiSymbolMapImpl<SmiVariable>(SmiVariable.class, m_moduleMap);
+    SmiSymbolMapImpl<SmiTable> m_tableMap = new SmiSymbolMapImpl<SmiTable>(SmiTable.class, m_moduleMap);
+    SmiSymbolMapImpl<SmiRow> m_rowMap = new SmiSymbolMapImpl<SmiRow>(SmiRow.class, m_moduleMap);
+    SmiSymbolMapImpl<SmiVariable> m_columnMap = new SmiSymbolMapImpl<SmiVariable>(SmiVariable.class, m_moduleMap);
+    SmiSymbolMapImpl<SmiVariable> m_scalarMap = new SmiSymbolMapImpl<SmiVariable>(SmiVariable.class, m_moduleMap);
 
     int m_dummyOidNodesCount;
     private SmiModule m_internalModule;
@@ -165,13 +164,6 @@ public class SmiMib implements SmiSymbolContainer {
         }
     }
 
-    public SmiTextualConvention findTextualConvention(String id) {
-        SmiType type = findType(id);
-        if (type instanceof SmiTextualConvention) {
-            return (SmiTextualConvention) type;
-        }
-        return null;
-    }
 
     public int getDummyOidNodesCount() {
         return m_dummyOidNodesCount;
@@ -203,115 +195,42 @@ public class SmiMib implements SmiSymbolContainer {
         return graph;
     }
 
-    /**
-     * @param id The required id of the symbols.
-     * @return All the SmiSymbol with the required id, or an empty list if none are found.
-     */
-    public List<SmiSymbol> findSymbols(String id) {
-        return m_symbolMap.getAll(id);
-    }
-
-    /**
-     * @param id The required id of the unique symbol.
-     * @return The unique symbol with the required id, or null if it is not found.
-     * @throws IllegalArgumentException if there is more than one symbol with the required id.
-     */
-    public SmiSymbol findSymbol(String id) throws IllegalArgumentException {
-        return m_symbolMap.getOne(id);
-    }
-
-    /**
-     * @param moduleId The module where you want to look for the symbol, or null if you want to look through the whole mib.
-     * @param id The required id of the unique symbol.
-     * @return The unique symbol with the required id, or null if it is not found.
-     * @throws IllegalArgumentException if the module is not found or if there is more than one symbol with the required id.
-     */
-    public SmiSymbol findSymbol(String moduleId, String id) throws IllegalArgumentException {
-        if (moduleId != null) {
-            SmiModule module = findModule(moduleId);
-            if (module == null) {
-                throw new IllegalArgumentException("Module " + moduleId + " could not be found.");
-            }
-            return module.findSymbol(id);
-        } else {
-            return m_symbolMap.getOne(id);
+    // TODO replace with SmiSymbolMap
+    public SmiTextualConvention findTextualConvention(String id) {
+        SmiType type = m_typeMap.find(id);
+        if (type instanceof SmiTextualConvention) {
+            return (SmiTextualConvention) type;
         }
+        return null;
     }
 
-    public Collection<SmiSymbol> getSymbols() {
-        return m_symbolMap.values();
+
+    public SmiSymbolMap<SmiType> getTypes() {
+        return m_typeMap;
     }
 
-    public List<SmiType> findTypes(String id) {
-        return m_typeMap.getAll(id);
+    public SmiSymbolMap<SmiSymbol> getSymbols() {
+        return m_symbolMap;
     }
 
-    public SmiType findType(String id) {
-        return m_typeMap.getOne(id);
+    public SmiSymbolMap<SmiVariable> getVariables() {
+        return m_variableMap;
     }
 
-    public Collection<SmiType> getTypes() {
-        return m_typeMap.values();
+    public SmiSymbolMap<SmiTable> getTables() {
+        return m_tableMap;
     }
 
-    public List<SmiVariable> findVariables(String id) {
-        return m_variableMap.getAll(id);
+    public SmiSymbolMap<SmiRow> getRows() {
+        return m_rowMap;
     }
 
-    public SmiVariable findVariable(String id) {
-        return m_variableMap.getOne(id);
+    public SmiSymbolMap<SmiVariable> getColumns() {
+        return m_columnMap;
     }
 
-    public Collection<SmiVariable> getVariables() {
-        return m_variableMap.values();
-    }
-
-    public List<SmiVariable> findScalars(String id) {
-        return m_scalarMap.getAll(id);
-    }
-
-    public SmiVariable findScalar(String id) {
-        return m_scalarMap.getOne(id);
-    }
-
-    public Collection<SmiVariable> getScalars() {
-        return m_scalarMap.values();
-    }
-
-    public List<SmiTable> findTables(String id) {
-        return m_tableMap.getAll(id);
-    }
-
-    public SmiTable findTable(String id) {
-        return m_tableMap.getOne(id);
-    }
-
-    public Collection<SmiTable> getTables() {
-        return m_tableMap.values();
-    }
-
-    public List<SmiRow> findRows(String id) {
-        return m_rowMap.getAll(id);
-    }
-
-    public SmiRow findRow(String id) {
-        return m_rowMap.getOne(id);
-    }
-
-    public Collection<SmiRow> getRows() {
-        return m_rowMap.values();
-    }
-
-    public List<SmiVariable> findColumns(String id) {
-        return m_columnMap.getAll(id);
-    }
-
-    public SmiVariable findColumn(String id) {
-        return m_columnMap.getOne(id);
-    }
-
-    public Collection<SmiVariable> getColumns() {
-        return m_columnMap.values();
+    public SmiSymbolMap<SmiVariable> getScalars() {
+        return m_scalarMap;
     }
 
     public Set<SmiModule> findModules(SmiVersion version) {
@@ -327,7 +246,7 @@ public class SmiMib implements SmiSymbolContainer {
     public void defineMissingStandardOids() {
         Location location = m_internalModule.getIdToken().getLocation();
 
-        if (findSymbols("itu").isEmpty()) {
+        if (m_symbolMap.findAll("itu").isEmpty()) {
             SmiOidValue itu = new SmiOidValue(new IdToken(location, "itu"), m_internalModule);
             ArrayList<OidComponent> ituOid = new ArrayList<OidComponent>();
             ituOid.add(new OidComponent(null, new BigIntegerToken(location, false, "0")));
@@ -338,7 +257,7 @@ public class SmiMib implements SmiSymbolContainer {
             m_symbolMap.put(itu.getId(), itu);
         }
 
-        if (findSymbols("iso").isEmpty()) {
+        if (m_symbolMap.findAll("iso").isEmpty()) {
             SmiOidValue iso = new SmiOidValue(new IdToken(location, "iso"), m_internalModule);
             ArrayList<OidComponent> isoOid = new ArrayList<OidComponent>();
             isoOid.add(new OidComponent(null, new BigIntegerToken(location, false, "1")));

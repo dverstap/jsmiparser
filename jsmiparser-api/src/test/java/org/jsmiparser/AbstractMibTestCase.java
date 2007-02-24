@@ -98,7 +98,7 @@ public abstract class AbstractMibTestCase extends TestCase {
 
     public SmiType getInteger32() {
         if (m_integer32 == null) {
-            m_integer32 = getMib().findType("Integer32");
+            m_integer32 = getMib().getTypes().find("Integer32");
             assertSame(SmiConstants.INTEGER_TYPE, m_integer32.getBaseType());
             assertSame(SmiPrimitiveType.INTEGER_32, m_integer32.getPrimitiveType());
             assertEquals(1, m_integer32.getRangeConstraints().size());
@@ -114,7 +114,7 @@ public abstract class AbstractMibTestCase extends TestCase {
 
     public SmiType getCounter() {
         if (m_counter == null) {
-            m_counter = getMib().findType("Counter");
+            m_counter = getMib().getTypes().find("Counter");
             assertSame(SmiConstants.INTEGER_TYPE, m_counter.getBaseType());
             assertSame(SmiPrimitiveType.COUNTER_32, m_counter.getPrimitiveType());
             assertEquals(1, m_counter.getRangeConstraints().size());

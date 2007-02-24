@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class SmiModule implements SmiSymbolContainer {
+public class SmiModule {
 
     private static final Logger m_log = Logger.getLogger(SmiModule.class);
 
@@ -282,7 +282,7 @@ public class SmiModule implements SmiSymbolContainer {
             result = findImportedSymbol(idToken.getId());
         }
         if (result == null) {
-            List<SmiSymbol> symbols = getMib().findSymbols(idToken.getId());
+            List<SmiSymbol> symbols = getMib().getSymbols().findAll(idToken.getId());
             if (symbols.size() == 1) {
                 result = symbols.get(0);
             } else if (symbols.size() > 0) {

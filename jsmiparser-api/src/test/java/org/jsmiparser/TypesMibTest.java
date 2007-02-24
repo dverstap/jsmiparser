@@ -36,7 +36,7 @@ public class TypesMibTest extends AbstractMibTestCase {
     // TODO need to add lots of new tests here
 
     public void testMyINTEGER() {
-        SmiType type = getMib().findType("MyINTEGER");
+        SmiType type = getMib().getTypes().find("MyINTEGER");
         checkMyINTEGER(type);
     }
 
@@ -49,7 +49,7 @@ public class TypesMibTest extends AbstractMibTestCase {
     }
 
     public void testOTMyINTEGER() {
-        SmiObjectType ot = getMib().findVariable("myINTEGER");
+        SmiObjectType ot = getMib().getVariables().find("myINTEGER");
         assertEquals(ot.getId() + " Desc", ot.getDescription());
         assertEquals(ObjectTypeAccessV2.NOT_ACCESSIBLE, ot.getMaxAccess());
         assertEquals(StatusV2.CURRENT, ot.getStatusV2());
@@ -80,7 +80,7 @@ public class TypesMibTest extends AbstractMibTestCase {
     }
 
     public void testMyINTEGERFromMinus3To4() {
-        SmiType type = getMib().findType("MyINTEGERFromMinus3To4");
+        SmiType type = getMib().getTypes().find("MyINTEGERFromMinus3To4");
         checkMyINTEGERFromMinus3To4(type);
     }
 
@@ -93,7 +93,7 @@ public class TypesMibTest extends AbstractMibTestCase {
     }
 
     public void testOTMyINTEGERFromMinus3To4() {
-        SmiObjectType ot = getMib().findVariable("myINTEGERFromMinus3To4");
+        SmiObjectType ot = getMib().getVariables().find("myINTEGERFromMinus3To4");
         assertEquals(ot.getId() + " Desc", ot.getDescription());
         assertEquals(ObjectTypeAccessV2.NOT_ACCESSIBLE, ot.getMaxAccess());
         assertEquals(StatusV2.CURRENT, ot.getStatusV2());
@@ -116,7 +116,7 @@ public class TypesMibTest extends AbstractMibTestCase {
     }
 
     public void testMyInteger32() {
-        SmiType type = getMib().findType("MyInteger32");
+        SmiType type = getMib().getTypes().find("MyInteger32");
         checkMyInteger32(type);
     }
 
@@ -129,7 +129,7 @@ public class TypesMibTest extends AbstractMibTestCase {
     }
 
     public void testOTMyInteger32() {
-        SmiObjectType ot = getMib().findVariable("myInteger32");
+        SmiObjectType ot = getMib().getVariables().find("myInteger32");
         assertEquals(ot.getId() + " Desc", ot.getDescription());
         assertEquals(ObjectTypeAccessV2.NOT_ACCESSIBLE, ot.getMaxAccess());
         assertEquals(StatusV2.CURRENT, ot.getStatusV2());
@@ -155,7 +155,7 @@ public class TypesMibTest extends AbstractMibTestCase {
     }
 
     public void testMyInteger32FromMinus5To6() {
-        SmiType type = getMib().findType("MyInteger32FromMinus5To6");
+        SmiType type = getMib().getTypes().find("MyInteger32FromMinus5To6");
         checkMyInteger32FromMinus5To6(type);
     }
 
@@ -168,7 +168,7 @@ public class TypesMibTest extends AbstractMibTestCase {
     }
 
     public void testOTMyInteger32FromMinus5To6() {
-        SmiObjectType ot = getMib().findVariable("myInteger32FromMinus5To6");
+        SmiObjectType ot = getMib().getVariables().find("myInteger32FromMinus5To6");
         assertEquals(ot.getId() + " Desc", ot.getDescription());
         assertEquals(ObjectTypeAccessV2.NOT_ACCESSIBLE, ot.getMaxAccess());
         assertEquals(StatusV2.CURRENT, ot.getStatusV2());
@@ -190,7 +190,7 @@ public class TypesMibTest extends AbstractMibTestCase {
     }
 
     public void testMyEnum() {
-        SmiType type = getMib().findType("MyEnum");
+        SmiType type = getMib().getTypes().find("MyEnum");
         checkMyEnum(type);
     }
 
@@ -203,7 +203,7 @@ public class TypesMibTest extends AbstractMibTestCase {
     }
 
     public void testOTMyEnum() {
-        SmiObjectType ot = getMib().findVariable("myEnum");
+        SmiObjectType ot = getMib().getVariables().find("myEnum");
         assertEquals(ot.getId() + " Desc", ot.getDescription());
         assertEquals(ObjectTypeAccessV2.NOT_ACCESSIBLE, ot.getMaxAccess());
         assertEquals(StatusV2.CURRENT, ot.getStatusV2());
@@ -230,7 +230,7 @@ public class TypesMibTest extends AbstractMibTestCase {
     }
 
     public void testMyBits() {
-        SmiType type = getMib().findType("MyBits");
+        SmiType type = getMib().getTypes().find("MyBits");
         checkMyBits(type);
     }
 
@@ -243,7 +243,7 @@ public class TypesMibTest extends AbstractMibTestCase {
     }
 
     public void testOTMyBits() {
-        SmiObjectType ot = getMib().findVariable("myBits");
+        SmiObjectType ot = getMib().getVariables().find("myBits");
         assertEquals(ot.getId() + " Desc", ot.getDescription());
         assertEquals(ObjectTypeAccessV2.NOT_ACCESSIBLE, ot.getMaxAccess());
         assertEquals(StatusV2.CURRENT, ot.getStatusV2());
@@ -270,7 +270,7 @@ public class TypesMibTest extends AbstractMibTestCase {
     }
 
     public void testMyOctetString() {
-        SmiType type = getMib().findType("MyOctetString");
+        SmiType type = getMib().getTypes().find("MyOctetString");
         checkMyOctetString(type);
     }
 
@@ -283,7 +283,7 @@ public class TypesMibTest extends AbstractMibTestCase {
     }
 
     public void testOTMyOctetString() {
-        SmiObjectType ot = getMib().findVariable("myOctetString");
+        SmiObjectType ot = getMib().getVariables().find("myOctetString");
         assertEquals(ot.getId() + " Desc", ot.getDescription());
         assertEquals(ObjectTypeAccessV2.NOT_ACCESSIBLE, ot.getMaxAccess());
         assertEquals(StatusV2.CURRENT, ot.getStatusV2());
@@ -313,7 +313,7 @@ public class TypesMibTest extends AbstractMibTestCase {
     public void testMyOctetStringBetweenSize9And5() {
         // TODO should check for error message
 
-        SmiType type = getMib().findType("MyOctetStringBetweenSize9And5");
+        SmiType type = getMib().getTypes().find("MyOctetStringBetweenSize9And5");
         checkMyOctetStringBetweenSize9And5(type);
     }
 
@@ -328,7 +328,7 @@ public class TypesMibTest extends AbstractMibTestCase {
     }
 
     public void testOTMyOctetStringBetweenSize9And5() {
-        SmiObjectType ot = getMib().findVariable("myOctetStringBetweenSize9And5");
+        SmiObjectType ot = getMib().getVariables().find("myOctetStringBetweenSize9And5");
         assertEquals(ot.getId() + " Desc", ot.getDescription());
         assertEquals(ObjectTypeAccessV2.NOT_ACCESSIBLE, ot.getMaxAccess());
         assertEquals(StatusV2.CURRENT, ot.getStatusV2());
@@ -352,7 +352,7 @@ public class TypesMibTest extends AbstractMibTestCase {
     }
 
     public void testMyCounter() {
-        SmiType type = getMib().findType("MyCounter");
+        SmiType type = getMib().getTypes().find("MyCounter");
         checkMyCounter(type);
     }
 
@@ -365,7 +365,7 @@ public class TypesMibTest extends AbstractMibTestCase {
     }
 
     public void testOTMyCounter() {
-        SmiObjectType ot = getMib().findVariable("myCounter");
+        SmiObjectType ot = getMib().getVariables().find("myCounter");
         assertEquals(ot.getId() + " Desc", ot.getDescription());
         assertEquals(ObjectTypeAccessV2.NOT_ACCESSIBLE, ot.getMaxAccess());
         assertEquals(StatusV2.CURRENT, ot.getStatusV2());
@@ -391,7 +391,7 @@ public class TypesMibTest extends AbstractMibTestCase {
     }
 
     public void testMyCounterFromMinus100To100() {
-        SmiType type = getMib().findType("MyCounterFromMinus100To100");
+        SmiType type = getMib().getTypes().find("MyCounterFromMinus100To100");
         checkMyCounterFromMinus100To100(type);
     }
 
@@ -404,7 +404,7 @@ public class TypesMibTest extends AbstractMibTestCase {
     }
 
     public void testOTMyCounterFromMinus100To100() {
-        SmiObjectType ot = getMib().findVariable("myCounterFromMinus100To100");
+        SmiObjectType ot = getMib().getVariables().find("myCounterFromMinus100To100");
         assertEquals(ot.getId() + " Desc", ot.getDescription());
         assertEquals(ObjectTypeAccessV2.NOT_ACCESSIBLE, ot.getMaxAccess());
         assertEquals(StatusV2.CURRENT, ot.getStatusV2());
