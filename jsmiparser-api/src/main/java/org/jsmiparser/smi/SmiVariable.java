@@ -18,6 +18,13 @@ package org.jsmiparser.smi;
 import org.jsmiparser.util.token.IdToken;
 import org.jsmiparser.util.token.QuotedStringToken;
 
+import java.util.List;
+
+/**
+ * Besides the OBJECT-TYPE fields that are specific to SNMP variable definitions,
+ * this class also contains some methods that make it easier to deal with the recursive nature
+ * of the SmiType definitions.
+ */
 public class SmiVariable extends SmiObjectType {
 
     private QuotedStringToken m_unitsToken;
@@ -86,5 +93,64 @@ public class SmiVariable extends SmiObjectType {
 
     public QuotedStringToken getUnitsToken() {
         return m_unitsToken;
+    }
+
+    public SmiTextualConvention getTextualConvention() {
+        SmiType type = m_type;
+        while (type != null) {
+            if (type instanceof SmiTextualConvention) {
+                return (SmiTextualConvention) type;
+            }
+            type = type.getBaseType();
+        }
+        return null;
+    }
+
+    public SmiPrimitiveType getPrimitiveType() {
+        return m_type.getPrimitiveType();
+    }
+
+    public List<SmiNamedNumber> getEnumValues() {
+        SmiType type = m_type;
+        while (type != null) {
+            if (type.getEnumValues() != null) {
+                return type.getEnumValues();
+            }
+            type = type.getBaseType();
+        }
+        return null;
+    }
+
+    public List<SmiNamedNumber> getBitFields() {
+        SmiType type = m_type;
+        while (type != null) {
+            if (type.getBitFields() != null) {
+                return type.getBitFields();
+            }
+            type = type.getBaseType();
+        }
+        return null;
+    }
+
+    public List<SmiRange> getRangeConstraints() {
+        SmiType type = m_type;
+        while (type != null) {
+            if (type.getRangeConstraints() != null) {
+                return type.getRangeConstraints();
+            }
+            type = type.getBaseType();
+        }
+        return null;
+    }
+
+    public List<SmiRange> getSizeConstraints() {
+        SmiType type = m_type;
+        while (type != null) {
+            if (type.getRangeConstraints() != null) {
+                return type.getRangeConstraints();
+            }
+            type = type.getBaseType();
+        }
+        return null;
     }
 }
