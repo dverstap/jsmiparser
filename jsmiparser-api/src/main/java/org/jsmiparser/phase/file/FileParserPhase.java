@@ -53,8 +53,8 @@ public class FileParserPhase implements Phase {
     }
 
     public SmiMib process(SmiMib mib) throws SmiException {
-        for (File file : m_options.getInputFileSet()) {
-            parse(mib, file);
+        for (String resourceLocation : m_options.getInputResourceSet()) {
+            parse(mib, resourceLocation);
         }
 
         if (m_log.isDebugEnabled()) {
@@ -64,16 +64,28 @@ public class FileParserPhase implements Phase {
         return mib;
     }
 
-
-    public void parse(SmiMib mib, File inputFile) {
+    public void parse(SmiMib mib, String resourceLocation) {
         InputStream is = null;
         try {
-            m_log.debug("Parsing :" + inputFile);
-            is = new BufferedInputStream(new FileInputStream(inputFile));
+            m_log.debug("Parsing :" + resourceLocation);
+            // ResourceLocation could be either a classpath location or a file location
+            // First try as a classpath location
+            InputStream resourceStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceLocation);
+            if (resourceStream == null) {
+                // Attempt to interpret as a File
+                File inputFile = null;
+                try {
+                    inputFile = new File(resourceLocation);
+                    resourceStream = new FileInputStream(inputFile);
+                } catch (FileNotFoundException e) {
+                    m_reporter.reportFileNotFound(inputFile);
+                }
+            }
+            is = new BufferedInputStream(resourceStream);
             SMILexer lexer = new SMILexer(is);
 
             SMIParser parser = new SMIParser(lexer);
-            parser.init(mib, inputFile.getPath());
+            parser.init(mib, resourceLocation);
 
             // TODO should define this in the grammar
             SmiModule module = parser.module_definition();
@@ -82,14 +94,12 @@ public class FileParserPhase implements Phase {
             }
         } catch (TokenStreamException e) {
             m_log.debug(e.getMessage(), e);
-            m_reporter.reportTokenStreamError(inputFile);
+            m_reporter.reportTokenStreamError(resourceLocation);
         } catch (RecognitionException e) {
             m_log.debug(e.getMessage(), e);
-            m_reporter.reportParseError(new Location(inputFile.getPath(), e.getLine(), e.getColumn()));
-        } catch (FileNotFoundException e) {
-            m_reporter.reportFileNotFound(inputFile);
+            m_reporter.reportParseError(new Location(resourceLocation, e.getLine(), e.getColumn()));
         } finally {
-            m_log.debug("Finished parsing :" + inputFile);
+            m_log.debug("Finished parsing :" + resourceLocation);
             if (is != null) {
                 try {
                     is.close();
@@ -99,6 +109,7 @@ public class FileParserPhase implements Phase {
             }
         }
     }
+
     private void logParseResults(SmiMib mib) {
         Set<SmiModule> v1modules = mib.findModules(SmiVersion.V1);
         Set<SmiModule> v2modules = mib.findModules(SmiVersion.V2);

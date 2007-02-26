@@ -15,7 +15,7 @@
  */
 package org.jsmiparser.smi;
 
-public enum ObjectTypeAccessV2 {
+public enum ObjectTypeAccessV2 implements AccessPermissions {
     NOT_ACCESSIBLE(AccessAll.NOT_ACCESSIBLE),
     ACCESSIBLE_FOR_NOTIFY(AccessAll.ACCESSIBLE_FOR_NOTIFY),
     READ_ONLY(AccessAll.READ_ONLY),
@@ -38,5 +38,17 @@ public enum ObjectTypeAccessV2 {
 
     public static ObjectTypeAccessV2 find(String keyword) {
         return Util.find(ObjectTypeAccessV2.class, keyword);
+    }
+
+    public boolean isCreateWritable() {        
+        return isWritable() || this == READ_CREATE;        
+    }
+
+    public boolean isReadable() {
+        return this == READ_ONLY || this == READ_WRITE || this == READ_CREATE;
+    }
+
+    public boolean isWritable() {        
+        return this == READ_WRITE;
     }
 }

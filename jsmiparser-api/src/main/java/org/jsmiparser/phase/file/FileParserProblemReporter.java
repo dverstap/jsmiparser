@@ -15,17 +15,15 @@
  */
 package org.jsmiparser.phase.file;
 
-import org.jsmiparser.smi.SmiSymbol;
-import org.jsmiparser.util.problem.annotations.ProblemMethod;
-import org.jsmiparser.util.token.IdToken;
-import org.jsmiparser.util.location.Location;
-
 import java.io.File;
+
+import org.jsmiparser.util.location.Location;
+import org.jsmiparser.util.problem.annotations.ProblemMethod;
 
 public interface FileParserProblemReporter {
 
     @ProblemMethod(message="Lex error at: %s")
-    void reportTokenStreamError(File inputFile);
+    void reportTokenStreamError(String resourceLocation);
 
     @ProblemMethod(message="Parse error at: %s")
     void reportParseError(Location location);

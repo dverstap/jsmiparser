@@ -15,13 +15,17 @@
  */
 package org.jsmiparser.phase.file;
 
-import org.jsmiparser.util.TextUtil;
-import org.apache.log4j.Logger;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.LinkedHashSet;
+import java.util.Properties;
+import java.util.Set;
 
-import java.io.*;
-import java.util.*;
-import java.net.URL;
-import java.net.URISyntaxException;
+import org.apache.log4j.Logger;
+import org.jsmiparser.util.TextUtil;
 
 public class FileParserOptions {
 
@@ -30,8 +34,8 @@ public class FileParserOptions {
     private Set<File> m_usedDirSet = new LinkedHashSet<File>();
     private Set<File> m_inputDirSet = new LinkedHashSet<File>();
 
-    private Set<File> m_usedFileSet = new LinkedHashSet<File>();
-    private Set<File> m_inputFileSet = new LinkedHashSet<File>();
+    private Set<String> m_usedResourceSet = new LinkedHashSet<String>();
+    private Set<String> m_inputResourceSet = new LinkedHashSet<String>();
 
     private Set<String> m_extensions = new LinkedHashSet<String>();
 
@@ -57,30 +61,28 @@ public class FileParserOptions {
         m_inputDirSet = inputDirSet;
     }
 
-    public Set<File> getUsedFileSet() {
-        return m_usedFileSet;
+    public Set<String> getUsedResourceSet() {
+        return m_usedResourceSet;
     }
 
-    public void setUsedFileSet(Set<File> usedFileSet) {
-        m_usedFileSet = usedFileSet;
+    public void setUsedResourceSet(Set<String> usedFileSet) {
+        m_usedResourceSet = usedFileSet;
     }
 
-    public Set<File> getInputFileSet() {
-        return m_inputFileSet;
+    public Set<String> getInputResourceSet() {
+        return m_inputResourceSet;
     }
 
-    public void setInputFileSet(Set<File> inputFileSet) {
-        m_inputFileSet = inputFileSet;
+    public void setInputResourceSet(Set<String> inputResourceSet) {
+        m_inputResourceSet = inputResourceSet;
     }
 
     public void addFile(File file) {
-        m_inputFileSet.add(file);
+        m_inputResourceSet.add(file.getAbsolutePath());
     }
 
-    public void addResource(String path) throws URISyntaxException {
-        URL pathURL = getClass().getClassLoader().getResource(path);
-        File pathFile = new File(pathURL.toURI());
-        addFile(pathFile);
+    public void addResource(String path) {
+        m_inputResourceSet.add(path);
     }
 
     public Set<String> getExtensions() {

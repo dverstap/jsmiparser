@@ -15,11 +15,9 @@
  */
 package org.jsmiparser.smi;
 
-import java.util.Set;
-import java.util.EnumSet;
 
 // TODO add an interface with isWritable, isReadable etc methods, implemented by all three AccessX classes
-public enum AccessAll {
+public enum AccessAll implements AccessPermissions {
     READ_ONLY,
     READ_WRITE,
     WRITE_ONLY,
@@ -30,7 +28,7 @@ public enum AccessAll {
 
     private String m_keyword;
 
-    private AccessAll(MacroType... macroTypes) {
+    private AccessAll() {
         m_keyword = name().toLowerCase().replace('_', '-');
     }
 
@@ -40,6 +38,18 @@ public enum AccessAll {
 
     public AccessAll find(String keyword) {
         return Util.find(AccessAll.class, keyword);
+    }
+
+    public boolean isCreateWritable() {        
+        return isWritable() || this == READ_CREATE;
+    }
+
+    public boolean isReadable() {
+        return this == READ_ONLY || this == READ_WRITE || this == READ_CREATE;
+    }
+
+    public boolean isWritable() {
+        return this == READ_WRITE || this == WRITE_ONLY;
     }
 
 /*
