@@ -70,7 +70,7 @@ public class SmiReferencedType extends SmiType {
                 result.setBitFields(getBitFields());
                 result.setRangeConstraints(getRangeConstraints());
                 result.setSizeConstraints(getSizeConstraints());
-                result.setBaseType(type.getBaseType());
+                result.setBaseType(type);
                 result.setPrimitiveType(type.getPrimitiveType());
             } else {
                 result = type;

@@ -146,8 +146,8 @@ public class SmiVariable extends SmiObjectType {
     public List<SmiRange> getSizeConstraints() {
         SmiType type = m_type;
         while (type != null) {
-            if (type.getRangeConstraints() != null) {
-                return type.getRangeConstraints();
+            if (type.getSizeConstraints() != null) {
+                return type.getSizeConstraints();
             }
             type = type.getBaseType();
         }

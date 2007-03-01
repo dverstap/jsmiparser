@@ -22,7 +22,6 @@ import org.jsmiparser.phase.xref.XRefProblemReporter;
 public class SmiObjectType extends SmiOidMacro {
 
     protected SmiType m_type;
-    private SmiPrimitiveType m_primitiveType; // TODO remove?
     private ObjectTypeAccessV1 m_accessV1;
     private ObjectTypeAccessV2 m_accessV2;
     private String m_description;
@@ -30,19 +29,6 @@ public class SmiObjectType extends SmiOidMacro {
     public SmiObjectType(IdToken idToken, SmiModule module) {
         super(idToken, module);
     }
-
-    public SmiPrimitiveType getPrimitiveType() {
-		if (m_type != null) {
-			return m_type.getPrimitiveType();
-		}
-		else {
-			return m_primitiveType;
-		}
-	}
-
-    public void setPrimitiveType(SmiPrimitiveType primitiveType) {
-		m_primitiveType = primitiveType;
-	}
 
     public SmiType getType() {
 		return m_type;

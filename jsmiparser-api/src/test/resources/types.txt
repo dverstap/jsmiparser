@@ -24,6 +24,10 @@ MyBits ::= BITS {
 
 MyOctetString ::= OCTET STRING
 
+MyDerivedOctetString ::= MyOctetString
+
+MyDerivedOctetStringBetween3And5 ::= MyOctetString (SIZE (3..5))
+
 MyOctetStringBetweenSize9And5 ::= OCTET STRING (SIZE (9..5))
 
 MyCounter ::= Counter
@@ -167,6 +171,13 @@ myOctetStringBetweenSize9And5 OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION "myOctetStringBetweenSize9And5 Desc"
+    ::= { 3456 }
+
+myOctetStringOfSize11 OBJECT-TYPE
+    SYNTAX      OCTET STRING (SIZE (11))
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION "myOctetStringOfSize11 Desc"
     ::= { 3456 }
 
 myCounter OBJECT-TYPE

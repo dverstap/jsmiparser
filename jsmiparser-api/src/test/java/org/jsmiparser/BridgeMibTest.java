@@ -48,13 +48,14 @@ public class BridgeMibTest extends AbstractMibTestCase {
 
         SmiVariable dot1dStpBridgeMaxAge = getMib().getVariables().find("dot1dStpBridgeMaxAge");
         assertNotNull(dot1dStpBridgeMaxAge);
-        assertSame(integer32, dot1dStpBridgeMaxAge.getType().getBaseType());
+        SmiType anonymousType = dot1dStpBridgeMaxAge.getType();
+        assertNull(anonymousType.getIdToken());
+        assertSame(timeout, anonymousType.getBaseType());
         assertEquals(SmiPrimitiveType.INTEGER_32, dot1dStpBridgeMaxAge.getType().getPrimitiveType());
         List<SmiRange> dot1dStpBridgeMaxAgeRangeConstraints = dot1dStpBridgeMaxAge.getType().getRangeConstraints();
         assertEquals(1, dot1dStpBridgeMaxAgeRangeConstraints.size());
         assertEquals(600, dot1dStpBridgeMaxAgeRangeConstraints.get(0).getMinValue().intValue());
         assertEquals(4000, dot1dStpBridgeMaxAgeRangeConstraints.get(0).getMaxValue().intValue());
-
     }
 
 

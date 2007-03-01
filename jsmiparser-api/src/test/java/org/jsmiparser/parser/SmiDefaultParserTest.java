@@ -17,17 +17,7 @@ package org.jsmiparser.parser;
 
 import org.jsmiparser.exception.SmiException;
 import org.jsmiparser.phase.file.FileParserOptions;
-import org.jsmiparser.smi.SmiIndex;
-import org.jsmiparser.smi.SmiMib;
-import org.jsmiparser.smi.SmiModule;
-import org.jsmiparser.smi.SmiOidValue;
-import org.jsmiparser.smi.SmiRow;
-import org.jsmiparser.smi.SmiSymbol;
-import org.jsmiparser.smi.SmiTable;
-import org.jsmiparser.smi.SmiTextualConvention;
-import org.jsmiparser.smi.SmiType;
-import org.jsmiparser.smi.SmiVarBindField;
-import org.jsmiparser.smi.SmiVariable;
+import org.jsmiparser.smi.*;
 import org.jsmiparser.util.jung.DirectedCycleException;
 import org.jsmiparser.AbstractMibTestCase;
 
@@ -97,6 +87,25 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
 
         checkFindMethods(mib);
         checkObjectTypeAccessAll(mib);
+
+        checkAtmAcctngRecordCrc16(mib);
+
+        checkIpNetToMediaNetAddress(mib);
+    }
+
+    private void checkIpNetToMediaNetAddress(SmiMib mib) {
+        SmiVariable var = mib.getVariables().find("IP-MIB", "ipNetToMediaNetAddress");
+        assertNotNull(var);
+        assertEquals(SmiPrimitiveType.IP_ADDRESS, var.getPrimitiveType());
+    }
+
+    private void checkAtmAcctngRecordCrc16(SmiMib mib) {
+        SmiVariable var = mib.getVariables().find("atmAcctngRecordCrc16");
+        assertNotNull(var);
+        assertEquals(SmiPrimitiveType.OCTET_STRING, var.getPrimitiveType());
+        assertNotNull(var.getSizeConstraints());
+
+
     }
 
     private void checkFindMethods(SmiMib mib) {

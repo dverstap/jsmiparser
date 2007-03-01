@@ -15,16 +15,9 @@
  */
 package org.jsmiparser;
 
-import org.jsmiparser.smi.ObjectTypeAccessV2;
-import org.jsmiparser.smi.SmiConstants;
-import org.jsmiparser.smi.SmiNamedNumber;
-import org.jsmiparser.smi.SmiObjectType;
-import org.jsmiparser.smi.SmiPrimitiveType;
-import org.jsmiparser.smi.SmiRange;
-import org.jsmiparser.smi.SmiTextualConvention;
-import org.jsmiparser.smi.SmiType;
-import org.jsmiparser.smi.StatusV2;
+import org.jsmiparser.smi.*;
 
+import java.math.BigInteger;
 import java.util.List;
 
 public class TypesMibTest extends AbstractMibTestCase {
@@ -274,6 +267,48 @@ public class TypesMibTest extends AbstractMibTestCase {
         checkMyOctetString(type);
     }
 
+    public void testMyDerivedOctetString() {
+        SmiType type = getMib().getTypes().find("MyDerivedOctetString");
+        assertNotNull(type);
+
+        SmiType myOctetStringType = getMib().getTypes().find("MyOctetString");
+        assertNotNull(myOctetStringType);
+
+        assertSame(myOctetStringType, type.getBaseType());
+        assertSame(SmiConstants.OCTET_STRING_TYPE, type.getBaseType().getBaseType());
+        assertSame(SmiPrimitiveType.OCTET_STRING, type.getPrimitiveType());
+
+        assertNull(type.getEnumValues());
+        assertNull(type.getBitFields());
+        assertNull(type.getFields());
+        assertNull(type.getRangeConstraints());
+        assertNull(type.getSizeConstraints());
+    }
+
+    public void testMyDerivedOctetStringBetween3And5() {
+        SmiType type = getMib().getTypes().find("MyDerivedOctetStringBetween3And5");
+        assertNotNull(type);
+
+        SmiType myOctetStringType = getMib().getTypes().find("MyOctetString");
+        assertNotNull(myOctetStringType);
+
+        assertSame(myOctetStringType, type.getBaseType().getBaseType());
+        assertSame(SmiConstants.OCTET_STRING_TYPE, type.getBaseType().getBaseType().getBaseType());
+        assertSame(SmiPrimitiveType.OCTET_STRING, type.getPrimitiveType());
+
+        assertNull(type.getEnumValues());
+        assertNull(type.getBitFields());
+        assertNull(type.getFields());
+        assertNull(type.getRangeConstraints());
+
+        // TODO not really good: the size constraint should be on the type itself
+        List<SmiRange> constraints = type.getBaseType().getSizeConstraints();
+        assertNotNull(constraints);
+        assertEquals(1, constraints.size());
+        assertEquals(new BigInteger("3"), constraints.get(0).getMinValue());
+        assertEquals(new BigInteger("5"), constraints.get(0).getMaxValue());
+    }
+
     public void testTCMyOctetString() {
         SmiTextualConvention tc = getMib().getTextualConventions().find("TCMyOctetString");
         assertEquals(tc.getId() + " Desc", tc.getDescription());
@@ -349,6 +384,28 @@ public class TypesMibTest extends AbstractMibTestCase {
         assertEquals(1, constraints.size());
         assertEquals(9, constraints.get(0).getMinValue().intValue());
         assertEquals(5, constraints.get(0).getMaxValue().intValue());
+    }
+
+    public void testOTMyOctetStringOfSize11() {
+        SmiVariable ot = getMib().getVariables().find("myOctetStringOfSize11");
+        assertEquals(ot.getId() + " Desc", ot.getDescription());
+        assertEquals(ObjectTypeAccessV2.NOT_ACCESSIBLE, ot.getMaxAccess());
+        assertEquals(StatusV2.CURRENT, ot.getStatusV2());
+        assertNotNull(ot.getSizeConstraints());
+
+        SmiType type = ot.getType();
+        assertSame(SmiConstants.OCTET_STRING_TYPE, type.getBaseType());
+        assertSame(SmiPrimitiveType.OCTET_STRING, type.getPrimitiveType());
+
+        assertNull(type.getEnumValues());
+        assertNull(type.getBitFields());
+        assertNull(type.getFields());
+        assertNull(type.getRangeConstraints());
+
+        List<SmiRange> constraints = type.getSizeConstraints();
+        assertEquals(1, constraints.size());
+        assertTrue(constraints.get(0).isSingle());
+        assertEquals(11, constraints.get(0).getSingleValue().intValue());
     }
 
     public void testMyCounter() {

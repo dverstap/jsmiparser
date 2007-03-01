@@ -74,4 +74,8 @@ public class SmiRange {
         return ((BigIntegerToken) m_endToken).getValue();
     }
 
+    public BigInteger getSingleValue() {
+        return ((BigIntegerToken) m_singleToken).getValue();
+    }
+
 }

@@ -17,37 +17,9 @@ package org.jsmiparser.phase.file;
 
 import antlr.Token;
 import org.apache.log4j.Logger;
-import org.jsmiparser.smi.ObjectTypeAccessV1;
-import org.jsmiparser.smi.ObjectTypeAccessV2;
-import org.jsmiparser.smi.OidComponent;
-import org.jsmiparser.smi.SmiVariable;
-import org.jsmiparser.smi.SmiConstants;
-import org.jsmiparser.smi.SmiImports;
-import org.jsmiparser.smi.SmiMacro;
-import org.jsmiparser.smi.SmiModule;
-import org.jsmiparser.smi.SmiNamedNumber;
-import org.jsmiparser.smi.SmiOidMacro;
-import org.jsmiparser.smi.SmiOidValue;
-import org.jsmiparser.smi.SmiPrimitiveType;
-import org.jsmiparser.smi.SmiProtocolType;
-import org.jsmiparser.smi.SmiRange;
-import org.jsmiparser.smi.SmiReferencedType;
-import org.jsmiparser.smi.SmiRow;
-import org.jsmiparser.smi.SmiSymbol;
-import org.jsmiparser.smi.SmiTable;
-import org.jsmiparser.smi.SmiTextualConvention;
-import org.jsmiparser.smi.SmiType;
-import org.jsmiparser.smi.SmiVersion;
-import org.jsmiparser.smi.StatusV1;
-import org.jsmiparser.smi.StatusV2;
-import org.jsmiparser.smi.ScopedId;
+import org.jsmiparser.smi.*;
 import org.jsmiparser.util.location.Location;
-import org.jsmiparser.util.token.BigIntegerToken;
-import org.jsmiparser.util.token.BinaryStringToken;
-import org.jsmiparser.util.token.HexStringToken;
-import org.jsmiparser.util.token.IdToken;
-import org.jsmiparser.util.token.IntegerToken;
-import org.jsmiparser.util.token.QuotedStringToken;
+import org.jsmiparser.util.token.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -266,18 +238,27 @@ public class ModuleParser {
 
     }
 
-    public SmiType createDefinedType(Token moduleToken, Token idToken,
+    public SmiType createDefinedType(IdToken idToken, Token moduleToken, Token referencedIdToken,
                                      List<SmiNamedNumber> namedNumbers,
                                      List<SmiRange> sizeConstraints,
                                      List<SmiRange> rangeConstraints) {
-        SmiReferencedType type = new SmiReferencedType(idt(idToken), m_module);
+        SmiReferencedType referencedType = new SmiReferencedType(idt(referencedIdToken), m_module);
         if (moduleToken != null) {
-            type.setReferencedModuleToken(idt(moduleToken));
+            referencedType.setReferencedModuleToken(idt(moduleToken));
         }
-        type.setNamedNumbers(namedNumbers);
-        type.setSizeConstraints(sizeConstraints);
-        type.setRangeConstraints(rangeConstraints);
-        return type;
+        referencedType.setNamedNumbers(namedNumbers);
+        referencedType.setSizeConstraints(sizeConstraints);
+        referencedType.setRangeConstraints(rangeConstraints);
+
+        SmiType result;
+        if (idToken != null) {
+            result = new SmiType(idToken, m_module);
+            result.setBaseType(referencedType);
+        } else {
+            result = referencedType;
+        }
+
+        return result;
     }
 
 
@@ -341,6 +322,20 @@ public class ModuleParser {
 
     public ScopedId makeScopedId(Token moduleToken, Token symbolToken) {
         return new ScopedId(m_module, moduleToken != null ? idt(moduleToken) : null, idt(symbolToken));
+    }
+
+    public void setPrimitiveType(SmiType t, Token applicationTagToken) {
+        int appTag = Integer.parseInt(applicationTagToken.getText());
+        switch (appTag) {
+            case 0:
+                t.setPrimitiveType(SmiPrimitiveType.IP_ADDRESS);
+                break;
+            case 4:
+                t.setPrimitiveType(SmiPrimitiveType.OPAQUE);
+                break;
+            default:
+                throw new IllegalArgumentException("cannot handle application tag " + appTag);
+        }
     }
 }
 

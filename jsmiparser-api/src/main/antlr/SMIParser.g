@@ -449,11 +449,11 @@ type_assignment[IdToken idToken] returns [SmiType t = null]
 // valid type for a leaf node (scalar or column)
 leaf_type[IdToken idToken] returns [SmiType t = null]
 :
-    ( L_BRACKET APPLICATION_KW NUMBER R_BRACKET IMPLICIT_KW )? // only used for ApplicationSyntax types
+    ( L_BRACKET APPLICATION_KW n:NUMBER R_BRACKET IMPLICIT_KW )? // only used for ApplicationSyntax types
     (
 	t=integer_type[idToken]
 	| t=oid_type[idToken]
-	| t=octet_string_type[idToken]
+	| t=octet_string_type[idToken] { if (n != null) { m_mp.setPrimitiveType(t, n); } } 
 	| t=bits_type[idToken]
 	| t=choice_type[idToken]
 	| t=defined_type[idToken]
@@ -543,7 +543,7 @@ defined_type[IdToken idToken] returns [SmiType type = null]
 	(mt:UPPER DOT)? tt:UPPER
 	(namedNumbers=named_number_list | sizeConstraints=size_constraint | rangeConstraints=range_constraint)?
 	{
-	    type = m_mp.createDefinedType(mt, tt, namedNumbers, sizeConstraints, rangeConstraints);
+	    type = m_mp.createDefinedType(idToken, mt, tt, namedNumbers, sizeConstraints, rangeConstraints);
 	}
 ;
 
