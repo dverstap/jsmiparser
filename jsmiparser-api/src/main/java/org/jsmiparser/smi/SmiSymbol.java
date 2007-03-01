@@ -15,20 +15,20 @@
  */
 package org.jsmiparser.smi;
 
+import org.jsmiparser.phase.xref.XRefProblemReporter;
 import org.jsmiparser.util.location.Location;
 import org.jsmiparser.util.token.IdToken;
-import org.jsmiparser.phase.xref.XRefProblemReporter;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Collections;
 
 public abstract class SmiSymbol implements Serializable, Comparable {
 
     private IdToken m_idToken;
     private SmiModule m_module;
-    private List<IdToken> m_users = new ArrayList<IdToken>();
-
+    private Map<Object, Object> m_userData;
 
     public SmiSymbol(IdToken idToken, SmiModule module) {
         super();
@@ -84,13 +84,6 @@ public abstract class SmiSymbol implements Serializable, Comparable {
         return SmiUtil.ucFirst(getId());
     }
 
-    public List<IdToken> getUsers() {
-        return m_users;
-    }
-
-    public void addUser(IdToken idToken) {
-        m_users.add(idToken);
-    }
 
     @Override
     public String toString() {
@@ -106,7 +99,7 @@ public abstract class SmiSymbol implements Serializable, Comparable {
     }
 
     /**
-     * @param obj
+     * @param obj the object to compare
      * @return equality by SmiSymbol identifier and SmiModule
      */
     @Override
@@ -136,4 +129,35 @@ public abstract class SmiSymbol implements Serializable, Comparable {
         // do nothing
     }
 
+    /**
+     * @return A non-modifiable non-null Map of all the associated user data.
+     */
+    public Map<Object, Object> getUserData() {
+        if (m_userData == null) {
+            return Collections.emptyMap();
+        }
+        return m_userData;
+    }
+
+    public void addUserData(Object key, Object value) {
+        if (m_userData == null) {
+            m_userData = new HashMap<Object, Object>();
+        }
+        m_userData.put(key, value);
+    }
+
+    public Object findUserData(Object key) {
+        if (m_userData == null) {
+            return null;
+        }
+        return m_userData.get(key);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T findUserData(Class<T> key) {
+        if (m_userData == null) {
+            return null;
+        }
+        return (T) m_userData.get(key);
+    }
 }

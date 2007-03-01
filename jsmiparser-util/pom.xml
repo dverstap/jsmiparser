@@ -3,13 +3,13 @@
     <groupId>org.jsmiparser</groupId>
     <artifactId>jsmiparser-util</artifactId>
     <packaging>jar</packaging>
-    <version>0.3-SNAPSHOT</version>
+    <version>0.3</version>
     <name>Java SMI Parser Utilities</name>
 
     <parent>
         <groupId>org.jsmiparser</groupId>
         <artifactId>jsmiparser</artifactId>
-        <version>0.3-SNAPSHOT</version>
+        <version>0.3</version>
     </parent>
 
     <dependencies>
