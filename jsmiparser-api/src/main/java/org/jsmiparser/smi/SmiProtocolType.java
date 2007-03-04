@@ -25,6 +25,9 @@ public class SmiProtocolType extends SmiType {
 
     public SmiProtocolType(IdToken idToken, SmiModule module) {
         super(idToken, module);
+        if (idToken.getId().equals("NetworkAddress")) {
+            setPrimitiveType(SmiPrimitiveType.IP_ADDRESS);
+        }
     }
 
 }

@@ -15,11 +15,24 @@
  */
 package org.jsmiparser.parser;
 
+import org.jsmiparser.AbstractMibTestCase;
 import org.jsmiparser.exception.SmiException;
 import org.jsmiparser.phase.file.FileParserOptions;
-import org.jsmiparser.smi.*;
+import org.jsmiparser.smi.SmiIndex;
+import org.jsmiparser.smi.SmiMib;
+import org.jsmiparser.smi.SmiModule;
+import org.jsmiparser.smi.SmiOidValue;
+import org.jsmiparser.smi.SmiPrimitiveType;
+import org.jsmiparser.smi.SmiRow;
+import org.jsmiparser.smi.SmiSymbol;
+import org.jsmiparser.smi.SmiTable;
+import org.jsmiparser.smi.SmiTextualConvention;
+import org.jsmiparser.smi.SmiType;
+import org.jsmiparser.smi.SmiVarBindField;
+import org.jsmiparser.smi.SmiVariable;
+import org.jsmiparser.smi.SmiProtocolType;
+import org.jsmiparser.smi.SmiReferencedType;
 import org.jsmiparser.util.jung.DirectedCycleException;
-import org.jsmiparser.AbstractMibTestCase;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -91,6 +104,28 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         checkAtmAcctngRecordCrc16(mib);
 
         checkIpNetToMediaNetAddress(mib);
+
+        checkTypes(mib);
+    }
+
+    private void checkTypes(SmiMib mib) {
+        List<SmiType> networkAddresses = mib.getTypes().findAll("NetworkAddress");
+        assertEquals(2, networkAddresses.size());
+        assertEquals("RFC1065-SMI", networkAddresses.get(0).getModule().getId());
+        assertEquals("RFC1155-SMI", networkAddresses.get(1).getModule().getId());
+
+        for (SmiType type : mib.getTypes()) {
+            assertFalse(type instanceof SmiReferencedType);
+            if (!(type instanceof SmiProtocolType) && type.getFields() == null) {
+                assertNotNull(type.getId(), type.getPrimitiveType());
+            }
+        }
+
+        for (SmiVariable variable : mib.getVariables()) {
+            assertNotNull(variable.getId(), variable.getType());
+            assertFalse(variable.getId(), variable.getType() instanceof SmiReferencedType);
+            assertNotNull(variable.getId(), variable.getType().getPrimitiveType());
+        }
     }
 
     private void checkIpNetToMediaNetAddress(SmiMib mib) {

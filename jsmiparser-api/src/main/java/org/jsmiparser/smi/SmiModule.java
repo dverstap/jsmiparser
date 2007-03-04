@@ -296,7 +296,8 @@ public class SmiModule {
     /**
      * Resolves a reference from within this module to a symbol in the same module, an imported module
      * or in the whole mib
-     * @param idToken Token of the identifier that has to be resolved.
+     *
+     * @param idToken  Token of the identifier that has to be resolved.
      * @param reporter If not null, the reporter will be used to reporter the not found error message.
      * @return The symbol that was found, or null.
      */
@@ -338,6 +339,36 @@ public class SmiModule {
     }
 
     private SmiSymbol determineBestMatch(IdToken idToken, List<SmiSymbol> symbols) {
+        SmiSymbol result = determineBestMatchBasedOnSnmpVersion(symbols);
+        if (result != null) {
+            return result;
+        }
+        result = determineBestMatchBasedOnOtherImports(idToken, symbols);
+        if (result != null) {
+            return result;
+        }
+        if (m_log.isDebugEnabled()) {
+            m_log.debug("Couldn't choose between " + symbols.size() + " choices for resolving: " + idToken + ":");
+            for (SmiSymbol symbol : symbols) {
+                m_log.debug(symbol);
+            }
+        }
+        return null;
+    }
+
+    private SmiSymbol determineBestMatchBasedOnOtherImports(IdToken idToken, List<SmiSymbol> symbols) {
+        for (SmiSymbol symbol : symbols) {
+            for (SmiImports imports : m_imports) {
+                if (imports.getModule() == symbol.getModule()) {
+                    m_log.debug("Determined best match for " + idToken + " based on other imports from " + symbol.getModule().getId());
+                    return symbol;
+                }
+            }
+        }
+        return null;
+    }
+
+    private SmiSymbol determineBestMatchBasedOnSnmpVersion(List<SmiSymbol> symbols) {
         if (symbols.size() == 2) {
             SmiSymbol s0 = symbols.get(0);
             SmiSymbol s1 = symbols.get(1);
@@ -349,12 +380,6 @@ public class SmiModule {
                 } else if (getVersion() == version1) {
                     return s1;
                 }
-            }
-        }
-        if (m_log.isDebugEnabled()) {
-            m_log.debug("Couldn't choose between " + symbols.size() + " choices for resolving: " + idToken + ":");
-            for (SmiSymbol symbol : symbols) {
-                m_log.debug(symbol);
             }
         }
         return null;
