@@ -525,7 +525,7 @@ bits_type[IdToken idToken] returns [SmiType type = null]
 ;
 
 // only used for ObjectSyntax, SimpleSyntax and ApplicationSyntax
-choice_type[IdToken idToken] returns [SmiProtocolType t = null]
+choice_type[IdToken idToken] returns [SmiType t = null]
 :
     "CHOICE" L_BRACE ( ~(R_BRACE) )* R_BRACE
     {

@@ -262,7 +262,12 @@ public class ModuleParser {
     }
 
 
-    public SmiProtocolType createProtocolType(IdToken idToken) {
+    public SmiType createProtocolType(IdToken idToken) {
+        if (idToken.getId().equals("NetworkAddress")) {
+            SmiType result = new SmiType(idToken, m_module);
+            result.setBaseType(new SmiReferencedType(new IdToken(idToken.getLocation(), "IpAddress"), m_module));
+            return result;
+        }
         return new SmiProtocolType(idToken, m_module);
     }
 

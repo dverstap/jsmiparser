@@ -106,14 +106,26 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         checkIpNetToMediaNetAddress(mib);
 
         checkTypes(mib);
+
+        checkNetworkAddressChoice(mib);
+    }
+
+    // NetworkAddress is a very special type in SMIv1, which is a CHOICE with only one choice: IpAddress
+    private void checkNetworkAddressChoice(SmiMib mib) {
+        SmiType ipAddress = mib.getTypes().find("RFC1155-SMI", "IpAddress");
+        assertNotNull(ipAddress);
+
+        SmiType networkAddress = mib.getTypes().find("RFC1155-SMI", "NetworkAddress");
+        assertNotNull(networkAddress);
+        assertSame(ipAddress, networkAddress.getBaseType());
+
+        SmiVariable atNetAddress = mib.getVariables().find("RFC1213-MIB", "atNetAddress");
+        assertNotNull(atNetAddress);
+        assertSame(networkAddress, atNetAddress.getType());
+        assertEquals(SmiPrimitiveType.IP_ADDRESS, atNetAddress.getPrimitiveType());
     }
 
     private void checkTypes(SmiMib mib) {
-        List<SmiType> networkAddresses = mib.getTypes().findAll("NetworkAddress");
-        assertEquals(2, networkAddresses.size());
-        assertEquals("RFC1065-SMI", networkAddresses.get(0).getModule().getId());
-        assertEquals("RFC1155-SMI", networkAddresses.get(1).getModule().getId());
-
         for (SmiType type : mib.getTypes()) {
             assertFalse(type instanceof SmiReferencedType);
             if (!(type instanceof SmiProtocolType) && type.getFields() == null) {
@@ -124,6 +136,7 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         for (SmiVariable variable : mib.getVariables()) {
             assertNotNull(variable.getId(), variable.getType());
             assertFalse(variable.getId(), variable.getType() instanceof SmiReferencedType);
+            assertFalse(variable.getId(), variable.getType() instanceof SmiProtocolType);
             assertNotNull(variable.getId(), variable.getType().getPrimitiveType());
         }
     }
