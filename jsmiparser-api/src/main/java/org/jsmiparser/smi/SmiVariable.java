@@ -17,6 +17,7 @@ package org.jsmiparser.smi;
 
 import org.jsmiparser.util.token.IdToken;
 import org.jsmiparser.util.token.QuotedStringToken;
+import org.jsmiparser.phase.xref.XRefProblemReporter;
 
 import java.util.List;
 
@@ -35,6 +36,9 @@ public class SmiVariable extends SmiObjectType {
         setType(type);
         m_unitsToken = unitsToken;
         m_defaultValue = defaultValue;
+        if (m_defaultValue != null) {
+            m_defaultValue.m_variable = this;
+        }
     }
 
     public String getCodeConstantId() {
@@ -158,5 +162,25 @@ public class SmiVariable extends SmiObjectType {
 
     public SmiDefaultValue getDefaultValue() {
         return m_defaultValue;
+    }
+
+    public SmiNamedNumber resolveBitField(IdToken idToken, XRefProblemReporter reporter) {
+        for (SmiNamedNumber nn : getBitFields()) {
+            if (nn.getId().equals(idToken.getId())) {
+                return nn;
+            }
+        }
+        reporter.reportCannotFindBitField(idToken);
+        return null;
+    }
+
+    public SmiNamedNumber resolveEnumConstant(IdToken idToken, XRefProblemReporter reporter) {
+        for (SmiNamedNumber nn : getEnumValues()) {
+            if (nn.getId().equals(idToken.getId())) {
+                return nn;
+            }
+        }
+        reporter.reportCannotFindEnumConstant(idToken);
+        return null;
     }
 }

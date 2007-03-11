@@ -32,6 +32,7 @@ import org.jsmiparser.smi.SmiVarBindField;
 import org.jsmiparser.smi.SmiVariable;
 import org.jsmiparser.smi.SmiProtocolType;
 import org.jsmiparser.smi.SmiReferencedType;
+import org.jsmiparser.smi.SmiNamedNumber;
 import org.jsmiparser.util.jung.DirectedCycleException;
 
 import java.io.File;
@@ -117,7 +118,11 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         assertNotNull(var);
         assertEquals(SmiPrimitiveType.BITS, var.getPrimitiveType());
 
-        // TODO var.getDefaultValue();
+        List<SmiNamedNumber> defaultValue = var.getDefaultValue().getBitsValue();
+        assertEquals(4, defaultValue.size());
+        for (SmiNamedNumber nn : defaultValue) {
+            assertNotNull(nn);
+        }
     }
 
     // NetworkAddress is a very special type in SMIv1, which is a CHOICE with only one choice: IpAddress

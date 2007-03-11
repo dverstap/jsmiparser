@@ -24,6 +24,8 @@ import org.jsmiparser.smi.SmiMib;
 import org.jsmiparser.smi.SmiModule;
 import org.jsmiparser.smi.SmiOidValue;
 import org.jsmiparser.smi.SmiSymbol;
+import org.jsmiparser.smi.SmiVariable;
+import org.jsmiparser.smi.SmiDefaultValue;
 import org.jsmiparser.util.jung.DirectedCycleException;
 import org.jsmiparser.util.jung.TopologicalSort;
 
@@ -56,6 +58,7 @@ public class XRefPhase implements Phase {
         resolveReferences(modules);
         resolveOids(modules);
         mib.fillExtraTables();
+        resolveDefaultValues(mib);
 
         return mib;
     }
@@ -78,6 +81,15 @@ public class XRefPhase implements Phase {
         for (SmiModule module : modules) {
             for (SmiOidValue oidValue : module.getOidValues()) {
                 oidValue.determineFullOid();
+            }
+        }
+    }
+
+    private void resolveDefaultValues(SmiMib mib) {
+        for (SmiVariable variable : mib.getVariables()) {
+            SmiDefaultValue defaultValue = variable.getDefaultValue();
+            if (defaultValue != null) {
+                defaultValue.resolveReferences(m_reporter);
             }
         }
     }

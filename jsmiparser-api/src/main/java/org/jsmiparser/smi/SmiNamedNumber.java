@@ -69,4 +69,16 @@ public class SmiNamedNumber {
         return m_valueToken;
     }
 
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        if (m_idToken != null) {
+            sb.append(m_idToken.getId());
+        }
+        if (m_valueToken != null) {
+            sb.append('(').append(m_valueToken.getValue()).append(')');
+        }
+        return sb.toString();
+    }
 }

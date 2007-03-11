@@ -35,4 +35,10 @@ public @interface ProblemMethod {
     String message();
 
     ProblemSeverity severity() default ProblemSeverity.ERROR;
+
+    /**
+     *
+     * @return The reference (RFC, specification, ...) that defines why this is a problem.
+     */
+    String ref() default "";
 }

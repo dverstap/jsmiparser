@@ -58,6 +58,10 @@ public class ProblemInvocationHandler <T> implements InvocationHandler {
 
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        if ((args == null || args.length == 0) && method.getName().equals("toString")) {
+            return toString();
+        }
+
         MethodInvocationHandler mih = m_methodInvocationHandlerMap.get(method);
         return mih.invoke(args);
     }
