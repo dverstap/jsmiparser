@@ -108,6 +108,16 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         checkTypes(mib);
 
         checkNetworkAddressChoice(mib);
+
+        checkBitsDefVal(mib);
+    }
+
+    private void checkBitsDefVal(SmiMib mib) {
+        SmiVariable var = mib.getColumns().find("acctngSelectionType");
+        assertNotNull(var);
+        assertEquals(SmiPrimitiveType.BITS, var.getPrimitiveType());
+
+        // TODO var.getDefaultValue();
     }
 
     // NetworkAddress is a very special type in SMIv1, which is a CHOICE with only one choice: IpAddress

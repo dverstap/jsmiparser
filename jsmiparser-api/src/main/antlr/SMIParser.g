@@ -347,9 +347,10 @@ module_definition returns [SmiModule result = null]
 
 module_identifier returns [SmiModule result = null]
 :
-	u:UPPER
+	( u:UPPER | l:LOWER )
 {
-	result = beginModule(u);
+    // TODO error msg: only upper is correct
+	result = beginModule(u != null ? u : l);
 }
 ;
 
@@ -610,9 +611,9 @@ range[List<SmiRange> rc]
 
 range_value returns [org.jsmiparser.util.token.Token t = null]
 :
-	(mt:MINUS)? nt:NUMBER	{ t = m_mp.bintt(mt, nt); }
-	| bt:B_STRING		{ t = m_mp.bst(bt); }
-	| ht:H_STRING		{ t = m_mp.hst(ht); }
+	t=big_integer_token
+	| t=binary_string_token
+	| t=hex_string_token
 ;
 
 
@@ -670,17 +671,30 @@ int_macro_value_assignment
 ;
 
 
-leaf_value
+leaf_value returns [SmiDefaultValue result = null]
 {
-	List<OidComponent> ocs = null;
+	BigIntegerToken bit = null;
+	List<IdToken> bitsIdTokenList = null;
+    List<OidComponent> ocs = null;
+    BinaryStringToken bst = null;
+	HexStringToken hst = null;
+	QuotedStringToken qst = null;
+	ScopedId scopedId = null;
+	boolean isNullValue = false;
 }
 :
-	integer_value
-	| (bits_value) => bits_value
+	(bit=big_integer_token
+	| (bits_value) => bitsIdTokenList=bits_value
 	| ocs=oid_sequence[null]
-	| octet_string_value
-	| defined_value
-	| NULL_KW
+	| bst=binary_string_token
+	| hst=hex_string_token
+	| qst=double_quoted_string_token
+	| scopedId=defined_value
+	| NULL_KW { isNullValue = true; }
+	)
+{
+    result = new SmiDefaultValue(bit, bitsIdTokenList, ocs, bst, hst, qst, scopedId, isNullValue);
+}
 ;
 
 
@@ -704,20 +718,9 @@ oid_component[List<OidComponent> ocs]
 	| (lt:LOWER (L_PAREN nt2:NUMBER R_PAREN)?) { m_mp.addOidComponent(ocs, lt, nt2); }
 ;
 
-octet_string_value
+bits_value returns [List<IdToken> result = new ArrayList<IdToken>()]
 :
-	B_STRING|H_STRING|C_STRING
-;
-
-integer_value
-:
-	signed_number
-;
-
-
-bits_value
-:
-	L_BRACE (LOWER (COMMA LOWER)*)? R_BRACE
+	L_BRACE (l1:LOWER { result.add(idt(l1)); } (COMMA l2:LOWER { result.add(idt(l2)); })*)? R_BRACE
 ;
 
 defined_value returns [ScopedId id=null]
@@ -739,6 +742,7 @@ objecttype_macro[IdToken idToken] returns [SmiObjectType ot = null]
 	StatusAll status = null;
 	ObjectTypeAccessV1 accessV1 = null;
 	ObjectTypeAccessV2 accessV2 = null;
+	SmiDefaultValue defaultValue = null;
 }
 :
 	"OBJECT-TYPE" "SYNTAX"
@@ -752,7 +756,7 @@ objecttype_macro[IdToken idToken] returns [SmiObjectType ot = null]
 	( "REFERENCE" C_STRING )? 	  
 	( ("INDEX" row=objecttype_macro_index[idToken, type]
           | "AUGMENTS" row=objecttype_macro_augments[idToken, type]) )?
-	( "DEFVAL" L_BRACE leaf_value R_BRACE )?
+	( "DEFVAL" L_BRACE defaultValue=leaf_value R_BRACE )?
 
 	{
 	    if (sequenceOfType != null) {
@@ -760,7 +764,7 @@ objecttype_macro[IdToken idToken] returns [SmiObjectType ot = null]
 	    } else if (row != null) {
 	        ot = row;
 	    } else {
-	        ot = var = m_mp.createVariable(idToken, type, units);
+	        ot = var = m_mp.createVariable(idToken, type, units, defaultValue);
 	    }
 	    ot.setAccessV1(accessV1);
 	    ot.setAccessV2(accessV2);
@@ -1033,15 +1037,30 @@ named_number[List<SmiNamedNumber> l]
 	BigIntegerToken bit = null;
 }
 :
-	it=lower L_PAREN bit=signed_number R_PAREN
+	it=lower L_PAREN bit=big_integer_token R_PAREN
 {
 	l.add(new SmiNamedNumber(it, bit));
 }
 ;
 
-signed_number returns [BigIntegerToken bit = null]
+big_integer_token returns [BigIntegerToken bit = null]
 :
 	(mt:MINUS)? nt:NUMBER { bit = m_mp.bintt(mt, nt); }
+;
+
+binary_string_token returns [BinaryStringToken t = null]
+:
+	bt:B_STRING		{ t = m_mp.bst(bt); }
+;
+
+hex_string_token returns [HexStringToken t = null]
+:
+    ht:H_STRING		{ t = m_mp.hst(ht); }
+;
+
+double_quoted_string_token returns [QuotedStringToken t = null]
+:
+    ct:C_STRING { t = m_mp.dqst(ct); }
 ;
 
 upper returns [IdToken result = null]

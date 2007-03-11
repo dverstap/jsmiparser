@@ -124,7 +124,7 @@ public class ModuleParser {
         return new SmiOidMacro(idToken, m_module);
     }
 
-    public SmiVariable createVariable(IdToken idToken, SmiType t, Token units) {
+    public SmiVariable createVariable(IdToken idToken, SmiType t, Token units, SmiDefaultValue defaultValue) {
         final String methodWithParams = "createVariable(" + idToken.getId() + ")";
         m_log.debug(methodWithParams);
 
@@ -132,7 +132,7 @@ public class ModuleParser {
         if (units != null) {
             unitsToken = new QuotedStringToken(makeLocation(units), units.getText(), '\"');
         }
-        return new SmiVariable(idToken, m_module, t, unitsToken);
+        return new SmiVariable(idToken, m_module, t, unitsToken, defaultValue);
     }
 
     public SmiRow createRow(IdToken idToken, SmiType t) {
@@ -291,12 +291,16 @@ public class ModuleParser {
         rc.add(range);
     }
 
-    public BinaryStringToken bst(Token bt) {
-        return new BinaryStringToken(makeLocation(bt), bt.getText());
+    public BinaryStringToken bst(Token t) {
+        return new BinaryStringToken(makeLocation(t), t.getText());
     }
 
-    public HexStringToken hst(Token nt) {
-        return new HexStringToken(makeLocation(nt), nt.getText());
+    public HexStringToken hst(Token t) {
+        return new HexStringToken(makeLocation(t), t.getText());
+    }
+
+    public QuotedStringToken dqst(Token t) {
+        return new QuotedStringToken(makeLocation(t), t.getText(), '"');
     }
 
     public void addSymbol(SmiSymbol symbol) {

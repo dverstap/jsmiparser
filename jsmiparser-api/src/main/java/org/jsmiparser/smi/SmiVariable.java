@@ -27,12 +27,14 @@ import java.util.List;
  */
 public class SmiVariable extends SmiObjectType {
 
-    private QuotedStringToken m_unitsToken;
+    private final QuotedStringToken m_unitsToken;
+    private final SmiDefaultValue m_defaultValue;
 
-    public SmiVariable(IdToken idToken, SmiModule module, SmiType type, QuotedStringToken unitsToken) {
+    public SmiVariable(IdToken idToken, SmiModule module, SmiType type, QuotedStringToken unitsToken, SmiDefaultValue defaultValue) {
 		super(idToken, module);
         setType(type);
         m_unitsToken = unitsToken;
+        m_defaultValue = defaultValue;
     }
 
     public String getCodeConstantId() {
@@ -152,5 +154,9 @@ public class SmiVariable extends SmiObjectType {
             type = type.getBaseType();
         }
         return null;
+    }
+
+    public SmiDefaultValue getDefaultValue() {
+        return m_defaultValue;
     }
 }
