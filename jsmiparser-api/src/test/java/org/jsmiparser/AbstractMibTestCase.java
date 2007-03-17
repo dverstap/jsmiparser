@@ -17,16 +17,19 @@ package org.jsmiparser;
 
 import junit.framework.TestCase;
 import org.jsmiparser.parser.SmiDefaultParser;
+import org.jsmiparser.parser.SmiParser;
 import org.jsmiparser.phase.file.FileParserOptions;
 import org.jsmiparser.smi.SmiConstants;
 import org.jsmiparser.smi.SmiMib;
 import org.jsmiparser.smi.SmiModule;
+import org.jsmiparser.smi.SmiObjectType;
 import org.jsmiparser.smi.SmiOidValue;
 import org.jsmiparser.smi.SmiPrimitiveType;
 import org.jsmiparser.smi.SmiSymbol;
 import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.SmiVersion;
-import org.jsmiparser.smi.SmiObjectType;
+import org.apache.log4j.Logger;
+import org.springframework.util.StopWatch;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -34,10 +37,13 @@ import java.net.URL;
 
 public abstract class AbstractMibTestCase extends TestCase {
 
+    private static final Logger m_log = Logger.getLogger(AbstractMibTestCase.class);
+
     private final SmiVersion m_version;
     private final String[] m_resources;
 
-    protected SmiMib m_mib;
+    private static ThreadLocal<Class<? extends AbstractMibTestCase>> m_testClass = new ThreadLocal<Class<? extends AbstractMibTestCase>>();
+    private static ThreadLocal<SmiMib> m_mib = new ThreadLocal<SmiMib>();
 
     private SmiType m_integer32;
     private SmiType m_counter;
@@ -49,14 +55,26 @@ public abstract class AbstractMibTestCase extends TestCase {
     }
 
     protected SmiMib getMib() {
-        if (m_mib == null) {
-            // this isn't entirely clean; but it will be better with JUnit 4 @BeforeClass
-            parseMib();
+        // this is a rather ugly hack to mimic JUnit4 @BeforeClass, without having to annotate all test methods:
+        if (m_mib.get() == null || m_testClass.get() != getClass()) {
+            try {
+                SmiParser parser = createParser();
+                StopWatch stopWatch = new StopWatch();
+                stopWatch.start();
+                SmiMib mib = parser.parse();
+                stopWatch.stop();
+                m_log.info("Parsing time: " + stopWatch.getTotalTimeSeconds() + " s");
+                
+                m_mib.set(mib);
+                m_testClass.set(getClass());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
-        return m_mib;
+        return m_mib.get();
     }
 
-    private void parseMib() {
+    protected SmiParser createParser() throws Exception {
         SmiDefaultParser parser = new SmiDefaultParser();
         FileParserOptions options = (FileParserOptions) parser.getFileParserPhase().getOptions();
 
@@ -87,8 +105,7 @@ public abstract class AbstractMibTestCase extends TestCase {
                 fail(e.getMessage());
             }
         }
-        m_mib = parser.parse();
-
+        return parser;
     }
 
     public final String[] getResources() {
@@ -128,7 +145,7 @@ public abstract class AbstractMibTestCase extends TestCase {
     }
 
     protected void showOverview() {
-        for (SmiModule module : m_mib.getModules()) {
+        for (SmiModule module : m_mib.get().getModules()) {
             for (SmiSymbol symbol : module.getSymbols()) {
                 String msg = module.getId() + ": " + symbol.getId() + ": " + symbol.getClass().getSimpleName();
                 if (symbol instanceof SmiOidValue) {

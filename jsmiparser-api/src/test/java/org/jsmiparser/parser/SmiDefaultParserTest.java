@@ -16,13 +16,15 @@
 package org.jsmiparser.parser;
 
 import org.jsmiparser.AbstractMibTestCase;
-import org.jsmiparser.exception.SmiException;
 import org.jsmiparser.phase.file.FileParserOptions;
 import org.jsmiparser.smi.SmiIndex;
 import org.jsmiparser.smi.SmiMib;
 import org.jsmiparser.smi.SmiModule;
+import org.jsmiparser.smi.SmiNamedNumber;
 import org.jsmiparser.smi.SmiOidValue;
 import org.jsmiparser.smi.SmiPrimitiveType;
+import org.jsmiparser.smi.SmiProtocolType;
+import org.jsmiparser.smi.SmiReferencedType;
 import org.jsmiparser.smi.SmiRow;
 import org.jsmiparser.smi.SmiSymbol;
 import org.jsmiparser.smi.SmiTable;
@@ -30,10 +32,6 @@ import org.jsmiparser.smi.SmiTextualConvention;
 import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.SmiVarBindField;
 import org.jsmiparser.smi.SmiVariable;
-import org.jsmiparser.smi.SmiProtocolType;
-import org.jsmiparser.smi.SmiReferencedType;
-import org.jsmiparser.smi.SmiNamedNumber;
-import org.jsmiparser.util.jung.DirectedCycleException;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -47,15 +45,9 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         super(null);
     }
 
+
     public void testLibSmi() throws URISyntaxException {
-        URL mibsURL = getClass().getClassLoader().getResource("libsmi-0.4.5/mibs");
-        File mibsDir = new File(mibsURL.toURI());
-
-        SmiDefaultParser parser = new SmiDefaultParser();
-        FileParserOptions options = (FileParserOptions) parser.getFileParserPhase().getOptions();
-        initFileParserOptions(options, mibsDir, "iana", "ietf", "site", "tubs");
-
-        SmiMib mib = parser.parse();
+        SmiMib mib = getMib();
         assertNotNull(mib);
         //showOverview(mib);
 
@@ -77,47 +69,22 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         assertEquals(18938, mib.getOidValues().size());
         assertEquals(mib.getTables().size() + mib.getRows().size() + mib.getVariables().size(), mib.getObjectTypes().size());
 
-        //checkBridgeMib(mib);
-        checkIfMib(mib);
-
-        //SmiMib mib2 = parser.parse();
-        //assertEquals(mib1, mib2);
-
-        /*
-        int errorCount = problemEventHandler.getSeverityCount(ProblemSeverity.ERROR);
-
-        MibMerger mibMerger = new MibMerger(problemReporterFactory);
-        SmiMib mib3 = mibMerger.merge(mib1, mib2);
-        assertEquals(errorCount, problemEventHandler.getErrorCount());
-        */
-
-        checkJobMonitoringMib(mib);
-        checkDlswMib(mib);
-        checkDismanPingMib(mib);
-
-        checkComplexIndex(mib);
-
-        // doesn't work yet because there are duplicates from the v1 and v2 mibs
-        //checkOidTree(mib);
-
-        checkUnits(mib);
-
-        checkFindMethods(mib);
         checkObjectTypeAccessAll(mib);
-
-        checkAtmAcctngRecordCrc16(mib);
-
-        checkIpNetToMediaNetAddress(mib);
-
-        checkTypes(mib);
-
-        checkNetworkAddressChoice(mib);
-
-        checkBitsDefVal(mib);
     }
 
-    private void checkBitsDefVal(SmiMib mib) {
-        SmiVariable var = mib.getColumns().find("acctngSelectionType");
+    @Override
+    protected SmiDefaultParser createParser() throws Exception {
+        URL mibsURL = getClass().getClassLoader().getResource("libsmi-0.4.5/mibs");
+        File mibsDir = new File(mibsURL.toURI());
+
+        SmiDefaultParser parser = new SmiDefaultParser();
+        FileParserOptions options = (FileParserOptions) parser.getFileParserPhase().getOptions();
+        initFileParserOptions(options, mibsDir, "iana", "ietf", "site", "tubs");
+        return parser;
+    }
+
+    public void testBitsDefVal() {
+        SmiVariable var = getMib().getColumns().find("acctngSelectionType");
         assertNotNull(var);
         assertEquals(SmiPrimitiveType.BITS, var.getPrimitiveType());
 
@@ -129,7 +96,8 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
     }
 
     // NetworkAddress is a very special type in SMIv1, which is a CHOICE with only one choice: IpAddress
-    private void checkNetworkAddressChoice(SmiMib mib) {
+    public void testNetworkAddressChoice() {
+        SmiMib mib = getMib();
         SmiType ipAddress = mib.getTypes().find("RFC1155-SMI", "IpAddress");
         assertNotNull(ipAddress);
 
@@ -143,15 +111,15 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         assertEquals(SmiPrimitiveType.IP_ADDRESS, atNetAddress.getPrimitiveType());
     }
 
-    private void checkTypes(SmiMib mib) {
-        for (SmiType type : mib.getTypes()) {
+    public void testTypes() {
+        for (SmiType type : getMib().getTypes()) {
             assertFalse(type instanceof SmiReferencedType);
             if (!(type instanceof SmiProtocolType) && type.getFields() == null) {
                 assertNotNull(type.getId(), type.getPrimitiveType());
             }
         }
 
-        for (SmiVariable variable : mib.getVariables()) {
+        for (SmiVariable variable : getMib().getVariables()) {
             assertNotNull(variable.getId(), variable.getType());
             assertFalse(variable.getId(), variable.getType() instanceof SmiReferencedType);
             assertFalse(variable.getId(), variable.getType() instanceof SmiProtocolType);
@@ -159,14 +127,14 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         }
     }
 
-    private void checkIpNetToMediaNetAddress(SmiMib mib) {
-        SmiVariable var = mib.getVariables().find("IP-MIB", "ipNetToMediaNetAddress");
+    public void testIpNetToMediaNetAddress() {
+        SmiVariable var = getMib().getVariables().find("IP-MIB", "ipNetToMediaNetAddress");
         assertNotNull(var);
         assertEquals(SmiPrimitiveType.IP_ADDRESS, var.getPrimitiveType());
     }
 
-    private void checkAtmAcctngRecordCrc16(SmiMib mib) {
-        SmiVariable var = mib.getVariables().find("atmAcctngRecordCrc16");
+    public void testAtmAcctngRecordCrc16() {
+        SmiVariable var = getMib().getVariables().find("atmAcctngRecordCrc16");
         assertNotNull(var);
         assertEquals(SmiPrimitiveType.OCTET_STRING, var.getPrimitiveType());
         assertNotNull(var.getSizeConstraints());
@@ -174,7 +142,8 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
 
     }
 
-    private void checkFindMethods(SmiMib mib) {
+    public void testFindMethods() {
+        SmiMib mib = getMib();
         List<SmiSymbol> pingMibs = mib.getSymbols().findAll("pingMIB");
         assertEquals(2, pingMibs.size());
 
@@ -212,8 +181,8 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         assertEquals(8, tubsIbrPingMIB.getLastOid());
     }
 
-    private void checkUnits(SmiMib mib) {
-        SmiModule ipModule = mib.findModule("IP-MIB");
+    public void testUnits() {
+        SmiModule ipModule = getMib().findModule("IP-MIB");
         SmiVariable ipReasmTimeout = ipModule.findVariable("ipReasmTimeout");
         assertNotNull(ipReasmTimeout);
         assertNotNull(ipReasmTimeout.getUnitsToken());
@@ -221,8 +190,8 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
     }
 
 
-    private void checkIfMib(SmiMib mib) {
-
+    public void testIfMib() {
+        SmiMib mib = getMib();
         SmiModule ifModule = mib.findModule("IF-MIB");
         assertNotNull(ifModule);
 
@@ -257,19 +226,20 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         assertEquals("1.3.6.1.2.1.2.2.1.7", ifAdminStatus.getOidStr());
     }
 
-    private void checkJobMonitoringMib(SmiMib mib) {
-        SmiOidValue jobmonMIB = mib.getOidValues().find("jobmonMIB");
+    public void testJobMonitoringMib() {
+        SmiOidValue jobmonMIB = getMib().getOidValues().find("jobmonMIB");
         assertNotNull(jobmonMIB);
         assertEquals("1.3.6.1.4.1.2699.1.1", jobmonMIB.getOidStr());
     }
 
-    private void checkDlswMib(SmiMib mib) {
-        SmiOidValue nullSymbol = mib.getOidValues().find("null");
+    public void testDlswMib() {
+        SmiOidValue nullSymbol = getMib().getOidValues().find("null");
         assertNotNull(nullSymbol);
         assertEquals("0.0", nullSymbol.getOidStr());
     }
 
-    private void checkDismanPingMib(SmiMib mib) {
+    public void testDismanPingMib() {
+        SmiMib mib = getMib();
         Collection<SmiSymbol> pingMIBs = mib.getSymbols().findAll("pingMIB");
         assertEquals(2, pingMIBs.size());
 
@@ -293,7 +263,8 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
 
     }
 
-    private void checkComplexIndex(SmiMib mib) {
+    public void testComplexIndex() {
+        SmiMib mib = getMib();
         for (SmiRow row : mib.getRows()) {
             if (row.getAugments() == null) {
                 assertNotNull(row.getIndexes());
@@ -326,21 +297,6 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
 
     }
 
-/*
-    private void showOverview(SmiMib mib) {
-        for (SmiModule module : mib.getModules()) {
-            for (SmiSymbol symbol : module.getSymbols()) {
-                String msg = module.getId() + ": " + symbol.getId() + ": " + symbol.getClass().getSimpleName();
-                if (symbol instanceof SmiOidValue) {
-                    SmiOidValue oidValue = (SmiOidValue) symbol;
-                    msg += ": " + oidValue.getOidStr();
-                }
-                System.out.println(msg);
-            }
-        }
-    }
-*/
-
     private void initFileParserOptions(FileParserOptions options, File mibsDir, String... subDirNames) {
         for (String subDirName : subDirNames) {
             File dir = new File(mibsDir, subDirName);
@@ -364,23 +320,5 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         }
     }
 
-
-    public void testCyclicDeps() throws URISyntaxException {
-        URL mibURL = getClass().getClassLoader().getResource("cyclic_deps.txt");
-        File mibFile = new File(mibURL.toURI());
-
-        SmiDefaultParser parser = new SmiDefaultParser();
-        FileParserOptions options = (FileParserOptions) parser.getFileParserPhase().getOptions();
-        options.addFile(mibFile);
-
-        try {
-            parser.parse();
-            fail();
-        } catch (SmiException expected) {
-            //expected.printStackTrace();
-            assertNotNull(expected.getCause());
-            assertTrue(expected.getCause() instanceof DirectedCycleException);
-        }
-    }
 
 }
