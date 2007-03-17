@@ -36,8 +36,8 @@ public enum AccessAll implements AccessPermissions {
         return m_keyword;
     }
 
-    public AccessAll find(String keyword) {
-        return Util.find(AccessAll.class, keyword);
+    public static AccessAll find(String keyword, boolean mandatory) {
+        return Util.find(AccessAll.class, keyword, mandatory);
     }
 
     public boolean isCreateWritable() {        

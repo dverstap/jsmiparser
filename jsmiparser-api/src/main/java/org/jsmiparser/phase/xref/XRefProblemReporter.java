@@ -1,6 +1,7 @@
 package org.jsmiparser.phase.xref;
 
 import org.jsmiparser.util.problem.annotations.ProblemMethod;
+import org.jsmiparser.util.problem.annotations.ProblemSeverity;
 import org.jsmiparser.util.token.IdToken;
 import org.jsmiparser.util.token.Token;
 import org.jsmiparser.util.location.Location;
@@ -49,4 +50,11 @@ public interface XRefProblemReporter {
 
     @ProblemMethod(message = "An object identifier default value must be expressed as a single ASN.1 identifier, and not as a collection of sub-identifiers: %s", ref="RFC1902, 7.9")
     void reportOidDefaultValueMustBeSingleIdentifier(Token token);
+
+    @ProblemMethod(message = "%s is not a valid value for the ACCESS(SMIv1) field. You are probably mixing v1/v2 constructions.", severity = ProblemSeverity.WARNING)
+    void reportInvalidAccess(IdToken idToken);
+
+    @ProblemMethod(message = "%s is not a valid value for the MAX-ACCESS(SMIv2) field. You are probably mixing v1/v2 constructions.", severity = ProblemSeverity.WARNING)
+    void reportInvalidMaxAccess(IdToken idToken);
+
 }

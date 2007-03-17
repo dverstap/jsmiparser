@@ -740,8 +740,6 @@ objecttype_macro[IdToken idToken] returns [SmiObjectType ot = null]
 	SmiRow row = null;
 	SmiTable table = null;
 	StatusAll status = null;
-	ObjectTypeAccessV1 accessV1 = null;
-	ObjectTypeAccessV2 accessV2 = null;
 	SmiDefaultValue defaultValue = null;
 }
 :
@@ -749,8 +747,8 @@ objecttype_macro[IdToken idToken] returns [SmiObjectType ot = null]
 		( type=leaf_type[null]
 		  | sequenceOfType = sequenceof_type )
 	("UNITS" units:C_STRING)? // TODO only on SmiVariable
-	( ("ACCESS" accessV1=objecttype_access_v1)
-		| ("MAX-ACCESS"  accessV2=objecttype_access_v2) )?
+	( ("ACCESS" access:LOWER)
+		| ("MAX-ACCESS"  maxAccess:LOWER) )?
 	"STATUS" status=status_all
 	( "DESCRIPTION" desc:C_STRING )? /* TODO optional only for SMIv1 */
 	( "REFERENCE" C_STRING )? 	  
@@ -766,42 +764,21 @@ objecttype_macro[IdToken idToken] returns [SmiObjectType ot = null]
 	    } else {
 	        ot = var = m_mp.createVariable(idToken, type, units, defaultValue);
 	    }
-	    ot.setAccessV1(accessV1);
-	    ot.setAccessV2(accessV2);
+	    if (access != null) {
+	        ot.setAccessToken(m_mp.idt(access));
+	    } else {
+    	    ot.setMaxAccessToken(m_mp.idt(maxAccess));
+    	}
 	    ot.setStatus(status);
 	    ot.setDescription(m_mp.getOptCStr(desc));
 	}
-;
-
-objecttype_access_v1 returns [ObjectTypeAccessV1 result = null]
-:
-	l:LOWER
-{
-	result = m_mp.findObjectTypeAccessV1(l.getText());
-}
-;
-
-objecttype_access_v2 returns [ObjectTypeAccessV2 result = null]
-:
-	l:LOWER
-{
-	result = m_mp.findObjectTypeAccessV2(l.getText());
-}
 ;
 
 status_all returns [StatusAll status = null]
 :
 	l:LOWER
 {
-	status = StatusAll.find(l.getText());
-}
-;
-
-status_v1 returns [StatusV1 status = null]
-:
-	l:LOWER
-{
-	status = m_mp.findStatusV1(l.getText());
+	status = StatusAll.find(l.getText(), true);
 }
 ;
 
@@ -963,7 +940,7 @@ modulecompliance_access
 :
 	l:LOWER
 {
-	ModuleComplianceAccess.find(l.getText());
+	ModuleComplianceAccess.find(l.getText(), true);
 }
 ;
 
@@ -982,7 +959,7 @@ agentcapabilities_status
 :
 	l:LOWER
 {
-	AgentCapabilitiesStatus.find(l.getText());
+	AgentCapabilitiesStatus.find(l.getText(), true);
 }
 ;
 
@@ -1009,7 +986,7 @@ agentcapabilities_access
 :
 	l:LOWER
 {
-	AgentCapabilitiesAccess.find(l.getText());
+	AgentCapabilitiesAccess.find(l.getText(), true);
 }
 ;
 

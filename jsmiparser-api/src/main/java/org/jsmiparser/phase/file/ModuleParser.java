@@ -309,24 +309,9 @@ public class ModuleParser {
         }
     }
 
-    public ObjectTypeAccessV1 findObjectTypeAccessV1(String text) {
-        m_module.incV1Features();
-        return ObjectTypeAccessV1.find(text);
-    }
-
-    public ObjectTypeAccessV2 findObjectTypeAccessV2(String text) {
-        m_module.incV2Features();
-        return ObjectTypeAccessV2.find(text);
-    }
-
-    public StatusV1 findStatusV1(String text) {
-        m_module.incV1Features();
-        return StatusV1.find(text);
-    }
-
     public StatusV2 findStatusV2(String text) {
         m_module.incV2Features();
-        return StatusV2.find(text);
+        return StatusV2.find(text, true);
     }
 
     public ScopedId makeScopedId(Token moduleToken, Token symbolToken) {

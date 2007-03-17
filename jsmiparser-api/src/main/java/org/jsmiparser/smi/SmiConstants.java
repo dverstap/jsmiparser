@@ -19,8 +19,13 @@ package org.jsmiparser.smi;
 import org.jsmiparser.util.token.IdToken;
 import org.jsmiparser.util.location.Location;
 
+import java.util.Set;
+import java.util.Collections;
+import java.util.HashSet;
+
 public class SmiConstants {
 
+    public static final Set<String> SMI_DEFINITION_MODULE_NAMES = initSmiDefinitionModuleNames();
 
     public static final SmiMib JSMIPARSER_HARDCODED_MIB = new SmiMib(null);
     public static final SmiModule JSMIPARSER_HARDCODED_MODULE = new SmiModule(JSMIPARSER_HARDCODED_MIB, new IdToken(null, "JSMIPARSER_HARDCODED_MIB"));
@@ -57,5 +62,11 @@ public class SmiConstants {
         type.setPrimitiveType(primitiveType);
         return type;
     }
+
+    private static Set<String> initSmiDefinitionModuleNames() {
+        String[] names = new String[] { "RFC1065-SMI", "SNMPv2-SMI" };
+        return Collections.unmodifiableSet(new HashSet<String>());
+    }
+    
     
 }

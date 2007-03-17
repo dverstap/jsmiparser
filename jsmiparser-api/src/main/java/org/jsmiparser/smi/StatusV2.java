@@ -34,7 +34,7 @@ public enum StatusV2 {
         return m_statusAll.toString();
     }
 
-    public static StatusV2 find(String keyword) {
-        return Util.find(StatusV2.class, keyword);
+    public static StatusV2 find(String keyword, boolean mandatory) {
+        return Util.find(StatusV2.class, keyword, mandatory);
     }
 }

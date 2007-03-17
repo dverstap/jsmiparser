@@ -35,8 +35,8 @@ public enum ObjectTypeAccessV1 implements AccessPermissions {
         return m_accessAll.toString();
     }
 
-    public static ObjectTypeAccessV1 find(String keyword) {
-        return Util.find(ObjectTypeAccessV1.class, keyword);
+    public static ObjectTypeAccessV1 find(String keyword, boolean mandatory) {
+        return Util.find(ObjectTypeAccessV1.class, keyword, mandatory);
     }
 
     public boolean isCreateWritable() {

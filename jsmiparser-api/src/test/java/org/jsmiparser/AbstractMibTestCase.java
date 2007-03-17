@@ -37,7 +37,7 @@ public abstract class AbstractMibTestCase extends TestCase {
     private final SmiVersion m_version;
     private final String[] m_resources;
 
-    private SmiMib m_mib;
+    protected SmiMib m_mib;
 
     private SmiType m_integer32;
     private SmiType m_counter;

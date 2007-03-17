@@ -17,12 +17,16 @@ package org.jsmiparser.smi;
 
 class Util {
 
-    public static <T> T find(Class<T> cl, String keyword) {
+    public static <T> T find(Class<T> cl, String keyword, boolean mandatory) {
         for (T enumConstant : cl.getEnumConstants()) {
             if (enumConstant.toString().equals(keyword)) {
                 return enumConstant;
             }
         }
-        throw new IllegalArgumentException(keyword + " is not a valid " + cl.getSimpleName());
+        if (mandatory) {
+            throw new IllegalArgumentException(keyword + " is not a valid " + cl.getSimpleName());
+        } else {
+            return null;
+        }
     }
 }

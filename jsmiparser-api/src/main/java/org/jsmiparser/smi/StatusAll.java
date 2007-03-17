@@ -42,8 +42,8 @@ public enum StatusAll {
         return m_keyword;
     }
 
-    public static StatusAll find(String keyword) {
-        return Util.find(StatusAll.class, keyword);
+    public static StatusAll find(String keyword, boolean mandatory) {
+        return Util.find(StatusAll.class, keyword, mandatory);
     }
 
     public StatusV1 getStatusV1() {
@@ -65,7 +65,7 @@ public enum StatusAll {
     }
 
     public static StatusAll findV1(MacroType macroType, String keyword) {
-        StatusAll result = find(keyword);
+        StatusAll result = find(keyword, true);
         // TODO handle macro's for both V1/V2
         if (result.isSupportedBy(macroType)) {
             return result;

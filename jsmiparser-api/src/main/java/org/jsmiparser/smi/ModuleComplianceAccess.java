@@ -35,7 +35,7 @@ public enum ModuleComplianceAccess {
         return m_accessAll.toString();
     }
 
-    public static ModuleComplianceAccess find(String keyword) {
-        return Util.find(ModuleComplianceAccess.class, keyword);
+    public static ModuleComplianceAccess find(String keyword, boolean mandatory) {
+        return Util.find(ModuleComplianceAccess.class, keyword, mandatory);
     }
 }

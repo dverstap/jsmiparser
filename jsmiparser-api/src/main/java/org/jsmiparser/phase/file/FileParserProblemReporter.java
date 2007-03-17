@@ -25,7 +25,7 @@ public interface FileParserProblemReporter {
     @ProblemMethod(message="Lex error at: %s")
     void reportTokenStreamError(String resourceLocation);
 
-    @ProblemMethod(message="Parse error at: %s")
+    @ProblemMethod(message="Parse error.")
     void reportParseError(Location location);
 
     @ProblemMethod(message = "File not found: %s")

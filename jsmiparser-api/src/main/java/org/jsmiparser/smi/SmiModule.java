@@ -26,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Collections;
 
 public class SmiModule {
 
@@ -51,6 +52,7 @@ public class SmiModule {
     private int m_v1Features = 0;
     private int m_v2Features = 0;
     private SmiVersion m_version;
+    private boolean m_isSmiDefinitionModule;
 
 
     public SmiModule(SmiMib mib, IdToken idToken) {
@@ -59,6 +61,7 @@ public class SmiModule {
             throw new IllegalArgumentException();
         }
         setIdToken(idToken);
+        m_isSmiDefinitionModule = SmiConstants.SMI_DEFINITION_MODULE_NAMES.contains(idToken.getId());
     }
 
 
@@ -239,6 +242,10 @@ public class SmiModule {
 
     public String getVariableOidClassId() {
         return getMib().getCodeNamingStrategy().getVariableOidClassId(this);
+    }
+
+    public boolean isSmiDefinitionModule() {
+        return m_isSmiDefinitionModule;
     }
 
     /**

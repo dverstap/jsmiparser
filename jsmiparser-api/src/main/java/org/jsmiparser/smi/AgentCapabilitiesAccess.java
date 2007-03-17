@@ -37,7 +37,7 @@ public enum AgentCapabilitiesAccess {
         return m_accessAll.toString();
     }
 
-    public static AgentCapabilitiesAccess find(String keyword) {
-        return Util.find(AgentCapabilitiesAccess.class, keyword);
+    public static AgentCapabilitiesAccess find(String keyword, boolean mandatory) {
+        return Util.find(AgentCapabilitiesAccess.class, keyword, mandatory);
     }
 }

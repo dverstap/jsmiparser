@@ -282,6 +282,7 @@ public class SmiMib {
             m_internalModule.addSymbol(itu);
             m_internalModule.m_symbolMap.put(itu.getId(), itu);
             m_symbolMap.put(itu.getId(), itu);
+            m_oidValueMap.put(itu.getId(), itu);
         }
 
         if (m_symbolMap.findAll("iso").isEmpty()) {
@@ -293,6 +294,7 @@ public class SmiMib {
             m_internalModule.addSymbol(iso);
             m_internalModule.m_symbolMap.put(iso.getId(), iso);
             m_symbolMap.put(iso.getId(), iso);
+            m_oidValueMap.put(iso.getId(), iso);
         }
     }
 

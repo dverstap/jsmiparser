@@ -33,7 +33,7 @@ public enum AgentCapabilitiesStatus {
         return m_statusAll.toString();
     }
 
-    public static AgentCapabilitiesStatus find(String keyword) {
-        return Util.find(AgentCapabilitiesStatus.class, keyword);
+    public static AgentCapabilitiesStatus find(String keyword, boolean mandatory) {
+        return Util.find(AgentCapabilitiesStatus.class, keyword, mandatory);
     }
 }
