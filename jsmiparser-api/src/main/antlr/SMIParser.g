@@ -443,6 +443,7 @@ type_assignment[IdToken idToken] returns [SmiType t = null]
 	t=textualconvention_macro[idToken]
 	| t=leaf_type[idToken]
 	| t=sequence_type[idToken]
+	| t=choice_type[idToken]
 ;
 
 // valid type for a leaf node (scalar or column)
@@ -454,7 +455,6 @@ leaf_type[IdToken idToken] returns [SmiType t = null]
 	| t=oid_type[idToken]
 	| t=octet_string_type[idToken, n]
 	| t=bits_type[idToken]
-	| t=choice_type[idToken]
 	| t=defined_type[idToken]
 	)
 ;
