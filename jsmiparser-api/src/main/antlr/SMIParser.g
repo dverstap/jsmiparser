@@ -627,12 +627,12 @@ value_assignment[IdToken idToken] returns [SmiValue v = null]
 
 oid_value_assignment[IdToken idToken] returns [SmiOidValue v = null]
 {
-	List<OidComponent> ocs = null;
+	OidComponent last = null;
 }
 :
-	OBJECT_KW IDENTIFIER_KW ASSIGN_OP ocs=oid_sequence[idToken]
+	OBJECT_KW IDENTIFIER_KW ASSIGN_OP last=oid_sequence[idToken]
 {
-	v = m_mp.createOidValue(idToken, ocs);
+	v = m_mp.createOidValue(idToken, last);
 }
 ;
 
@@ -644,7 +644,7 @@ macro_value_assignment[IdToken idToken] returns [SmiValue v = null]
 
 oid_macro_value_assignment[IdToken idToken] returns [SmiOidMacro v = null]
 {
-	List<OidComponent> ocs = null;
+	OidComponent lastOidComponent = null;
 }
 :
 	(v=objecttype_macro[idToken]
@@ -655,13 +655,13 @@ oid_macro_value_assignment[IdToken idToken] returns [SmiOidMacro v = null]
 	| notificationgroup_macro
 	| modulecompliance_macro
 	| agentcapabilities_macro)
-	ASSIGN_OP ocs=oid_sequence[idToken]
+	ASSIGN_OP lastOidComponent=oid_sequence[idToken]
 	// TODO it's probably better to move the oid stuff into the macro def
 {
 	if (v == null) { // TODO temporary
 		v = m_mp.createOidMacro(idToken);
 	}
-	v.setOidComponents(ocs);
+	v.setLastOidComponent(lastOidComponent);
 }
 ;
 
@@ -675,7 +675,7 @@ leaf_value returns [SmiDefaultValue result = null]
 {
 	BigIntegerToken bit = null;
 	List<IdToken> bitsIdTokenList = null;
-    List<OidComponent> ocs = null;
+    OidComponent lastOidComponent = null;
     BinaryStringToken bst = null;
 	HexStringToken hst = null;
 	QuotedStringToken qst = null;
@@ -685,7 +685,7 @@ leaf_value returns [SmiDefaultValue result = null]
 :
 	(bit=big_integer_token
 	| (bits_value) => bitsIdTokenList=bits_value
-	| ocs=oid_sequence[null]
+	| lastOidComponent=oid_sequence[null]
 	| bst=binary_string_token
 	| hst=hex_string_token
 	| qst=double_quoted_string_token
@@ -693,29 +693,22 @@ leaf_value returns [SmiDefaultValue result = null]
 	| NULL_KW { isNullValue = true; }
 	)
 {
-    result = new SmiDefaultValue(bit, bitsIdTokenList, ocs, bst, hst, qst, scopedId, isNullValue);
+    result = new SmiDefaultValue(bit, bitsIdTokenList, lastOidComponent, bst, hst, qst, scopedId, isNullValue);
 }
 ;
 
 
-oid_sequence [IdToken idToken] returns [List<OidComponent> ocs = new ArrayList<OidComponent>()]
+oid_sequence [IdToken idToken] returns [OidComponent last = null]
 :
 	L_BRACE
-		(oid_component[ocs])+
+		(last = oid_component[last])+
 	R_BRACE
-{
-/*
-	if (idToken != null) {
-		oc = m_mp.registerOid(idToken, oc);
-	}
-	*/
-}
 ;
 
-oid_component[List<OidComponent> ocs]
+oid_component[OidComponent parent] returns [OidComponent oc = null]
 :
-	nt1:NUMBER { m_mp.addOidComponent(ocs, null, nt1); }
-	| (lt:LOWER (L_PAREN nt2:NUMBER R_PAREN)?) { m_mp.addOidComponent(ocs, lt, nt2); }
+	nt1:NUMBER { oc = m_mp.createOidComponent(parent, null, nt1); }
+	| (lt:LOWER (L_PAREN nt2:NUMBER R_PAREN)?) { oc = m_mp.createOidComponent(parent, lt, nt2); }
 ;
 
 bits_value returns [List<IdToken> result = new ArrayList<IdToken>()]

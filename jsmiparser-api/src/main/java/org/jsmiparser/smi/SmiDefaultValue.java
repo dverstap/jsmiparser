@@ -34,7 +34,7 @@ public class SmiDefaultValue {
 
     private final BigIntegerToken m_bigIntegerToken;
     private final List<IdToken> m_bitsIdTokenList;
-    private final List<OidComponent> m_oidComponents;
+    private List<OidComponent> m_oidComponents; // TODO final
     private final BinaryStringToken m_binaryStringToken;
     private final HexStringToken m_hexStringToken;
     private final QuotedStringToken m_quotedStringToken;
@@ -49,10 +49,10 @@ public class SmiDefaultValue {
     private int[] m_oidValue;
     private SmiSymbol m_symbolValue;
 
-    public SmiDefaultValue(BigIntegerToken bigIntegerToken, List<IdToken> bitsIdTokenList, List<OidComponent> oidComponents, BinaryStringToken binaryStringToken, HexStringToken hexStringToken, QuotedStringToken quotedStringToken, ScopedId scopedId, boolean nullValue) {
+    public SmiDefaultValue(BigIntegerToken bigIntegerToken, List<IdToken> bitsIdTokenList, OidComponent lastOidComponent, BinaryStringToken binaryStringToken, HexStringToken hexStringToken, QuotedStringToken quotedStringToken, ScopedId scopedId, boolean nullValue) {
         m_bigIntegerToken = bigIntegerToken;
         m_bitsIdTokenList = bitsIdTokenList;
-        m_oidComponents = oidComponents;
+        // TODO m_oidComponents = oidComponents;
         m_binaryStringToken = binaryStringToken;
         m_hexStringToken = hexStringToken;
         m_quotedStringToken = quotedStringToken;

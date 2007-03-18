@@ -24,7 +24,7 @@ public class SmiTable extends SmiObjectType {
     }
 
     public SmiRow getRow() {
-        return (SmiRow) getChildren().iterator().next();
+        return getNode().getChildren().iterator().next().getSingleValue(SmiRow.class);
     }
 
     public String getCodeId() {

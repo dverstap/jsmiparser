@@ -27,7 +27,7 @@ import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.SmiVersion;
 import org.jsmiparser.smi.StatusV2;
 import org.jsmiparser.smi.SmiIndex;
-import org.jsmiparser.smi.SmiOidValue;
+import org.jsmiparser.smi.SmiOidNode;
 
 import java.net.URISyntaxException;
 import java.util.List;
@@ -95,7 +95,7 @@ public class IfMibTest extends AbstractMibTestCase {
 
         SmiRow ifEntry = mib.getRows().find("ifEntry");
         assertNotNull(ifEntry);
-        assertSame(ifTable, ifEntry.getParent());
+        assertSame(ifTable.getNode(), ifEntry.getNode().getParent());
         assertSame(ifTable, ifEntry.getTable());
         assertSame(ifEntry, ifTable.getRow());
         assertEquals("1.3.6.1.2.1.2.2.1", ifEntry.getOidStr());
@@ -103,8 +103,8 @@ public class IfMibTest extends AbstractMibTestCase {
 
         SmiVariable ifIndex = mib.getVariables().find("ifIndex");
         assertNotNull(ifIndex);
-        assertSame(ifEntry, ifIndex.getParent());
-        assertSame(ifTable, ifIndex.getParent().getParent());
+        assertSame(ifEntry.getNode(), ifIndex.getNode().getParent());
+        assertSame(ifTable.getNode(), ifIndex.getNode().getParent().getParent());
         assertEquals("1.3.6.1.2.1.2.2.1.1", ifIndex.getOidStr());
         SmiTextualConvention interfaceIndex = getMib().getTextualConventions().find("InterfaceIndex");
         assertNotNull(interfaceIndex);
@@ -122,7 +122,7 @@ public class IfMibTest extends AbstractMibTestCase {
         assertEquals(ifEntry, ifAdminStatus.getRow());
         assertEquals(ifTable, ifAdminStatus.getTable());
         assertEquals("1.3.6.1.2.1.2.2.1.7", ifAdminStatus.getOidStr());
-        assertSame(ifEntry, ifAdminStatus.getParent());
+        assertSame(ifEntry.getNode(), ifAdminStatus.getNode().getParent());
 
         SmiType ifAdminStatusType = ifAdminStatus.getType();
         assertSame(SmiPrimitiveType.ENUM, ifAdminStatusType.getPrimitiveType());
@@ -158,8 +158,8 @@ public class IfMibTest extends AbstractMibTestCase {
         assertEquals("1.3.6.1.2.1.2.2.1.7", ifAdminStatus.getOidStr());
 
         int[] adminStatusOfInterface0x1101 = new int[]{1, 3, 6, 1, 2, 1, 2, 2, 1, 7, 0x1101};
-        SmiOidValue result = mib.findByOidPrefix(adminStatusOfInterface0x1101);
-        assertSame(ifAdminStatus, result);
+        SmiOidNode result = mib.findByOidPrefix(adminStatusOfInterface0x1101);
+        assertSame(ifAdminStatus.getNode(), result);
         assertEquals(adminStatusOfInterface0x1101.length, result.getOid().length + 1);
     }
 

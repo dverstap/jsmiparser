@@ -28,6 +28,7 @@ import org.jsmiparser.smi.SmiPrimitiveType;
 import org.jsmiparser.smi.SmiSymbol;
 import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.SmiVersion;
+import org.jsmiparser.smi.SmiOidNode;
 import org.apache.log4j.Logger;
 import org.springframework.util.StopWatch;
 
@@ -157,19 +158,6 @@ public abstract class AbstractMibTestCase extends TestCase {
         }
     }
 
-    protected SmiOidValue findOidSymbol(SmiOidValue rootNode, String id) {
-        for (SmiOidValue child : rootNode.getChildren()) {
-            if (child.getId().equals(id)) {
-                return child;
-            }
-            SmiOidValue result = findOidSymbol(child, id);
-            if (result != null) {
-                return result;
-            }
-        }
-        return null;
-    }
-
     protected void checkOidTree(SmiMib mib) {
         //mib.getRootNode().dumpTree(System.out, "");
 
@@ -178,14 +166,14 @@ public abstract class AbstractMibTestCase extends TestCase {
             if (symbol instanceof SmiOidValue) {
                 SmiOidValue oidValue = (SmiOidValue) symbol;
                 //oidValue.dumpAncestors(System.out);
-                if (oidValue != mib.getRootNode()) {
+                if (oidValue.getNode() != mib.getRootNode()) {
                     String msg = oidValue.getIdToken().toString();
-                    assertNotNull(msg, oidValue.getParent());
+                    assertNotNull(msg, oidValue.getNode().getParent());
 
-                    SmiOidValue foundOidValue = oidValue.getParent().findChild(oidValue.getLastOid());
-                    assertNotNull(msg, foundOidValue);
-                    assertSame(msg, oidValue, foundOidValue);
-                    assertTrue(msg, oidValue.getParent().contains(oidValue));
+                    SmiOidNode foundOidNode = oidValue.getNode().getParent().findChild(oidValue.getNode().getValue());
+                    assertNotNull(msg, foundOidNode);
+                    assertSame(msg, oidValue.getNode(), foundOidNode);
+                    assertTrue(msg, oidValue.getNode().getParent().contains(oidValue.getNode()));
                 }
 //                SmiOidValue foundSymbol = findOidSymbol(mib.getRootNode(), symbol.getId());
 //                assertNotNull(symbol.getId(), foundSymbol);
@@ -198,7 +186,11 @@ public abstract class AbstractMibTestCase extends TestCase {
         int totalChildCount = mib.getRootNode().getTotalChildCount();
         //assertTrue(count + " < " +  totalChildCount, count < totalChildCount);
         //System.out.println("totalChildCount: " + totalChildCount);
-        assertEquals(count + mib.getDummyOidNodesCount(), totalChildCount);
+
+        // I don't think you can draw any conclusions based on the count:
+        // - due to anonymous oid node, you can have more oid nodes than oid symbols
+        // - due to duplicated symbols you can have more symbols than nodes:
+        //assertEquals(count + mib.getDummyOidNodesCount(), totalChildCount);
     }
 
     protected void checkObjectTypeAccessAll(SmiMib mib) {

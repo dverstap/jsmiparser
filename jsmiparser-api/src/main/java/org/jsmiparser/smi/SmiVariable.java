@@ -70,9 +70,9 @@ public class SmiVariable extends SmiObjectType {
 	}
 
     public SmiRow getRow() {
-        SmiOidValue parent = getParent();
-        if (parent instanceof SmiRow) {
-            return (SmiRow) parent;
+        SmiOidValue oidValue = getNode().getParent().getSingleValue(SmiOidValue.class, getModule());
+        if (oidValue instanceof SmiRow) {
+            return (SmiRow) oidValue;
         }
         return null;
     }

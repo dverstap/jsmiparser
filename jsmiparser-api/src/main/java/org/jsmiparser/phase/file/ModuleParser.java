@@ -104,15 +104,15 @@ public class ModuleParser {
         m_module.getImports().add(result);
     }
 
-    public void addOidComponent(List<OidComponent> ocs, Token id, Token value) {
+    public OidComponent createOidComponent(OidComponent parent, Token id, Token value) {
         IdToken idToken = id != null ? idt(id) : null;
         IntegerToken valueToken = value != null ? intt(value) : null;
-        ocs.add(new OidComponent(idToken, valueToken));
+        return new OidComponent(parent, idToken, valueToken);
     }
 
-    public SmiOidValue createOidValue(IdToken idToken, List<OidComponent> oidComponents) {
+    public SmiOidValue createOidValue(IdToken idToken, OidComponent lastOidComponent) {
         SmiOidValue result = new SmiOidValue(idToken, m_module);
-        result.setOidComponents(oidComponents);
+        result.setLastOidComponent(lastOidComponent);
         return result;
     }
 

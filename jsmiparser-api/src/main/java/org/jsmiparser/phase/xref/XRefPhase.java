@@ -80,7 +80,7 @@ public class XRefPhase implements Phase {
         }
         for (SmiModule module : modules) {
             for (SmiOidValue oidValue : module.getOidValues()) {
-                oidValue.determineFullOid();
+                oidValue.getNode().determineFullOid();
             }
         }
     }

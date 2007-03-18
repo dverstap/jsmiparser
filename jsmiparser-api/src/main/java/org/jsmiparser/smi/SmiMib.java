@@ -26,11 +26,8 @@ import org.jsmiparser.exception.SmiException;
 import org.jsmiparser.phase.xref.XRefProblemReporter;
 import org.jsmiparser.util.location.Location;
 import org.jsmiparser.util.token.IdToken;
-import org.jsmiparser.util.token.IntegerToken;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -46,7 +43,7 @@ public class SmiMib {
 
     private Map<String, SmiModule> m_moduleMap = new LinkedHashMap<String, SmiModule>();
     private SmiCodeNamingStrategy m_codeNamingStrategy;
-    private SmiOidValue m_rootNode;
+    private SmiOidNode m_rootNode;
 
     SmiSymbolMapImpl<SmiType> m_typeMap = new SmiSymbolMapImpl<SmiType>(SmiType.class, m_moduleMap);
     SmiSymbolMapImpl<SmiTextualConvention> m_textualConventionMap = new SmiSymbolMapImpl<SmiTextualConvention>(SmiTextualConvention.class, m_moduleMap);
@@ -74,13 +71,13 @@ public class SmiMib {
         Location location = new Location("JSMI_INTERNAL_MIB");
         m_internalModule = new SmiModule(this, new IdToken(location, "JSMI_INTERNAL_MIB"));
 
-        m_rootNode = new SmiOidValue(new IdToken(location, "JSMI_INTERNAL_ROOT_NODE"), m_internalModule);
-        m_rootNode.setOidComponents(Collections.<OidComponent>emptyList());
+        m_rootNode = SmiOidNode.createRootNode(m_internalModule);
+        //m_rootNode.setOidComponents(Collections.<OidComponent>emptyList());
 
         return m_internalModule;
     }
 
-    public SmiOidValue getRootNode() {
+    public SmiOidNode getRootNode() {
         return m_rootNode;
     }
 
@@ -248,10 +245,10 @@ public class SmiMib {
      * @param oid For which the best match is searched.
      * @return Best matching SmiOidValue, or null if none is found.
      */
-    public SmiOidValue findByOidPrefix(int[] oid) {
-        SmiOidValue parent = getRootNode();
+    public SmiOidNode findByOidPrefix(int[] oid) {
+        SmiOidNode parent = getRootNode();
         for (int subId : oid) {
-            SmiOidValue result = parent.findChild(subId);
+            SmiOidNode result = parent.findChild(subId);
             if (result == null) {
                 return parent;
             }
@@ -274,11 +271,9 @@ public class SmiMib {
         Location location = m_internalModule.getIdToken().getLocation();
 
         if (m_symbolMap.findAll("itu").isEmpty()) {
-            SmiOidValue itu = new SmiOidValue(new IdToken(location, "itu"), m_internalModule);
-            ArrayList<OidComponent> ituOid = new ArrayList<OidComponent>();
-            ituOid.add(new OidComponent(null, new IntegerToken(location, 0)));
-            itu.setOidComponents(ituOid);
-            itu.setParent(m_rootNode);
+            SmiOidNode ituNode = new SmiOidNode(m_rootNode, 0);
+            SmiOidValue itu = new SmiOidValue(new IdToken(location, "itu"), m_internalModule, ituNode);
+            //itu.setLastOidComponent(new OidComponent(null, null, new IntegerToken(location, 0)));
             m_internalModule.addSymbol(itu);
             m_internalModule.m_symbolMap.put(itu.getId(), itu);
             m_symbolMap.put(itu.getId(), itu);
@@ -286,11 +281,8 @@ public class SmiMib {
         }
 
         if (m_symbolMap.findAll("iso").isEmpty()) {
-            SmiOidValue iso = new SmiOidValue(new IdToken(location, "iso"), m_internalModule);
-            ArrayList<OidComponent> isoOid = new ArrayList<OidComponent>();
-            isoOid.add(new OidComponent(null, new IntegerToken(location, 1)));
-            iso.setOidComponents(isoOid);
-            iso.setParent(m_rootNode);
+            SmiOidNode isoNode = new SmiOidNode(m_rootNode, 1);
+            SmiOidValue iso = new SmiOidValue(new IdToken(location, "iso"), m_internalModule, isoNode);
             m_internalModule.addSymbol(iso);
             m_internalModule.m_symbolMap.put(iso.getId(), iso);
             m_symbolMap.put(iso.getId(), iso);

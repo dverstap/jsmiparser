@@ -36,12 +36,16 @@ public class SmiRow extends SmiObjectType {
     }
 
     public SmiTable getTable() {
-        return (SmiTable) getParent();
+        return getNode().getParent().getSingleValue(SmiTable.class, getModule());
     }
 
-    @SuppressWarnings("unchecked")
     public List<SmiVariable> getColumns() {
-        return new ArrayList(getChildren());
+
+        List<SmiVariable> result = new ArrayList<SmiVariable>();
+        for (SmiOidNode child : getNode().getChildren()) {
+            result.add(child.getSingleValue(SmiVariable.class));
+        }
+        return result;
     }
 
     public SmiRow getAugments() {

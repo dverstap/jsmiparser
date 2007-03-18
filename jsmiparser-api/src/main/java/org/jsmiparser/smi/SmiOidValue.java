@@ -19,40 +19,40 @@ package org.jsmiparser.smi;
 import org.apache.log4j.Logger;
 import org.jsmiparser.phase.xref.XRefProblemReporter;
 import org.jsmiparser.util.token.IdToken;
-import org.jsmiparser.util.token.Token;
 
-import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 public class SmiOidValue extends SmiValue {
 
     private static final Logger m_log = Logger.getLogger(SmiOidValue.class);
 
-    private List<OidComponent> m_oidComponents;
-    private SmiOidValue m_parent;
-    private int[] m_oid;
-    private String m_oidStr;
-    private Map<Integer, SmiOidValue> m_childMap = new TreeMap<Integer, SmiOidValue>();
+    private OidComponent m_lastOidComponent;
+//    private SmiOidValue m_parent;
+//    private int[] m_oid;
+//    private String m_oidStr;
+//    private Map<Integer, SmiOidValue> m_childMap = new TreeMap<Integer, SmiOidValue>();
+
+    private SmiOidNode m_node;
 
     public SmiOidValue(IdToken idToken, SmiModule module) {
         super(idToken, module);
     }
 
-    public List<OidComponent> getOidComponents() {
-        return m_oidComponents;
+    public SmiOidValue(IdToken idToken, SmiModule internalModule, SmiOidNode node) {
+        super(idToken, internalModule);
+        m_node = node;
     }
 
-    public void setOidComponents(List<OidComponent> oidComponents) {
-        m_oidComponents = oidComponents;
+    public OidComponent getLastOidComponent() {
+        return m_lastOidComponent;
+    }
+
+    public void setLastOidComponent(OidComponent lastOidComponent) {
+        m_lastOidComponent = lastOidComponent;
     }
 
     public int[] getOid() {
-        return m_oid;
+        return m_node.getOid();
     }
 
     /**
@@ -60,34 +60,46 @@ public class SmiOidValue extends SmiValue {
      * @return null for the root node; the OID in decimal dotted notation for all other nodes
      */
     public String getOidStr() {
-        return m_oidStr;
+        return m_node.getOidStr();
     }
 
+/*
     public SmiOidValue getParent() {
-        return m_parent;
+        //return m_parent;
+        return null;
     }
+*/
 
-    void setParent(SmiOidValue parent) {
-        if (parent == null) {
-            throw new IllegalArgumentException(getId());
-        }
-        SmiOidValue oldChild = parent.findChild(getLastOid());
-        if (oldChild != null && oldChild != this) {
-            m_log.warn("there is already a child " + oldChild.getIdToken() + " for last oid " + getLastOid() + " under " + getIdToken());
-        }
-        m_parent = parent;
-        m_parent.m_childMap.put(getLastOid(), this);
-    }
+//    void setParent(SmiOidValue parent) {
+//        if (parent == null) {
+//            throw new IllegalArgumentException(getId());
+//        }
+//        SmiOidValue oldChild = parent.findChild(getLastOid());
+//        if (oldChild != null && oldChild != this) {
+//            m_log.warn("there is already a child " + oldChild.getIdToken() + " for last oid " + getLastOid() + " under " + getIdToken());
+//        }
+//        m_parent = parent;
+//        m_parent.m_childMap.put(getLastOid(), this);
+//    }
 
     public Collection<? extends SmiOidValue> getChildren() {
-        return m_childMap.values();
+        //return m_childMap.values();
+        return null; // TODO
     }
+//
+//    public boolean hasChildren() {
+//        return m_childMap != null && !m_childMap.isEmpty();
+//    }
 
-    public boolean hasChildren() {
-        return m_childMap != null && !m_childMap.isEmpty();
-    }
+    public SmiOidNode resolveOid(XRefProblemReporter reporter) {
+        //System.out.println("resolveOid: " + getIdToken());
+        if (m_node == null) {
+            m_node = m_lastOidComponent.resolveNode(getModule(), reporter);
+            m_node.getValues().add(this);
+        }
+        return m_node;
 
-    public void resolveOid(XRefProblemReporter reporter) {
+/*
         SmiOidValue parent = null;
         OidComponent prevOidComponent = null;
         boolean isFirst = true;
@@ -113,42 +125,26 @@ public class SmiOidValue extends SmiValue {
                 setParent(parent);
             }
             oidComponent.setSymbol(oidValue);
-/*
-            if (parent != null && oidValue != null) {
-                parent.m_childMap.put(oidValue.getLastOid(), oidValue);
-                // add child
-            }
-*/
+
+//            if (parent != null && oidValue != null) {
+//                parent.m_childMap.put(oidValue.getLastOid(), oidValue);
+//                // add child
+//            }
+
             parent = oidValue;
             prevOidComponent = oidComponent;
         }
+*/
     }
 
-    public int[] determineFullOid() {
-        if (m_oid == null) {
-            SmiOidValue parent = getParent();
-            if (parent != null) {
-                int[] parentOid = parent.determineFullOid();
-                if (parentOid != null) {
-                    m_oid = new int[parentOid.length + 1];
-                    System.arraycopy(parentOid, 0, m_oid, 0, parentOid.length);
-                    m_oid[m_oid.length-1] = getLastOid();
-                    m_oidStr = parent.getOidStr() + "." + getLastOid();
-                } else {
-                    m_oid = new int[] {getLastOid()};
-                    m_oidStr = String.valueOf(getLastOid());
-                }
-            }
-        }
-        return m_oid;
-    }
 
+/*
     private SmiOidValue createDummyOidValue(OidComponent oidComponent, OidComponent prevOidComponent, SmiOidValue parent) {
         Token token = oidComponent.getIdToken() != null ? oidComponent.getIdToken() : oidComponent.getValueToken();
         System.out.println("warning: creating dummy middle oid for: " + token.getObject() + " at " + token.getLocation()); // TODO
         SmiOidValue oidValue = new SmiOidValue(oidComponent.getIdToken(), getModule());
         List<OidComponent> oidComponents = new ArrayList<OidComponent>();
-        OidComponent oc1 = new OidComponent(prevOidComponent.getIdToken(), prevOidComponent.getValueToken());
+        OidComponent oc1 = new OidComponent(null, prevOidComponent.getIdToken(), prevOidComponent.getValueToken());
         oc1.setSymbol(parent);
         oidComponents.add(oc1);
         OidComponent oc2 = new OidComponent(null, oidComponent.getValueToken());
@@ -159,7 +155,9 @@ public class SmiOidValue extends SmiValue {
         getModule().getMib().m_dummyOidNodesCount++;
         return oidValue;
     }
+*/
 
+/*
     private SmiOidValue resolveOidComponent(OidComponent oidComponent, SmiOidValue parent, boolean isFirst, XRefProblemReporter reporter) {
         SmiOidValue oidValue;
         if (oidComponent.getIdToken() != null) {
@@ -194,68 +192,15 @@ public class SmiOidValue extends SmiValue {
         }
         return oidValue;
     }
-
-    public int getTotalChildCount() {
-        int result = m_childMap.size();
-        for (SmiOidValue oidValue : m_childMap.values()) {
-            result += oidValue.getTotalChildCount();
-        }
-        return result;
-    }
-
-    public int getLastOid() {
-        if (m_oidComponents.isEmpty()) {
-            return -1;
-        } else {
-            return m_oidComponents.get(m_oidComponents.size() - 1).getValueToken().getValue();
-        }
-    }
-
-    public void dumpTree(PrintStream w, String indent) {
-        w.print(indent);
-        w.print(getId());
-        w.print("(");
-        w.print(getLastOid());
-        w.println(")");
-        for (SmiOidValue child : m_childMap.values()) {
-            child.dumpTree(w, indent + " ");
-        }
-    }
-
-    /**
-     * This method as such makes no sense; it is used mainly for unit testing.
-     *
-     * @return The root of the oid tree.
-     */
-    public SmiOidValue getRootNode() {
-        SmiOidValue parent = this;
-        while (parent.getParent() != null) {
-            parent = parent.getParent();
-        }
-        return parent;
-    }
-
-    public boolean contains(SmiOidValue oidValue) {
-        SmiOidValue result = m_childMap.get(oidValue.getLastOid());
-        return result != null && result == oidValue;
-    }
+*/
 
     public SmiOidValue findChild(int id) {
-        return m_childMap.get(id);
+        throw new UnsupportedOperationException();
+        //return m_childMap.get(id);
     }
 
-    public void dumpAncestors(PrintStream out) {
-        SmiOidValue oidValue = this;
-        while (oidValue != null) {
-            out.print(oidValue.getId());
-            out.print("(");
-            out.print(oidValue.getLastOid());
-            out.print(")");
-            if (oidValue.getParent() != null) {
-                out.print(": ");
-            }
-            oidValue = oidValue.getParent();
-        }
-        out.println();
+
+    public SmiOidNode getNode() {
+        return m_node;
     }
 }

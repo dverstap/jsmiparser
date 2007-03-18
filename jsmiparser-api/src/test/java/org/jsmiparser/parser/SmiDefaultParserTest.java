@@ -52,7 +52,7 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         //showOverview(mib);
 
         // fails because of mixing of different smi versions
-        //checkOidTree(mib);
+        checkOidTree(mib);
 
         //XStream xStream = new XStream();
         //xStream.toXML(mib, System.out);
@@ -173,12 +173,12 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         SmiOidValue dismanPingMIB = mib.getOidValues().find("DISMAN-PING-MIB", "pingMIB");
         assertNotNull(dismanPingMIB);
         assertEquals("DISMAN-PING-MIB", dismanPingMIB.getModule().getId());
-        assertEquals(80, dismanPingMIB.getLastOid());
+        assertEquals(80, dismanPingMIB.getLastOidComponent().getValueToken().getValue());
 
         SmiOidValue tubsIbrPingMIB = mib.getOidValues().find("TUBS-IBR-PING-MIB", "pingMIB");
         assertNotNull(tubsIbrPingMIB);
         assertEquals("TUBS-IBR-PING-MIB", tubsIbrPingMIB.getModule().getId());
-        assertEquals(8, tubsIbrPingMIB.getLastOid());
+        assertEquals(8, tubsIbrPingMIB.getLastOidComponent().getValueToken().getValue());
     }
 
     public void testUnits() {
@@ -246,9 +246,9 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         SmiModule dismanPingModule = mib.findModule("DISMAN-PING-MIB");
         SmiOidValue dismanPingMIB = dismanPingModule.findOidValue("pingMIB");
         assertNotNull(dismanPingMIB);
-        assertNotNull(dismanPingMIB.getParent());
-        assertEquals(mib.getRootNode(), dismanPingMIB.getRootNode());
-        assertEquals(4, dismanPingMIB.getChildren().size());
+        assertNotNull(dismanPingMIB.getNode().getParent());
+        assertEquals(mib.getRootNode(), dismanPingMIB.getNode().getRootNode());
+        assertEquals(4, dismanPingMIB.getNode().getChildren().size());
         assertTrue(pingMIBs.contains(dismanPingMIB));
 
         //tubsPingMIB.dumpTree(System.out, "");
@@ -256,9 +256,9 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         SmiModule tubsPingModule = mib.findModule("TUBS-IBR-PING-MIB");
         SmiOidValue tubsPingMIB = tubsPingModule.findOidValue("pingMIB");
         assertNotNull(tubsPingMIB);
-        assertNotNull(tubsPingMIB.getParent());
-        assertEquals(mib.getRootNode(), tubsPingMIB.getRootNode());
-        assertEquals(2, tubsPingMIB.getChildren().size());
+        assertNotNull(tubsPingMIB.getNode().getParent());
+        assertEquals(mib.getRootNode(), tubsPingMIB.getNode().getRootNode());
+        assertEquals(2, tubsPingMIB.getNode().getChildren().size());
         assertTrue(pingMIBs.contains(tubsPingMIB));
 
     }
