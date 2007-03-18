@@ -71,7 +71,7 @@ public class SmiMib {
         Location location = new Location("JSMI_INTERNAL_MIB");
         m_internalModule = new SmiModule(this, new IdToken(location, "JSMI_INTERNAL_MIB"));
 
-        m_rootNode = SmiOidNode.createRootNode(m_internalModule);
+        m_rootNode = SmiOidNode.createRootNode();
         //m_rootNode.setOidComponents(Collections.<OidComponent>emptyList());
 
         return m_internalModule;

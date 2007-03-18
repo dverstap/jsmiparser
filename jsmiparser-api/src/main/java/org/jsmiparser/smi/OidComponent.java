@@ -38,15 +38,6 @@ public class OidComponent {
         m_valueToken = intToken;
     }
 
-//    public String getId() {
-//        if (m_idToken != null) {
-//            return m_idToken.getId();
-//        } else if (m_symbol != null) {
-//            return m_symbol.getId();
-//        }
-//        return null;
-//    }
-
     public IdToken getIdToken() {
         return m_idToken;
     }
@@ -59,38 +50,23 @@ public class OidComponent {
         return m_node;
     }
 
+    private Token getToken() {
+        if (m_idToken != null) {
+            return m_idToken;
+        }
+        return m_valueToken;
+    }
+
+    private boolean isFirst() {
+        return m_parent == null;
+    }
+
+    private boolean isLast() {
+        return m_child == null;
+    }
+
     public SmiOidNode resolveNode(SmiModule module, XRefProblemReporter reporter) {
         assert (m_node == null);
-
-/*
-        if (m_parent == null) {
-            if (m_child != null) {
-                m_node = resolveOidComponent(oidComponent, parent, isFirst, reporter);
-            } else {
-                assert (m_oidComponents.size() == 1);
-                oidValue = this;
-                setParent(getModule().getMib().getRootNode());
-            }
-            isFirst = false;
-        } else if (iterator.hasNext()) {
-            oidValue = resolveOidComponent(oidComponent, parent, isFirst, reporter);
-            if (oidValue == null) {
-                oidValue = createDummyOidValue(oidComponent, prevOidComponent, parent);
-            }
-        } else {
-            oidValue = this;
-            setParent(parent);
-        }
-        oidComponent.setSymbol(oidValue);
-*/
-/*
-            if (parent != null && oidValue != null) {
-                parent.m_childMap.put(oidValue.getLastOid(), oidValue);
-                // add child
-            }
-*/
-        //parent = oidValue;
-
         if (!m_isResolved) {
             SmiOidNode parent = null;
             if (m_parent != null) {
@@ -118,40 +94,6 @@ public class OidComponent {
             m_isResolved = true;
         }
         return m_node;
-    }
-
-/*
-    private SmiOidValue createDummyOidValue(OidComponent oidComponent, OidComponent prevOidComponent, SmiOidValue parent) {
-        Token token = oidComponent.getIdToken() != null ? oidComponent.getIdToken() : oidComponent.getValueToken();
-        System.out.println("warning: creating dummy middle oid for: " + token.getObject() + " at " + token.getLocation()); // TODO
-        SmiOidValue oidValue = new SmiOidValue(oidComponent.getIdToken(), getModule());
-        List<OidComponent> oidComponents = new ArrayList<OidComponent>();
-        OidComponent oc1 = new OidComponent(null, prevOidComponent.getIdToken(), prevOidComponent.getValueToken());
-        oc1.setSymbol(parent);
-        oidComponents.add(oc1);
-        OidComponent oc2 = new OidComponent(null, oidComponent.getValueToken());
-        oc2.setSymbol(oidValue);
-        oidComponents.add(oc2);
-        oidValue.setOidComponents(oidComponents);
-        oidValue.setParent(parent);
-        getModule().getMib().m_dummyOidNodesCount++;
-        return oidValue;
-    }
-*/
-
-    private Token getToken() {
-        if (m_idToken != null) {
-            return m_idToken;
-        }
-        return m_valueToken;
-    }
-
-    private boolean isFirst() {
-        return m_parent == null;
-    }
-
-    private boolean isLast() {
-        return m_child == null;
     }
 
     private SmiOidNode doResolve(SmiModule module, SmiOidNode parent, XRefProblemReporter reporter) {

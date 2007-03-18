@@ -693,7 +693,7 @@ leaf_value returns [SmiDefaultValue result = null]
 	| NULL_KW { isNullValue = true; }
 	)
 {
-    result = new SmiDefaultValue(bit, bitsIdTokenList, lastOidComponent, bst, hst, qst, scopedId, isNullValue);
+    result = new SmiDefaultValue(m_mp.getModule(), bit, bitsIdTokenList, lastOidComponent, bst, hst, qst, scopedId, isNullValue);
 }
 ;
 

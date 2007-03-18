@@ -1,13 +1,11 @@
 package org.jsmiparser.smi;
 
-import org.jsmiparser.util.token.IdToken;
-
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.Collection;
 
 /*
 * Copyright 2007 Davy Verstappen.
@@ -34,14 +32,6 @@ public class SmiOidNode {
 
     private int[] m_oid;
     private String m_oidStr;
-    private IdToken m_dummyIdToken;
-    private SmiModule m_dummyModule;
-
-    public SmiOidNode(SmiOidNode parent, int value, IdToken idToken, SmiModule module) {
-        this(parent, value);
-        m_dummyIdToken = idToken;
-        m_dummyModule = module;
-    }
 
     public SmiOidNode(SmiOidNode parent, int value) {
         m_parent = parent;
@@ -117,8 +107,8 @@ public class SmiOidNode {
     }
 
 
-    public static SmiOidNode createRootNode(SmiModule internalModule) {
-        return new SmiOidNode(null, -1, new IdToken(internalModule.getIdToken().getLocation(), "JSMI_INTERNAL_ROOT_NODE"), internalModule);
+    public static SmiOidNode createRootNode() {
+        return new SmiOidNode(null, -1);
     }
 
     public SmiOidNode findChild(int value) {
@@ -132,7 +122,7 @@ public class SmiOidNode {
         return clazz.cast(m_values.get(0));
     }
 
-    public  <T extends SmiOidValue> T getSingleValue(Class<T> clazz, SmiModule module) {
+    public <T extends SmiOidValue> T getSingleValue(Class<T> clazz, SmiModule module) {
         T result = null;
         for (SmiOidValue value : m_values) {
             if (value.getModule() == module && clazz.isInstance(value)) {
@@ -191,10 +181,10 @@ public class SmiOidNode {
                 if (parentOid != null) {
                     m_oid = new int[parentOid.length + 1];
                     System.arraycopy(parentOid, 0, m_oid, 0, parentOid.length);
-                    m_oid[m_oid.length-1] = m_value;
+                    m_oid[m_oid.length - 1] = m_value;
                     m_oidStr = parent.getOidStr() + "." + m_value;
                 } else {
-                    m_oid = new int[] { m_value };
+                    m_oid = new int[]{m_value};
                     m_oidStr = String.valueOf(m_value);
                 }
             }
@@ -212,6 +202,6 @@ public class SmiOidNode {
 
     @Override
     public String toString() {
-        return m_oidStr;
+        return getClass().getSimpleName() + ":" + m_oidStr;
     }
 }

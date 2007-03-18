@@ -94,10 +94,10 @@ public class FileParserPhase implements Phase {
             }
         } catch (TokenStreamException e) {
             m_log.debug(e.getMessage(), e);
-            m_reporter.reportTokenStreamError(resourceLocation);
+            m_reporter.reportTokenStreamError(resourceLocation, e.getMessage());
         } catch (RecognitionException e) {
             m_log.debug(e.getMessage(), e);
-            m_reporter.reportParseError(new Location(resourceLocation, e.getLine(), e.getColumn()));
+            m_reporter.reportParseError(new Location(resourceLocation, e.getLine(), e.getColumn()), e.getMessage());
         } finally {
             m_log.debug("Finished parsing :" + resourceLocation);
             if (is != null) {

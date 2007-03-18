@@ -45,6 +45,16 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         super(null);
     }
 
+    @Override
+    protected SmiDefaultParser createParser() throws Exception {
+        URL mibsURL = getClass().getClassLoader().getResource("libsmi-0.4.5/mibs");
+        File mibsDir = new File(mibsURL.toURI());
+
+        SmiDefaultParser parser = new SmiDefaultParser();
+        FileParserOptions options = (FileParserOptions) parser.getFileParserPhase().getOptions();
+        initFileParserOptions(options, mibsDir, "iana", "ietf", "site", "tubs");
+        return parser;
+    }
 
     public void testLibSmi() throws URISyntaxException {
         SmiMib mib = getMib();
@@ -72,16 +82,16 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         checkObjectTypeAccessAll(mib);
     }
 
-    @Override
-    protected SmiDefaultParser createParser() throws Exception {
-        URL mibsURL = getClass().getClassLoader().getResource("libsmi-0.4.5/mibs");
-        File mibsDir = new File(mibsURL.toURI());
+    public void testCycle() {
+        SmiModule rfc1155Smi = getMib().findModule("RFC1155-SMI");
+        assertNotNull(rfc1155Smi);
+        assertEquals(0, rfc1155Smi.getImports().size());
 
-        SmiDefaultParser parser = new SmiDefaultParser();
-        FileParserOptions options = (FileParserOptions) parser.getFileParserPhase().getOptions();
-        initFileParserOptions(options, mibsDir, "iana", "ietf", "site", "tubs");
-        return parser;
+        SmiModule rfc1212 = getMib().findModule("RFC-1212");
+        assertNotNull(rfc1212);
+        assertEquals(1, rfc1212.getImports().size()); // debatable: it seems the original does have a DisplayString import
     }
+
 
     public void testBitsDefVal() {
         SmiVariable var = getMib().getColumns().find("acctngSelectionType");
@@ -95,6 +105,23 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         }
     }
 
+    public void testDefaultValueOid() {
+        SmiMib mib = getMib();
+
+        SmiOidValue zeroDotZero = mib.getOidValues().find("zeroDotZero");
+        assertNotNull(zeroDotZero);
+        assertEquals(mib.getRootNode(), zeroDotZero.getNode().getParent().getParent());
+        assertEquals(2, zeroDotZero.getOid().length);
+        assertEquals(0, zeroDotZero.getOid()[0]);
+        assertEquals(0, zeroDotZero.getOid()[1]);
+
+        SmiVariable mioxPeerX25CallParamId = mib.getVariables().find("mioxPeerX25CallParamId");
+        assertNotNull(mioxPeerX25CallParamId);
+        assertNotNull(mioxPeerX25CallParamId.getDefaultValue());
+        assertNotNull(mioxPeerX25CallParamId.getDefaultValue().getOidNode());
+        assertSame(zeroDotZero.getNode(), mioxPeerX25CallParamId.getDefaultValue().getOidNode());
+    }
+
     // NetworkAddress is a very special type in SMIv1, which is a CHOICE with only one choice: IpAddress
     public void testNetworkAddressChoice() {
         SmiMib mib = getMib();
@@ -103,6 +130,7 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
 
         SmiType networkAddress = mib.getTypes().find("RFC1155-SMI", "NetworkAddress");
         assertNotNull(networkAddress);
+        assertEquals(SmiType.class, networkAddress.getClass());
         assertSame(ipAddress, networkAddress.getBaseType());
 
         SmiVariable atNetAddress = mib.getVariables().find("RFC1213-MIB", "atNetAddress");

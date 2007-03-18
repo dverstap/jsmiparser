@@ -58,6 +58,16 @@
                 <configuration>
                     <grammars>SMIParser.g</grammars>
                 </configuration>
+                <!-- maven-antlr-plugin compiles the grammer using antlr:antlrall:2.7.4,
+                    but there is no antlr:antlrall:2.7.6
+                <dependencies>
+                    <dependency>
+                        <groupId>antlr</groupId>
+                        <artifactId>antlrall</artifactId>
+                        <version>2.7.6</version>
+                    </dependency>                    
+                </dependencies>
+                -->
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

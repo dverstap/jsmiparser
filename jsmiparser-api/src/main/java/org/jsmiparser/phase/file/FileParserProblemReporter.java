@@ -22,11 +22,11 @@ import org.jsmiparser.util.problem.annotations.ProblemMethod;
 
 public interface FileParserProblemReporter {
 
-    @ProblemMethod(message="Lex error at: %s")
-    void reportTokenStreamError(String resourceLocation);
+    @ProblemMethod(message="Lex error at: %s : %s")
+    void reportTokenStreamError(String resourceLocation, String msg);
 
-    @ProblemMethod(message="Parse error.")
-    void reportParseError(Location location);
+    @ProblemMethod(message="Parse error: %s")
+    void reportParseError(Location location, String msg);
 
     @ProblemMethod(message = "File not found: %s")
     void reportFileNotFound(File file);
