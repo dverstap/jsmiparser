@@ -15,22 +15,17 @@
  */
 package org.jsmiparser.phase.xref;
 
-import edu.uci.ics.jung.graph.DirectedEdge;
-import edu.uci.ics.jung.graph.Vertex;
 import org.apache.log4j.Logger;
 import org.jsmiparser.exception.SmiException;
 import org.jsmiparser.phase.Phase;
+import org.jsmiparser.smi.SmiDefaultValue;
 import org.jsmiparser.smi.SmiMib;
 import org.jsmiparser.smi.SmiModule;
 import org.jsmiparser.smi.SmiOidValue;
 import org.jsmiparser.smi.SmiSymbol;
 import org.jsmiparser.smi.SmiVariable;
-import org.jsmiparser.smi.SmiDefaultValue;
-import org.jsmiparser.util.jung.DirectedCycleException;
-import org.jsmiparser.util.jung.TopologicalSort;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 public class XRefPhase implements Phase {
 
@@ -54,7 +49,7 @@ public class XRefPhase implements Phase {
             module.resolveImports(m_reporter);
         }
 
-        List<SmiModule> modules = sortModules(mib);
+        Collection<SmiModule> modules = mib.getModules();
         resolveReferences(modules);
         resolveOids(modules);
         mib.fillExtraTables();
@@ -63,7 +58,7 @@ public class XRefPhase implements Phase {
         return mib;
     }
 
-    private void resolveReferences(List<SmiModule> modules) {
+    private void resolveReferences(Collection<SmiModule> modules) {
         for (SmiModule module : modules) {
             for (SmiSymbol symbol : module.getSymbols()) {
                 symbol.resolveReferences(m_reporter);
@@ -71,7 +66,7 @@ public class XRefPhase implements Phase {
         }
     }
 
-    private void resolveOids(List<SmiModule> modules) {
+    private void resolveOids(Collection<SmiModule> modules) {
         for (SmiModule module : modules) {
             m_log.debug("Resolving oids in module: " + module.getId() + " hash=" + module.getId().hashCode());
             for (SmiOidValue oidValue : module.getOidValues()) {
@@ -91,45 +86,6 @@ public class XRefPhase implements Phase {
             if (defaultValue != null) {
                 defaultValue.resolveReferences(m_reporter);
             }
-        }
-    }
-
-
-    private List<SmiModule> sortModules(SmiMib mib) {
-        try {
-            List<Vertex> sortedVertexes = TopologicalSort.sort(mib.createGraph());
-
-            List<SmiModule> result = new ArrayList<SmiModule>(sortedVertexes.size());
-            for (Vertex sortedVertex : sortedVertexes) {
-                SmiModule module = (SmiModule) sortedVertex.getUserDatum(SmiModule.class);
-                assert (module != null);
-                result.add(module);
-            }
-            //Collections.reverse(result);
-            if (result.size() != mib.getModules().size()) {
-                throw new AssertionError("Topological sort failure");
-            }
-
-            if (m_log.isDebugEnabled()) {
-                StringBuilder msg = new StringBuilder("Topologically sorted modules according to dependencies: ");
-                for (SmiModule module : result) {
-                    msg.append(module.toString()).append(": ").append(module.getVersion());
-                }
-                m_log.debug(msg);
-            }
-
-            return result;
-        } catch (DirectedCycleException e) {
-            if (m_log.isDebugEnabled()) {
-                StringBuilder sb = new StringBuilder("Cycle consists of: \n");
-                for (DirectedEdge edge : e.getCycleEdges()) {
-                    SmiModule src = (SmiModule) edge.getSource().getUserDatum(SmiModule.class);
-                    SmiModule dest = (SmiModule) edge.getDest().getUserDatum(SmiModule.class);
-                    sb.append(src.getId()).append(" -> ").append(dest.getId()).append("\n");
-                }
-                m_log.debug(sb);
-            }
-            throw new SmiException(e);
         }
     }
 

@@ -15,31 +15,17 @@
  */
 package org.jsmiparser.smi;
 
-import edu.uci.ics.jung.graph.DirectedGraph;
-import edu.uci.ics.jung.graph.Vertex;
-import edu.uci.ics.jung.graph.impl.DirectedSparseEdge;
-import edu.uci.ics.jung.graph.impl.DirectedSparseGraph;
-import edu.uci.ics.jung.graph.impl.DirectedSparseVertex;
-import edu.uci.ics.jung.utils.UserDataContainer;
-import org.apache.log4j.Logger;
-import org.jsmiparser.exception.SmiException;
 import org.jsmiparser.phase.xref.XRefProblemReporter;
 import org.jsmiparser.util.location.Location;
 import org.jsmiparser.util.token.IdToken;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
 public class SmiMib {
-
-    private static final Logger m_log = Logger.getLogger(SmiMib.class);
-
-
-    private static final UserDataContainer.CopyAction SHARED = new UserDataContainer.CopyAction.Shared();
 
     private Map<String, SmiModule> m_moduleMap = new LinkedHashMap<String, SmiModule>();
     private SmiCodeNamingStrategy m_codeNamingStrategy;
@@ -169,32 +155,6 @@ public class SmiMib {
 
     public int getDummyOidNodesCount() {
         return m_dummyOidNodesCount;
-    }
-
-    public DirectedGraph createGraph() {
-        Map<SmiModule, Vertex> vertexMap = new HashMap<SmiModule, Vertex>();
-        DirectedGraph graph = new DirectedSparseGraph();
-        for (SmiModule module : m_moduleMap.values()) {
-            Vertex v = new DirectedSparseVertex();
-            v.setUserDatum(SmiModule.class, module, SHARED);
-            graph.addVertex(v);
-            vertexMap.put(module, v);
-        }
-
-        for (SmiModule module : m_moduleMap.values()) {
-            Vertex v = vertexMap.get(module);
-            for (SmiModule importedModule : module.getImportedModules()) {
-                Vertex importedVertex = vertexMap.get(importedModule);
-                try {
-                    m_log.debug("Adding dependency from " + module.getId() + " to " + importedModule.getId());
-                    graph.addEdge(new DirectedSparseEdge(v, importedVertex));
-                } catch (Exception e) {
-                    String msg = "Exception while added dependency from " + module.getId() + " to " + importedModule.getId();
-                    throw new SmiException(msg, e);
-                }
-            }
-        }
-        return graph;
     }
 
     public SmiSymbolMap<SmiType> getTypes() {
