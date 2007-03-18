@@ -16,6 +16,7 @@
 package org.jsmiparser.parser;
 
 import org.jsmiparser.AbstractMibTestCase;
+import org.jsmiparser.util.token.HexStringToken;
 import org.jsmiparser.phase.file.FileParserOptions;
 import org.jsmiparser.smi.SmiConstants;
 import org.jsmiparser.smi.SmiIndex;
@@ -33,12 +34,14 @@ import org.jsmiparser.smi.SmiTextualConvention;
 import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.SmiVarBindField;
 import org.jsmiparser.smi.SmiVariable;
+import org.jsmiparser.smi.SmiRange;
 
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.List;
+import java.math.BigInteger;
 
 public class SmiDefaultParserTest extends AbstractMibTestCase {
 
@@ -83,7 +86,7 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         checkObjectTypeAccessAll(mib);
     }
 
-    public void testCycle() {
+    public void testNoCycleInStandards() {
         SmiModule rfc1155Smi = getMib().findModule("RFC1155-SMI");
         assertNotNull(rfc1155Smi);
         assertEquals(0, rfc1155Smi.getImports().size());
@@ -121,6 +124,20 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         assertNotNull(mioxPeerX25CallParamId.getDefaultValue());
         assertNotNull(mioxPeerX25CallParamId.getDefaultValue().getOidNode());
         assertSame(zeroDotZero.getNode(), mioxPeerX25CallParamId.getDefaultValue().getOidNode());
+    }
+
+    public void testIntegerHexStringRange() {
+        SmiMib mib = getMib();
+        SmiTextualConvention refreshIntervalTC = mib.getTextualConventions().find("RefreshInterval");
+        assertNotNull(refreshIntervalTC);
+
+        assertEquals(1, refreshIntervalTC.getRangeConstraints().size());
+        SmiRange range = refreshIntervalTC.getRangeConstraints().get(0);
+        assertEquals(new BigInteger("0"), range.getMinValue());
+
+        assertNotNull(range.getEndToken());
+        assertTrue(range.getEndToken() instanceof HexStringToken);
+        assertEquals(new BigInteger("7FFFFFFF", 16), range.getMaxValue());
     }
 
     // NetworkAddress is a very special type in SMIv1, which is a CHOICE with only one choice: IpAddress

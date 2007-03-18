@@ -20,21 +20,24 @@ import org.jsmiparser.util.location.Location;
 
 import java.math.BigInteger;
 
-/**
- * TODO see BinaryStringToken
- */
 public class HexStringToken extends StringToken {
 
+    private final char m_radixChar;
+
     public HexStringToken(Location location, String value) {
-        super(location, value);
+        super(location, value.substring(1, value.length() - 2));
+        m_radixChar = value.charAt(value.length() - 1);
     }
 
     public BigInteger getIntegerValue() {
-        return null; // TODO
+        return new BigInteger(getValue(), 16);
     }
 
     public String toString() {
-        return super.toString(); // TODO
+        return "'" + getValue() + "'" + m_radixChar;
     }
 
+    public char getRadixChar() {
+        return m_radixChar;
+    }
 }

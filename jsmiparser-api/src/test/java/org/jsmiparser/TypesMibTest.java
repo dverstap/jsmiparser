@@ -404,7 +404,8 @@ public class TypesMibTest extends AbstractMibTestCase {
         List<SmiRange> constraints = type.getSizeConstraints();
         assertEquals(1, constraints.size());
         assertTrue(constraints.get(0).isSingle());
-        assertEquals(11, constraints.get(0).getSingleValue().intValue());
+        assertEquals(11, constraints.get(0).getMinValue().intValue());
+        assertEquals(11, constraints.get(0).getMaxValue().intValue());
     }
 
     public void testMyCounter() {

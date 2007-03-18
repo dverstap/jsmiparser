@@ -20,21 +20,25 @@ import org.jsmiparser.util.location.Location;
 
 import java.math.BigInteger;
 
-/**
- * TODO actual string parsing
- */
 public class BinaryStringToken extends StringToken {
 
-    public BinaryStringToken(Location location, String value) {
-        super(location, value);
-    }
+    private char m_radixChar;
 
-    public String toString() {
-        return super.toString(); // TODO
+    public BinaryStringToken(Location location, String value) {
+        super(location, value.substring(1, value.length() - 2));
+        m_radixChar = value.charAt(value.length() - 1);
     }
 
     public BigInteger getIntegerValue() {
-        return null; // TODO
+        return new BigInteger(getValue(), 2);
     }
-    
+
+    public String toString() {
+        return "'" + getValue() + "'" + m_radixChar;
+    }
+
+    public char getRadixChar() {
+        return m_radixChar;
+    }
+
 }

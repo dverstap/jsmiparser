@@ -263,6 +263,7 @@ HDIG		:	(options {warnWhenFollowAmbig = false;} :('0'..'9') )
 //B_STRING 	: 	SINGLE_QUOTE ({LA(3)!='B'}? BDIG)+  BDIG SINGLE_QUOTE 'B';
 //H_STRING 	: 	SINGLE_QUOTE ({LA(3)!='H'}? HDIG)+  HDIG SINGLE_QUOTE 'H';
 
+// TODO remove: ?
 B_OR_H_STRING
 	:	(options {warnWhenFollowAmbig = false;} 
 		:(B_STRING)=>B_STRING {$setType(B_STRING);}

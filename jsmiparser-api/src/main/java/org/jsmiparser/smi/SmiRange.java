@@ -16,22 +16,18 @@
 
 package org.jsmiparser.smi;
 
-import org.jsmiparser.util.token.Token;
-import org.jsmiparser.util.token.BigIntegerToken;
 import org.jsmiparser.util.location.Location;
+import org.jsmiparser.util.token.BigIntegerToken;
+import org.jsmiparser.util.token.BinaryStringToken;
+import org.jsmiparser.util.token.HexStringToken;
+import org.jsmiparser.util.token.Token;
 
 import java.math.BigInteger;
 
-/**
- * TODO the whole range specification stuff is pretty bad.
- *
- */
 public class SmiRange {
 
     private Token m_beginToken;
     private Token m_endToken;
-
-    private Token m_singleToken;
 
     public SmiRange(Token beginToken, Token endToken) {
         m_beginToken = beginToken;
@@ -39,7 +35,8 @@ public class SmiRange {
     }
 
     public SmiRange(Token singleToken) {
-        m_singleToken = singleToken;
+        m_beginToken = singleToken;
+        m_endToken = singleToken;
     }
 
     public Token getBeginToken() {
@@ -50,38 +47,37 @@ public class SmiRange {
         return m_endToken;
     }
 
-    public Token getSingleToken() {
-        return m_singleToken;
-    }
-
     public boolean isSingle() {
-        return m_singleToken != null;
+        return m_beginToken == m_endToken;
     }
 
     public Location getLocation() {
-        if (isSingle()) {
-            return m_singleToken.getLocation();
-        } else {
-            return m_beginToken.getLocation();
-        }
+        return m_beginToken.getLocation();
     }
 
     public BigInteger getMinValue() {
-        return ((BigIntegerToken) m_beginToken).getValue();
+        return getValue(m_beginToken);
     }
 
     public BigInteger getMaxValue() {
-        return ((BigIntegerToken) m_endToken).getValue();
+        return getValue(m_endToken);
     }
 
-    public BigInteger getSingleValue() {
-        return ((BigIntegerToken) m_singleToken).getValue();
+    private static BigInteger getValue(Token token) {
+        if (token instanceof BigIntegerToken) {
+            return ((BigIntegerToken) token).getValue();
+        } else if (token instanceof HexStringToken) {
+            return ((HexStringToken) token).getIntegerValue();
+        } else if (token instanceof BinaryStringToken) {
+            return ((BinaryStringToken) token).getIntegerValue();
+        }
+        return null;
     }
 
 
     public String toString() {
-        if (m_singleToken != null) {
-            return m_singleToken.getObject().toString();
+        if (m_beginToken == m_endToken) {
+            return m_beginToken.getObject().toString();
         } else {
             StringBuilder result = new StringBuilder("(");
             result.append(m_beginToken.getObject());
