@@ -17,6 +17,7 @@ package org.jsmiparser.parser;
 
 import org.jsmiparser.AbstractMibTestCase;
 import org.jsmiparser.phase.file.FileParserOptions;
+import org.jsmiparser.smi.SmiConstants;
 import org.jsmiparser.smi.SmiIndex;
 import org.jsmiparser.smi.SmiMib;
 import org.jsmiparser.smi.SmiModule;
@@ -145,6 +146,7 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
             if (!(type instanceof SmiProtocolType) && type.getFields() == null) {
                 assertNotNull(type.getId(), type.getPrimitiveType());
             }
+            checkType(type);
         }
 
         for (SmiVariable variable : getMib().getVariables()) {
@@ -152,6 +154,19 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
             assertFalse(variable.getId(), variable.getType() instanceof SmiReferencedType);
             assertFalse(variable.getId(), variable.getType() instanceof SmiProtocolType);
             assertNotNull(variable.getId(), variable.getType().getPrimitiveType());
+            checkType(variable.getType());
+        }
+    }
+
+    private void checkType(SmiType type) {
+        if (type.getBaseType() != null) {
+            checkType(type.getBaseType());
+        } else if (type.getFields() == null && !(type instanceof SmiProtocolType)) {
+            assertTrue(type.getId(),
+                       type == SmiConstants.BITS_TYPE
+                       || type == SmiConstants.INTEGER_TYPE
+                       || type == SmiConstants.OBJECT_IDENTIFIER_TYPE
+                       || type == SmiConstants.OCTET_STRING_TYPE);
         }
     }
 

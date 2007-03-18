@@ -395,7 +395,6 @@ symbol_list returns [List<IdToken> result = m_mp.makeIdTokenList()]
 symbol returns [IdToken result = null]
 :
 	result=upper
-	| result=defined_integer_type_kw
 	| result=lower
 	| result=macroName
 ;
@@ -433,7 +432,6 @@ assignment returns [SmiSymbol s = null]
 	u:UPPER ASSIGN_OP s=type_assignment[m_mp.idt(u)]
 	| l:LOWER s=value_assignment[m_mp.idt(l)]
 	| mn=macroName "MACRO" ASSIGN_OP BEGIN_KW ( ~(END_KW) )* END_KW    { s = m_mp.createMacro(mn); }
-	| intToken=defined_integer_type_kw ASSIGN_OP s=leaf_type[intToken]
 	)
 	{
 	    m_mp.addSymbol(s);
@@ -452,16 +450,16 @@ leaf_type[IdToken idToken] returns [SmiType t = null]
 :
     ( L_BRACKET APPLICATION_KW n:NUMBER R_BRACKET IMPLICIT_KW )? // only used for ApplicationSyntax types
     (
-	t=integer_type[idToken]
+	t=integer_type[idToken, n]
 	| t=oid_type[idToken]
-	| t=octet_string_type[idToken] { if (n != null) { m_mp.setPrimitiveType(t, n); } } 
+	| t=octet_string_type[idToken, n]
 	| t=bits_type[idToken]
 	| t=choice_type[idToken]
 	| t=defined_type[idToken]
 	)
 ;
 
-integer_type[IdToken idToken] returns [SmiType t = null]
+integer_type[IdToken idToken, Token applicationTagToken] returns [SmiType t = null]
 {
     IntKeywordToken intToken;
     List<SmiNamedNumber> namedNumbers = null;
@@ -471,7 +469,7 @@ integer_type[IdToken idToken] returns [SmiType t = null]
 	intToken=integer_type_kw[idToken]
 	(namedNumbers=named_number_list | rangeConstraints=range_constraint)?
 	{
-	    t = m_mp.createIntegerType(idToken, intToken, namedNumbers, rangeConstraints);
+	    t = m_mp.createIntegerType(idToken, intToken, applicationTagToken, namedNumbers, rangeConstraints);
 	}
 ;
 
@@ -480,19 +478,8 @@ integer_type[IdToken idToken] returns [SmiType t = null]
 integer_type_kw[IdToken idToken] returns [IntKeywordToken t = null]
 :
 	i:INTEGER_KW	{ t = m_mp.intkt(i, SmiPrimitiveType.INTEGER, null); }
-	| t=defined_integer_type_kw
 ;
 
-defined_integer_type_kw returns [IntKeywordToken t = null]
-:
-	i32:"Integer32"	  { return m_mp.intkt(i32, SmiPrimitiveType.INTEGER_32, SmiVersion.V2); }
-	| c:"Counter"	  { return m_mp.intkt(c,   SmiPrimitiveType.COUNTER_32, SmiVersion.V1);   }
-	| c32:"Counter32" { return m_mp.intkt(c32, SmiPrimitiveType.COUNTER_32, SmiVersion.V2); }
-	| g:"Gauge"       { return m_mp.intkt(g,   SmiPrimitiveType.GAUGE_32, SmiVersion.V1);   }
-	| g32:"Gauge32"   { return m_mp.intkt(g32, SmiPrimitiveType.GAUGE_32, SmiVersion.V2); }
-	| c64:"Counter64" { return m_mp.intkt(c64, SmiPrimitiveType.COUNTER_64, SmiVersion.V2); }
-	| tt:"TimeTicks"  { return m_mp.intkt(tt,  SmiPrimitiveType.TIME_TICKS, null);  }
-;
 
 oid_type[IdToken idToken] returns [SmiType t = null]
 :
@@ -502,14 +489,14 @@ oid_type[IdToken idToken] returns [SmiType t = null]
 }
 ;
 
-octet_string_type[IdToken idToken] returns [SmiType type = null]
+octet_string_type[IdToken idToken, Token applicationTagToken] returns [SmiType type = null]
 {
     List<SmiRange> sizeConstraints = null;
 }
 :
 	OCTET_KW STRING_KW (sizeConstraints=size_constraint)?
 	{
-	    type = m_mp.createOctetStringType(idToken, sizeConstraints);
+	    type = m_mp.createOctetStringType(idToken, applicationTagToken, sizeConstraints);
 	}
 ;
 
@@ -525,7 +512,7 @@ bits_type[IdToken idToken] returns [SmiType type = null]
 	}
 ;
 
-// only used for ObjectSyntax, SimpleSyntax and ApplicationSyntax
+// only used for NetworkAddress, ObjectSyntax, SimpleSyntax and ApplicationSyntax
 choice_type[IdToken idToken] returns [SmiType t = null]
 :
     "CHOICE" L_BRACE ( ~(R_BRACE) )* R_BRACE

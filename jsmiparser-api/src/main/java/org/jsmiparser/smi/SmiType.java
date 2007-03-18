@@ -15,16 +15,26 @@
  */
 package org.jsmiparser.smi;
 
-import org.jsmiparser.util.token.IdToken;
 import org.jsmiparser.phase.xref.XRefProblemReporter;
+import org.jsmiparser.util.token.IdToken;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SmiType extends SmiSymbol {
 
+    public final static SmiPrimitiveType[] APPLICATION_TYPES = {
+            SmiPrimitiveType.IP_ADDRESS,
+            SmiPrimitiveType.COUNTER_32,
+            SmiPrimitiveType.GAUGE_32,
+            SmiPrimitiveType.UNSIGNED_32,
+            SmiPrimitiveType.TIME_TICKS,
+            SmiPrimitiveType.OPAQUE,
+            SmiPrimitiveType.COUNTER_64
+    };
+
     private SmiType m_baseType;
-    private SmiPrimitiveType m_primitiveType;
+    private final SmiPrimitiveType m_primitiveType;
     private List<SmiNamedNumber> m_enumValues;
     private List<SmiNamedNumber> m_bitFields;
     private List<SmiRange> m_rangeConstraints;
@@ -33,8 +43,23 @@ public class SmiType extends SmiSymbol {
     private IdToken m_elementTypeToken;
     private SmiType m_elementType;
 
+    public SmiType(IdToken idToken, SmiModule module, SmiPrimitiveType primitiveType) {
+        super(idToken, module);
+        m_primitiveType = primitiveType;
+    }
+
+    public SmiType(IdToken idToken, SmiModule module, int applicationTag) {
+        super(idToken, module);
+        if (applicationTag >= 0) {
+            m_primitiveType = APPLICATION_TYPES[applicationTag];
+        } else {
+            m_primitiveType = null;
+        }
+    }
+
     public SmiType(IdToken idToken, SmiModule module) {
         super(idToken, module);
+        m_primitiveType = null;
 
 /*
         if (idToken != null) {
@@ -62,7 +87,7 @@ public class SmiType extends SmiSymbol {
 
     /**
      * The base type from which this type is derived (by giving it named numbers, constraints, a name...).
-     * All types have a base type, except INTEGER, OCTET STRING, OBJECT IDENTIFIER and BITS. // TODO unit test this
+     * All types have a base type, except INTEGER, OCTET STRING, OBJECT IDENTIFIER and BITS.
      */
     public SmiType getBaseType() {
         return m_baseType;
@@ -79,16 +104,13 @@ public class SmiType extends SmiSymbol {
         if (m_bitFields != null) {
             return SmiPrimitiveType.BITS;
         }
-/*
-        if (m_baseType != null) {
-            if (m_primitiveType != null) {
-                if (m_primitiveType != m_baseType.getPrimitiveType()) {
-                    throw new IllegalStateException();
-                }
-            }
-            return m_baseType.getPrimitiveType();
+
+        // TODO fix this hack
+        // m_baseType != null && m_baseType == SmiConstants.INTEGER_TYPE
+        if ("Integer32".equals(getId()) && "SNMPv2-SMI".equals(getModule().getId())) {
+            return SmiPrimitiveType.INTEGER_32;
         }
-*/
+
         if (m_primitiveType == null && m_baseType != null) {
             return m_baseType.getPrimitiveType();
         }
@@ -96,13 +118,8 @@ public class SmiType extends SmiSymbol {
         return m_primitiveType;
     }
 
-
-    public void setPrimitiveType(SmiPrimitiveType primitiveType) {
-        m_primitiveType = primitiveType;
-    }
-
     public SmiVarBindField getVarBindField() {
-        return m_primitiveType.getVarBindField();
+        return getPrimitiveType().getVarBindField();
     }
 
     public List<SmiNamedNumber> getEnumValues() {
@@ -225,15 +242,21 @@ public class SmiType extends SmiSymbol {
     }
 
 
-    public SmiType resolveThis(XRefProblemReporter reporter) {
+    public SmiType resolveThis(XRefProblemReporter reporter, SmiType ignored) {
         if (m_baseType != null) {
-            m_baseType = m_baseType.resolveThis(reporter);
+            m_baseType = m_baseType.resolveThis(reporter, this);
         }
         return this;
     }
 
     public void resolveReferences(XRefProblemReporter reporter) {
-        resolveThis(reporter);
+        assert(getIdToken() != null);
+        assert(!(this instanceof SmiReferencedType));
+
+        if (m_baseType != null) {
+            m_baseType = m_baseType.resolveThis(reporter, this);
+        }
+
         if (m_elementTypeToken != null) {
             m_elementType = getModule().resolveReference(m_elementTypeToken, SmiType.class, reporter);
         }

@@ -78,4 +78,17 @@ public class SmiRange {
         return ((BigIntegerToken) m_singleToken).getValue();
     }
 
+
+    public String toString() {
+        if (m_singleToken != null) {
+            return m_singleToken.getObject().toString();
+        } else {
+            StringBuilder result = new StringBuilder("(");
+            result.append(m_beginToken.getObject());
+            result.append("..");
+            result.append(m_endToken);
+            result.append(")");
+            return result.toString();
+        }
+    }
 }

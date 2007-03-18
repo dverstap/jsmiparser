@@ -15,8 +15,8 @@
  */
 package org.jsmiparser.smi;
 
-import org.jsmiparser.util.token.IdToken;
 import org.jsmiparser.phase.xref.XRefProblemReporter;
+import org.jsmiparser.util.token.IdToken;
 
 import java.util.List;
 
@@ -56,22 +56,28 @@ public class SmiReferencedType extends SmiType {
     }
 
     @Override
-    public SmiType resolveThis(XRefProblemReporter reporter) {
+    public SmiType resolveThis(XRefProblemReporter reporter, SmiType parentType) {
         SmiType result = this;
 
         SmiType type = getModule().resolveReference(getIdToken(), SmiType.class, reporter);
         if (type != null) {
             // TODO check compatibility
             // TODO verify
-            if (getEnumValues() != null || getBitFields() != null || getRangeConstraints() != null || getSizeConstraints() != null)
-            {
-                result = new SmiType(null, getModule());
-                result.setEnumValues(getEnumValues());
-                result.setBitFields(getBitFields());
-                result.setRangeConstraints(getRangeConstraints());
-                result.setSizeConstraints(getSizeConstraints());
-                result.setBaseType(type);
-                result.setPrimitiveType(type.getPrimitiveType());
+            if (getEnumValues() != null || getBitFields() != null || getRangeConstraints() != null || getSizeConstraints() != null) {
+                if (parentType != null) {
+                    parentType.setEnumValues(getEnumValues()); // TODO don't know this yet?
+                    parentType.setBitFields(getBitFields());
+                    parentType.setRangeConstraints(getRangeConstraints());
+                    parentType.setSizeConstraints(getSizeConstraints());
+                    result = type;
+                } else {
+                    result = new SmiType(null, getModule());
+                    result.setEnumValues(getEnumValues()); // TODO don't know this yet?
+                    result.setBitFields(getBitFields());
+                    result.setRangeConstraints(getRangeConstraints());
+                    result.setSizeConstraints(getSizeConstraints());
+                    result.setBaseType(type);
+                }
             } else {
                 result = type;
             }

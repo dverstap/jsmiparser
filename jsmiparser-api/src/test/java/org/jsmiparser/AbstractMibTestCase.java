@@ -48,11 +48,16 @@ public abstract class AbstractMibTestCase extends TestCase {
 
     private SmiType m_integer32;
     private SmiType m_counter;
+    private SmiDefaultParser m_parser;
 
 
-    protected AbstractMibTestCase(SmiVersion version, String... resources) {
+    public AbstractMibTestCase(SmiVersion version, String... resources) {
         m_version = version;
         m_resources = resources;
+    }
+
+    protected SmiDefaultParser getParser() {
+        return m_parser;
     }
 
     protected SmiMib getMib() {
@@ -76,8 +81,8 @@ public abstract class AbstractMibTestCase extends TestCase {
     }
 
     protected SmiParser createParser() throws Exception {
-        SmiDefaultParser parser = new SmiDefaultParser();
-        FileParserOptions options = (FileParserOptions) parser.getFileParserPhase().getOptions();
+        m_parser = new SmiDefaultParser();
+        FileParserOptions options = (FileParserOptions) m_parser.getFileParserPhase().getOptions();
 
         URL mibsURL = getClass().getClassLoader().getResource("libsmi-0.4.5/mibs/ietf");
         File mibsDir = null;
@@ -106,7 +111,7 @@ public abstract class AbstractMibTestCase extends TestCase {
                 fail(e.getMessage());
             }
         }
-        return parser;
+        return m_parser;
     }
 
     public final String[] getResources() {

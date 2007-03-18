@@ -1,0 +1,5 @@
+SYNTAX-ERROR-MIB DEFINITIONS ::=
+
+my syntax error
+
+END

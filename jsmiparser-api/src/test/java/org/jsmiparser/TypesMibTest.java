@@ -292,8 +292,8 @@ public class TypesMibTest extends AbstractMibTestCase {
         SmiType myOctetStringType = getMib().getTypes().find("MyOctetString");
         assertNotNull(myOctetStringType);
 
-        assertSame(myOctetStringType, type.getBaseType().getBaseType());
-        assertSame(SmiConstants.OCTET_STRING_TYPE, type.getBaseType().getBaseType().getBaseType());
+        assertSame(myOctetStringType, type.getBaseType());
+        assertSame(SmiConstants.OCTET_STRING_TYPE, type.getBaseType().getBaseType());
         assertSame(SmiPrimitiveType.OCTET_STRING, type.getPrimitiveType());
 
         assertNull(type.getEnumValues());
@@ -301,8 +301,7 @@ public class TypesMibTest extends AbstractMibTestCase {
         assertNull(type.getFields());
         assertNull(type.getRangeConstraints());
 
-        // TODO not really good: the size constraint should be on the type itself
-        List<SmiRange> constraints = type.getBaseType().getSizeConstraints();
+        List<SmiRange> constraints = type.getSizeConstraints();
         assertNotNull(constraints);
         assertEquals(1, constraints.size());
         assertEquals(new BigInteger("3"), constraints.get(0).getMinValue());

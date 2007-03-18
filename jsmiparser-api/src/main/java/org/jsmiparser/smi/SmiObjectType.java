@@ -43,7 +43,7 @@ public class SmiObjectType extends SmiOidMacro {
     }
 
     public void resolveReferences(XRefProblemReporter reporter) {
-        m_type = m_type.resolveThis(reporter);
+        m_type = m_type.resolveThis(reporter, null);
 
         if (m_accessToken != null) {
             m_accessV1 = ObjectTypeAccessV1.find(m_accessToken.getId(), false);

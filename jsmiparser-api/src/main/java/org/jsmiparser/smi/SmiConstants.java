@@ -58,9 +58,7 @@ public class SmiConstants {
     };
 
     private static SmiType newType(String id, SmiPrimitiveType primitiveType) {
-        SmiType type = new SmiType(new IdToken(new Location("JSMIPARSER_HARDCODED_MIB"), id), JSMIPARSER_HARDCODED_MODULE);
-        type.setPrimitiveType(primitiveType);
-        return type;
+        return new SmiType(new IdToken(new Location("JSMIPARSER_HARDCODED_MIB"), id), JSMIPARSER_HARDCODED_MODULE, primitiveType);
     }
 
     private static Set<String> initSmiDefinitionModuleNames() {
