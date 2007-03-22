@@ -1,5 +1,8 @@
 JSMI-TYPES-TEST-MIB DEFINITIONS ::= BEGIN
 
+    IMPORTS
+        TimeTicks FROM SNMPv2-SMI;
+
 -- Part 1 basic types and constrained versions
 
 MyINTEGER ::= INTEGER
@@ -194,6 +197,21 @@ myCounterFromMinus100To100 OBJECT-TYPE
          STATUS      current
          DESCRIPTION "myCounterFromMinus100To100 Desc"
          ::= { 3456 }
+
+myUnsigned32  OBJECT-TYPE
+   SYNTAX      Unsigned32
+   UNITS       "bps"
+   MAX-ACCESS  read-create
+   STATUS      current
+   DESCRIPTION "An unsigned32 type"
+   ::= { 3456 }
+
+myTimeTicks  OBJECT-TYPE
+   SYNTAX      TimeTicks
+   MAX-ACCESS  read-create
+   STATUS      current
+   DESCRIPTION "A timeticks type"
+   ::= { 3456 }
 
 -- TODO Part 4 Object types with references to everything from part 2
 

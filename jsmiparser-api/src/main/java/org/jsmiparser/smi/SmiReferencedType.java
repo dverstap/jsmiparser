@@ -81,9 +81,9 @@ public class SmiReferencedType extends SmiType {
             } else {
                 result = type;
             }
-        } else {
+        } /*else {
             reporter.reportCannotFindSymbol(getIdToken());
-        }
+        }*/
         return result;
     }
 

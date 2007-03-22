@@ -482,4 +482,22 @@ public class TypesMibTest extends AbstractMibTestCase {
         assertEquals(100, type.getRangeConstraints().get(0).getMaxValue().intValue());
     }
 
+    public void testMyUnsigned32() {
+       SmiObjectType ot = getMib().getVariables().find("myUnsigned32");
+
+       assertNotNull(ot);
+       assertNotNull(ot.getType());
+
+       assertEquals(SmiPrimitiveType.UNSIGNED_32, ot.getType().getPrimitiveType());
+   }
+
+    public void testMyTimeTicks() {
+       SmiObjectType ot = getMib().getVariables().find("myTimeTicks");
+
+       assertNotNull(ot);
+       assertNotNull(ot.getType());
+
+       assertEquals(SmiPrimitiveType.TIME_TICKS, ot.getType().getPrimitiveType());
+   }
+
 }

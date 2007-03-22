@@ -27,9 +27,10 @@ public class SmiType extends SmiSymbol {
             SmiPrimitiveType.IP_ADDRESS,
             SmiPrimitiveType.COUNTER_32,
             SmiPrimitiveType.GAUGE_32,
-            SmiPrimitiveType.UNSIGNED_32,
+            // SmiPrimitiveType.UNSIGNED_32, has the same application tag as GAUGE_32
             SmiPrimitiveType.TIME_TICKS,
             SmiPrimitiveType.OPAQUE,
+            null, // tag 5 is undefined
             SmiPrimitiveType.COUNTER_64
     };
 
@@ -51,7 +52,15 @@ public class SmiType extends SmiSymbol {
     public SmiType(IdToken idToken, SmiModule module, int applicationTag) {
         super(idToken, module);
         if (applicationTag >= 0) {
-            m_primitiveType = APPLICATION_TYPES[applicationTag];
+            if (applicationTag >= APPLICATION_TYPES.length) {
+                throw new IllegalArgumentException("Application tag " + applicationTag + " is invalid at: " + idToken);
+            }
+            if (APPLICATION_TYPES[applicationTag] == SmiPrimitiveType.GAUGE_32
+                    && "Unsigned32".equals(getId())) {
+                m_primitiveType = SmiPrimitiveType.UNSIGNED_32;
+            } else {
+                m_primitiveType = APPLICATION_TYPES[applicationTag];
+            }
         } else {
             m_primitiveType = null;
         }
@@ -250,8 +259,8 @@ public class SmiType extends SmiSymbol {
     }
 
     public void resolveReferences(XRefProblemReporter reporter) {
-        assert(getIdToken() != null);
-        assert(!(this instanceof SmiReferencedType));
+        assert (getIdToken() != null);
+        assert (!(this instanceof SmiReferencedType));
 
         if (m_baseType != null) {
             m_baseType = m_baseType.resolveThis(reporter, this);
