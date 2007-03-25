@@ -27,6 +27,7 @@
     <modules>
         <module>jsmiparser-util</module>
         <module>jsmiparser-api</module>
+        <module>jsmiparser-xml</module>
     </modules>
 
     <scm>
