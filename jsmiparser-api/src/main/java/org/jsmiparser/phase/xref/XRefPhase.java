@@ -24,6 +24,7 @@ import org.jsmiparser.smi.SmiModule;
 import org.jsmiparser.smi.SmiOidValue;
 import org.jsmiparser.smi.SmiSymbol;
 import org.jsmiparser.smi.SmiVariable;
+import org.jsmiparser.smi.SmiOidNode;
 
 import java.util.Collection;
 
@@ -75,7 +76,10 @@ public class XRefPhase implements Phase {
         }
         for (SmiModule module : modules) {
             for (SmiOidValue oidValue : module.getOidValues()) {
-                oidValue.getNode().determineFullOid();
+                SmiOidNode node = oidValue.getNode();
+                if (node != null) {
+                    node.determineFullOid();
+                }
             }
         }
     }

@@ -35,6 +35,7 @@ import org.springframework.util.StopWatch;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Set;
 
 public abstract class AbstractMibTestCase extends TestCase {
 
@@ -202,5 +203,9 @@ public abstract class AbstractMibTestCase extends TestCase {
         for (SmiObjectType objectType : mib.getObjectTypes()) {
             assertNotNull(objectType.getId(), objectType.getAccessAll());
         }
+    }
+
+    protected void add(Set<String> paths, String dir, String name) {
+        paths.add(dir + "/" + name);
     }
 }

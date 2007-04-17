@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jsmiparser</groupId>
     <artifactId>jsmiparser-xml</artifactId>
@@ -14,16 +15,137 @@
 
     <dependencies>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.2</version>
-            <scope>test</scope>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.0.3</version>
+        </dependency>
+        <!--
+                <dependency>
+                    <groupId>xmlbeans</groupId>
+                    <artifactId>xbean</artifactId>
+                    <version>[2.2.0]</version>
+                </dependency>
+                <dependency>
+                    <groupId>stax</groupId>
+                    <artifactId>stax</artifactId>
+                    <version>[1.2.0]</version>
+                </dependency>
+                <dependency>
+                    <groupId>stax</groupId>
+                    <artifactId>stax-api</artifactId>
+                    <version>[1.0.1]</version>
+                </dependency>
+        -->
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.13</version>
         </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!--
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>xmlbeans-maven-plugin</artifactId>
+                    <version>2.0</version>
+                    <executions>
+                        <execution>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>xmlbeans</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>xmlbeans</groupId>
+                            <artifactId>xbean</artifactId>
+                            <version>[2.2.0]</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>stax</groupId>
+                            <artifactId>stax</artifactId>
+                            <version>[1.2.0]</version>
+                            <exclusions>
+                                <exclusion>
+                                    <groupId>xmlbeans</groupId>
+                                    <artifactId>xmlbeans-jsr173-api</artifactId>
+                                </exclusion>
+                            </exclusions>
+                        </dependency>
+                        <dependency>
+                            <groupId>stax</groupId>
+                            <artifactId>stax-api</artifactId>
+                            <version>[1.0.1]</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+            </plugins>
+        </build>
+    -->
+
+
+    <!--
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>1.0.2</version>
+                    <executions>
+                        <execution>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>java</goal>
+                            </goals>
+                            <configuration>
+                                <mainClass>org.apache.xmlbeans.impl.tool.SchemaCompiler</mainClass>
+                                <arguments>
+                                    <argument>-srconly</argument>
+                                    <argument>-src</argument>
+                                    <argument>target/generated-sources</argument>
+                                    <argument>-d</argument>
+                                    <argument>target/generated-sources</argument>
+                                    <argument>-javasource</argument>
+                                    <argument>1.5</argument>
+                                    <argument>src/main/xsd</argument>
+                                </arguments>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </build>
+    -->
 
 </project>

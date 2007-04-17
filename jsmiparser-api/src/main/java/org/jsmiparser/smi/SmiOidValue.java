@@ -56,7 +56,10 @@ public class SmiOidValue extends SmiValue {
     public SmiOidNode resolveOid(XRefProblemReporter reporter) {
         if (m_node == null) {
             m_node = m_lastOidComponent.resolveNode(getModule(), reporter);
-            m_node.getValues().add(this);
+            if (m_node != null) {
+                m_node.getValues().add(this);
+            }
+            // assumption is that another error has already been reported for this
         }
         return m_node;
     }

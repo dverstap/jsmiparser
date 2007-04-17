@@ -133,7 +133,8 @@ public class OidComponent {
                     node = new SmiOidNode(parent, m_valueToken.getValue());
                 }
             } else {
-                throw new IllegalStateException(m_valueToken.toString());
+                //throw new IllegalStateException(m_valueToken.toString());
+                return null;
             }
         }
         return node;
