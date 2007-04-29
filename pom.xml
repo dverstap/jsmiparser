@@ -31,25 +31,25 @@
     </modules>
 
     <scm>
-        <connection>scm:svn:http://svn.berlios.de/svnroot/repos/jsmiparser/trunk</connection>
-        <developerConnection>scm:svn:https://svn.berlios.de/svnroot/repos/jsmiparser/trunk</developerConnection>
-        <url>http://svn.berlios.de/viewcvs/jsmiparser/trunk</url>
+        <connection>scm:svn:http://jsmiparser.svn.sf.net/svnroot/jsmiparser/trunk</connection>
+        <developerConnection>scm:svn:https://jsmiparser.svn.sf.net/svnroot/jsmiparser/trunk</developerConnection>
+        <url>http://jsmiparser.svn.sourceforge.net/viewvc/jsmiparser/</url>
     </scm>
 
     <issueManagement>
-        <url>http://developer.berlios.de/bugs/?group_id=4221</url>
+        <url>http://sourceforge.net/tracker/?group_id=143307</url>
     </issueManagement>
 
     <distributionManagement>
         <site>
-            <id>shell.berlios</id>
-            <url>scp://shell.berlios.de:/home/groups/jsmiparser/htdocs/</url>
+            <id>shell.sf</id>
+            <url>scp://shell.sf.net:/home/groups/j/js/jsmiparser/htdocs</url>
             <!-- note the trailing slash is significant!!! -->
         </site>
         <repository>
-            <id>jsmiparser.maven.repo</id>
+            <id>jsmiparser.maven.repo.sf</id>
             <name>JSMIParser Maven Repository</name>
-            <url>scp://shell.berlios.de:/home/groups/jsmiparser/htdocs/maven2/</url>
+            <url>scp://shell.sf.net:/home/groups/j/js/jsmiparser/htdocs/maven2/</url>
         </repository>
     </distributionManagement>
 

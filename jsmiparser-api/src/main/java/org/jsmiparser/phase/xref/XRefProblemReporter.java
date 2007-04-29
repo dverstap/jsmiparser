@@ -45,7 +45,7 @@ public interface XRefProblemReporter {
     @ProblemMethod(message = "Cannot find enum constant %s")
     void reportCannotFindEnumConstant(IdToken idToken);
 
-    @ProblemMethod(message = "Invalid default value %s")    
+    @ProblemMethod(message = "Invalid default value %s", severity = ProblemSeverity.WARNING)    
     void reportInvalidDefaultValue(IdToken idToken);
 
     @ProblemMethod(message = "An object identifier default value must be expressed as a single ASN.1 identifier, and not as a collection of sub-identifiers: %s", ref="RFC1902, 7.9")

@@ -518,7 +518,7 @@ choice_type[IdToken idToken] returns [SmiType t = null]
 :
     "CHOICE" L_BRACE ( ~(R_BRACE) )* R_BRACE
     {
-        return m_mp.createProtocolType(idToken);
+        return m_mp.createChoiceType(idToken);
     }
 ;
 

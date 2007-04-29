@@ -290,13 +290,8 @@ public class ModuleParser {
     }
 
 
-    public SmiType createProtocolType(IdToken idToken) {
-        if (idToken.getId().equals("NetworkAddress")) {
-            SmiType result = new SmiType(idToken, m_module);
-            result.setBaseType(new SmiReferencedType(new IdToken(idToken.getLocation(), "IpAddress"), m_module));
-            return result;
-        }
-        return new SmiProtocolType(idToken, m_module);
+    public SmiType createChoiceType(IdToken idToken) {
+        return SmiProtocolType.createChoiceType(idToken, m_module);
     }
 
     public void addField(SmiType sequenceType, Token col, SmiType fieldType) {
