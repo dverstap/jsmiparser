@@ -21,6 +21,7 @@ public class RFC_1215SymbolDefiner extends AbstractSymbolDefiner {
         super("RFC-1215");
     }
 
+    @Override
     public void defineSymbols() {
         addTrapTypeMacro();
     }

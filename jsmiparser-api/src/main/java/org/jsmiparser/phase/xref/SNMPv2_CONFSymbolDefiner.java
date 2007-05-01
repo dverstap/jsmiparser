@@ -15,36 +15,20 @@
  */
 package org.jsmiparser.phase.xref;
 
-public abstract class AbstractSMIv1SymbolDefiner extends AbstractSymbolDefiner {
-    protected AbstractSMIv1SymbolDefiner(String moduleId) {
-        super(moduleId);
+public class SNMPv2_CONFSymbolDefiner extends AbstractSymbolDefiner {
+
+    protected SNMPv2_CONFSymbolDefiner() {
+        super("SNMPv2-CONF");
     }
 
     @Override
-    public void defineSymbols() {
+    protected void defineSymbols() {
         super.defineSymbols();
 
-        addInternetOid();
-        addDirectoryOid();
-        addMgmtOid();
-        addExperimentalOid();
-        addPrivateOid();
-        addEnterprisesOid();
-
-        addObjectTypeMacro();
-
-        addObjectNameType();
-
-        addObjectSyntaxType();
-        addSimpleSyntaxType();
-        addApplicationSyntaxType();
-
-        addNetworkAddressType();
-
-        addIpAddressType();
-        addCounterType();
-        addGaugeType();
-        addTimeTicksType();
-        addOpaqueType();
+        addMacro("OBJECT-GROUP");
+        addMacro("NOTIFICATION-GROUP");
+        addMacro("MODULE-COMPLIANCE");
+        addMacro("AGENT-CAPABILITIES");
     }
+
 }

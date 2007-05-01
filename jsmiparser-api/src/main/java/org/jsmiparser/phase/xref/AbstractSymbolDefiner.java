@@ -23,10 +23,14 @@ import org.jsmiparser.smi.SmiProtocolType;
 import org.jsmiparser.smi.SmiSymbol;
 import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.SmiConstants;
+import org.jsmiparser.smi.SmiRange;
 import org.jsmiparser.util.location.Location;
 import org.jsmiparser.util.pair.StringIntPair;
 import org.jsmiparser.util.token.IdToken;
 import org.jsmiparser.util.token.IntegerToken;
+import org.jsmiparser.util.token.BigIntegerToken;
+
+import java.util.Collections;
 
 public abstract class AbstractSymbolDefiner implements SymbolDefiner {
 
@@ -62,11 +66,19 @@ public abstract class AbstractSymbolDefiner implements SymbolDefiner {
     }
 
     public void addItuOid() {
-        addOid("itu", new StringIntPair("itu", 0));
+        addOid("itu", new StringIntPair(0));
     }
 
     public void addIsoOid() {
-        addOid("iso", new StringIntPair("iso", 1));
+        addOid("iso", new StringIntPair(1));
+    }
+
+    public void addOrgOid() {
+        addOid("org", new StringIntPair("iso", 3));
+    }
+
+    public void addDodOid() {
+        addOid("dod", new StringIntPair("org", 1));
     }
 
     public void addInternetOid() {
@@ -80,6 +92,14 @@ public abstract class AbstractSymbolDefiner implements SymbolDefiner {
 
     public void addMgmtOid() {
         addOid("mgmt", new StringIntPair("internet"), new StringIntPair(2));
+    }
+
+    public void addMib2Oid() {
+        addOid("mib-2", new StringIntPair("mgmt"), new StringIntPair(1));
+    }
+
+    public void addTransmissionOid() {
+        addOid("transmission", new StringIntPair("mib-2"), new StringIntPair(10));
     }
 
     public void addExperimentalOid() {
@@ -108,7 +128,7 @@ public abstract class AbstractSymbolDefiner implements SymbolDefiner {
         }
     }
 
-    private boolean isMissing(String id) {
+    public boolean isMissing(String id) {
         for (SmiSymbol symbol : m_module.getSymbols()) {
             if (id.equals(symbol.getId())) {
                 return false;
@@ -173,9 +193,27 @@ public abstract class AbstractSymbolDefiner implements SymbolDefiner {
     }
 
     public void addObjectNameType() {
-        if (isMissing("ObjectName")) {
-            SmiType type = new SmiType(idt("ObjectName"), m_module);
+        addObjectIdentifierType("ObjectName");
+    }
+
+    public void addNotificationNameType() {
+        addObjectIdentifierType("NotificationName");
+    }
+
+    public void addObjectIdentifierType(String id) {
+        if (isMissing(id)) {
+            SmiType type = new SmiType(idt(id), m_module);
             type.setBaseType(SmiConstants.OBJECT_IDENTIFIER_TYPE);
+        }
+    }
+
+    public void addInteger32Type() {
+        if (isMissing("Integer32")) {
+            SmiType type = new SmiType(idt("Integer32"), m_module);
+            type.setBaseType(SmiConstants.INTEGER_TYPE);
+            SmiRange range = new SmiRange(new BigIntegerToken(-2147483648), new BigIntegerToken(2147483647));
+            type.setRangeConstraints(Collections.singletonList(range));
+            m_module.addSymbol(type);
         }
     }
 
@@ -187,8 +225,20 @@ public abstract class AbstractSymbolDefiner implements SymbolDefiner {
         addApplicationType("Counter", 1);
     }
 
+    public void addCounter32Type() {
+        addApplicationType("Counter32", 1);
+    }
+
     public void addGaugeType() {
         addApplicationType("Gauge", 2);
+    }
+
+    public void addGauge32Type() {
+        addApplicationType("Gauge32", 2);
+    }
+
+    public void addUnsigned32Type() {
+        addApplicationType("Unsigned32", 2);
     }
 
     public void addTimeTicksType() {
@@ -199,7 +249,11 @@ public abstract class AbstractSymbolDefiner implements SymbolDefiner {
         addApplicationType("Opaque", 4);
     }
 
-    private void addApplicationType(String id, int tag) {
+    public void addCounter64Type() {
+        addApplicationType("Counter64", 6);
+    }
+
+    public void addApplicationType(String id, int tag) {
         if (isMissing(id)) {
             SmiType type = new SmiType(idt(id), m_module, tag);
             m_module.addSymbol(type);

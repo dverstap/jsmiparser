@@ -21,6 +21,7 @@ public class RFC_1212SymbolDefiner extends AbstractSymbolDefiner {
         super("RFC-1212");
     }
 
+    @Override
     public void defineSymbols() {
         addObjectTypeMacro();
         addIndexSyntaxType();

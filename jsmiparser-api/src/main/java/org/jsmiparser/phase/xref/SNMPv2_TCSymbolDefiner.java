@@ -15,36 +15,26 @@
  */
 package org.jsmiparser.phase.xref;
 
-public abstract class AbstractSMIv1SymbolDefiner extends AbstractSymbolDefiner {
-    protected AbstractSMIv1SymbolDefiner(String moduleId) {
+/**
+ * This SymbolDefiner doesn't define the entire SNMPv2-TC module:
+ * only the TEXTUAL-CONVENTION macro.
+ */
+public class SNMPv2_TCSymbolDefiner extends AbstractSymbolDefiner {
+
+    public SNMPv2_TCSymbolDefiner(String moduleId) {
         super(moduleId);
     }
 
+
     @Override
-    public void defineSymbols() {
+    protected void defineSymbols() {
         super.defineSymbols();
 
-        addInternetOid();
-        addDirectoryOid();
-        addMgmtOid();
-        addExperimentalOid();
-        addPrivateOid();
-        addEnterprisesOid();
+        defineTextualConventionMacro();
 
-        addObjectTypeMacro();
+    }
 
-        addObjectNameType();
-
-        addObjectSyntaxType();
-        addSimpleSyntaxType();
-        addApplicationSyntaxType();
-
-        addNetworkAddressType();
-
-        addIpAddressType();
-        addCounterType();
-        addGaugeType();
-        addTimeTicksType();
-        addOpaqueType();
+    private void defineTextualConventionMacro() {
+        addMacro("TEXTUAL-CONVENTION");
     }
 }
