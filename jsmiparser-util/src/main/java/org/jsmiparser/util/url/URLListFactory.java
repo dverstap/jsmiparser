@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 Davy Verstappen.
+ * Copyright 2007 Davy Verstappen.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jsmiparser.phase;
+package org.jsmiparser.util.url;
 
-import org.jsmiparser.smi.SmiMib;
-import org.jsmiparser.exception.SmiException;
+import java.net.URL;
+import java.util.List;
 
-public interface Phase {
+/**
+ * Utility interface to create a List<URL> for input to the FileParserPhase of the jsmiparser.
+ */
+public interface URLListFactory {
 
-    SmiMib process(SmiMib mib) throws SmiException;
+    /**
+     * @return The URL List.
+     */
+    List<URL> create() throws Exception;
 
 }

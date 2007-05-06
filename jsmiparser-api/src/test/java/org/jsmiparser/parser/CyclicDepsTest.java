@@ -1,14 +1,3 @@
-package org.jsmiparser.parser;
-
-import org.jsmiparser.phase.file.FileParserOptions;
-import org.jsmiparser.exception.SmiException;
-
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.io.File;
-
-import junit.framework.TestCase;
-
 /*
 * Copyright 2007 Davy Verstappen.
 *
@@ -24,15 +13,23 @@ import junit.framework.TestCase;
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+package org.jsmiparser.parser;
+
+import junit.framework.TestCase;
+import org.jsmiparser.exception.SmiException;
+import org.jsmiparser.util.url.ClassPathURLListFactory;
+
+import java.net.URISyntaxException;
+
+
 public class CyclicDepsTest extends TestCase {
 
     public void testCyclicDeps() throws URISyntaxException {
-        URL mibURL = getClass().getClassLoader().getResource("cyclic_deps.txt");
-        File mibFile = new File(mibURL.toURI());
+        ClassPathURLListFactory urlListFactory = new ClassPathURLListFactory();
+        urlListFactory.add("cyclic_deps.txt");
 
         SmiDefaultParser parser = new SmiDefaultParser();
-        FileParserOptions options = (FileParserOptions) parser.getFileParserPhase().getOptions();
-        options.addFile(mibFile);
+        parser.getFileParserPhase().setInputUrls(urlListFactory.create());
 
         try {
             parser.parse();

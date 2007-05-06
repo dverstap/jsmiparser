@@ -18,8 +18,8 @@ package org.jsmiparser.phase.file;
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
 import org.apache.log4j.Logger;
-import org.jsmiparser.phase.Phase;
 import org.jsmiparser.exception.SmiException;
+import org.jsmiparser.phase.Phase;
 import org.jsmiparser.phase.file.antlr.SMILexer;
 import org.jsmiparser.phase.file.antlr.SMIParser;
 import org.jsmiparser.smi.SmiMib;
@@ -28,11 +28,10 @@ import org.jsmiparser.smi.SmiVersion;
 import org.jsmiparser.util.location.Location;
 
 import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.util.List;
 import java.util.Set;
 
 // TODO allow any URL's
@@ -42,7 +41,8 @@ public class FileParserPhase implements Phase {
     private static final Logger m_log = Logger.getLogger(FileParserPhase.class);
 
     private FileParserProblemReporter m_reporter;
-    private FileParserOptions m_options = new FileParserOptions();
+
+    private List<URL> m_inputUrls;
 
     public FileParserPhase(FileParserProblemReporter reporter) {
         m_reporter = reporter;
@@ -52,9 +52,17 @@ public class FileParserPhase implements Phase {
         return m_reporter;
     }
 
+    public List<URL> getInputUrls() {
+        return m_inputUrls;
+    }
+
+    public void setInputUrls(List<URL> inputUrls) {
+        m_inputUrls = inputUrls;
+    }
+
     public SmiMib process(SmiMib mib) throws SmiException {
-        for (String resourceLocation : m_options.getInputResourceSet()) {
-            parse(mib, resourceLocation);
+        for (URL url : getInputUrls()) {
+            parse(mib, url, determineResourceLocation(url));
         }
 
         if (m_log.isDebugEnabled()) {
@@ -64,24 +72,19 @@ public class FileParserPhase implements Phase {
         return mib;
     }
 
-    public void parse(SmiMib mib, String resourceLocation) {
+    private String determineResourceLocation(URL url) {
+        if ("file".equals(url.getProtocol())) {
+            return "file://" + url.getPath();
+        }
+        return url.toString();
+    }
+
+    public void parse(SmiMib mib, URL url, String resourceLocation) {
         InputStream is = null;
         try {
-            m_log.debug("Parsing :" + resourceLocation);
-            // ResourceLocation could be either a classpath location or a file location
-            // First try as a classpath location
-            InputStream resourceStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceLocation);
-            if (resourceStream == null) {
-                // Attempt to interpret as a File
-                File inputFile = null;
-                try {
-                    inputFile = new File(resourceLocation);
-                    resourceStream = new FileInputStream(inputFile);
-                } catch (FileNotFoundException e) {
-                    m_reporter.reportFileNotFound(inputFile);
-                }
-            }
-            is = new BufferedInputStream(resourceStream);
+            m_log.debug("Parsing :" + url);
+            is = url.openStream();
+            is = new BufferedInputStream(is);
             SMILexer lexer = new SMILexer(is);
 
             SMIParser parser = new SMIParser(lexer);
@@ -98,6 +101,9 @@ public class FileParserPhase implements Phase {
         } catch (RecognitionException e) {
             m_log.debug(e.getMessage(), e);
             m_reporter.reportParseError(new Location(resourceLocation, e.getLine(), e.getColumn()), e.getMessage());
+        } catch (IOException e) {
+            m_log.debug(e.getMessage(), e);
+            m_reporter.reportIoException(new Location(resourceLocation, 0, 0), e.getMessage());
         } finally {
             m_log.debug("Finished parsing :" + resourceLocation);
             if (is != null) {
@@ -129,8 +135,8 @@ public class FileParserPhase implements Phase {
         }
     }
 
-    public FileParserOptions getOptions() {
-        return m_options;
-    }
+//    public FileParserOptions getOptions() {
+//        return m_options;
+//    }
 
 }

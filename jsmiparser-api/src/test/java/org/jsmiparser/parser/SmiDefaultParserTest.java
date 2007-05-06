@@ -16,8 +16,6 @@
 package org.jsmiparser.parser;
 
 import org.jsmiparser.AbstractMibTestCase;
-import org.jsmiparser.util.token.HexStringToken;
-import org.jsmiparser.phase.file.FileParserOptions;
 import org.jsmiparser.smi.SmiConstants;
 import org.jsmiparser.smi.SmiIndex;
 import org.jsmiparser.smi.SmiMib;
@@ -26,6 +24,7 @@ import org.jsmiparser.smi.SmiNamedNumber;
 import org.jsmiparser.smi.SmiOidValue;
 import org.jsmiparser.smi.SmiPrimitiveType;
 import org.jsmiparser.smi.SmiProtocolType;
+import org.jsmiparser.smi.SmiRange;
 import org.jsmiparser.smi.SmiReferencedType;
 import org.jsmiparser.smi.SmiRow;
 import org.jsmiparser.smi.SmiSymbol;
@@ -34,14 +33,16 @@ import org.jsmiparser.smi.SmiTextualConvention;
 import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.SmiVarBindField;
 import org.jsmiparser.smi.SmiVariable;
-import org.jsmiparser.smi.SmiRange;
+import org.jsmiparser.util.token.HexStringToken;
+import org.jsmiparser.util.url.FileURLListFactory;
 
 import java.io.File;
+import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.math.BigInteger;
 
 public class SmiDefaultParserTest extends AbstractMibTestCase {
 
@@ -55,8 +56,8 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         File mibsDir = new File(mibsURL.toURI());
 
         SmiDefaultParser parser = new SmiDefaultParser();
-        FileParserOptions options = (FileParserOptions) parser.getFileParserPhase().getOptions();
-        initFileParserOptions(options, mibsDir, "iana", "ietf", "site", "tubs");
+        List<URL> inputUrls = initFileParserOptions(mibsDir, "iana", "ietf", "site", "tubs");
+        parser.getFileParserPhase().setInputUrls(inputUrls);
         return parser;
     }
 
@@ -180,10 +181,10 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
             checkType(type.getBaseType());
         } else if (type.getFields() == null && !(type instanceof SmiProtocolType)) {
             assertTrue(type.getId(),
-                       type == SmiConstants.BITS_TYPE
-                       || type == SmiConstants.INTEGER_TYPE
-                       || type == SmiConstants.OBJECT_IDENTIFIER_TYPE
-                       || type == SmiConstants.OCTET_STRING_TYPE);
+                    type == SmiConstants.BITS_TYPE
+                            || type == SmiConstants.INTEGER_TYPE
+                            || type == SmiConstants.OBJECT_IDENTIFIER_TYPE
+                            || type == SmiConstants.OCTET_STRING_TYPE);
         }
     }
 
@@ -357,13 +358,15 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
 
     }
 
-    private void initFileParserOptions(FileParserOptions options, File mibsDir, String... subDirNames) {
+    private List<URL> initFileParserOptions(File mibsDir, String... subDirNames) throws Exception {
+        List<URL> result = new ArrayList<URL>();
+
         for (String subDirName : subDirNames) {
             File dir = new File(mibsDir, subDirName);
             assertTrue(dir.toString(), dir.exists());
             assertTrue(dir.toString(), dir.isDirectory());
 
-            options.getUsedDirSet().add(dir);
+            FileURLListFactory urlListFactory = new FileURLListFactory(dir);
             File[] files = dir.listFiles();
             for (File file : files) {
                 if (file.isFile()
@@ -374,10 +377,12 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
                         && !file.getName().endsWith("~")
                         //&& !v1mibs.contains(file.getName())
                         && !file.getName().endsWith("-orig")) { // TODO parsing -orig should give more errors!
-                    options.addFile(file);
+                    urlListFactory.add(file.getName());
                 }
             }
+            result.addAll(urlListFactory.create());
         }
+        return result;
     }
 
 

@@ -30,5 +30,8 @@ public interface FileParserProblemReporter {
 
     @ProblemMethod(message = "File not found: %s")
     void reportFileNotFound(File file);
+
+    @ProblemMethod(message="IO error: %s")
+    void reportIoException(Location location, String message);
 }
 
