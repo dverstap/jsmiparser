@@ -18,4 +18,6 @@ package org.jsmiparser.util.problem;
 public interface ProblemReporterFactory {
 
     <T> T create(Class<T> cl);
+
+    ProblemEventHandler getProblemEventHandler();
 }

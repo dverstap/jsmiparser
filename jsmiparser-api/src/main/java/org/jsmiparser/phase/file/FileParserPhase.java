@@ -26,6 +26,9 @@ import org.jsmiparser.smi.SmiMib;
 import org.jsmiparser.smi.SmiModule;
 import org.jsmiparser.smi.SmiVersion;
 import org.jsmiparser.util.location.Location;
+import org.jsmiparser.util.problem.ProblemReporterFactory;
+import org.jsmiparser.util.problem.ProblemEventHandler;
+import org.jsmiparser.util.problem.DefaultProblemReporterFactory;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -46,6 +49,15 @@ public class FileParserPhase implements Phase {
 
     public FileParserPhase(FileParserProblemReporter reporter) {
         m_reporter = reporter;
+    }
+
+    public FileParserPhase(ProblemReporterFactory reporterFactory) {
+        m_reporter = reporterFactory.create(FileParserProblemReporter.class);
+    }
+
+    public FileParserPhase(ProblemEventHandler eventHandler) {
+        DefaultProblemReporterFactory reporterFactory = new DefaultProblemReporterFactory(eventHandler);
+        m_reporter = reporterFactory.create(FileParserProblemReporter.class);
     }
 
     public FileParserProblemReporter getFileParserProblemReporter() {

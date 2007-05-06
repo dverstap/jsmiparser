@@ -32,11 +32,22 @@ import org.jsmiparser.util.problem.ProblemReporterFactory;
 public class SmiDefaultParser implements SmiParser {
 
     protected boolean m_failOnError = false;
-    protected ProblemEventHandler m_problemEventHandler;
     protected ProblemReporterFactory m_problemReporterFactory;
     protected FileParserPhase m_fileParserPhase;
     protected XRefPhase m_xRefPhase;
     protected ErrorCheckPhase m_errorCheckPhase;
+
+    public SmiDefaultParser() {
+        this(new DefaultProblemEventHandler());
+    }
+
+    public SmiDefaultParser(ProblemEventHandler problemEventHandler) {
+        this(new DefaultProblemReporterFactory(problemEventHandler));
+    }
+
+    public SmiDefaultParser(ProblemReporterFactory problemReporterFactory) {
+        m_problemReporterFactory = problemReporterFactory;
+    }
 
     public SmiMib parse() throws SmiException {
         SmiMib mib = new SmiMib(new SmiJavaCodeNamingStrategy("org.jsmiparser.mib")); // TODO
@@ -46,7 +57,7 @@ public class SmiDefaultParser implements SmiParser {
             phase.process(mib);
         }
 
-        if (m_failOnError && m_problemEventHandler.isNotOk()) {
+        if (m_failOnError && getProblemReporterFactory().getProblemEventHandler().isNotOk()) {
             throw new SmiException();
         }
         return mib;
@@ -65,20 +76,10 @@ public class SmiDefaultParser implements SmiParser {
     }
 
     public ProblemEventHandler getProblemEventHandler() {
-        if (m_problemEventHandler == null) {
-            m_problemEventHandler = new DefaultProblemEventHandler();
-        }
-        return m_problemEventHandler;
+        return m_problemReporterFactory.getProblemEventHandler();
     }
-
-    public void setProblemEventHandler(ProblemEventHandler problemEventHandler) {
-        m_problemEventHandler = problemEventHandler;
-    }
-
+    
     public ProblemReporterFactory getProblemReporterFactory() {
-        if (m_problemReporterFactory == null) {
-            m_problemReporterFactory = new DefaultProblemReporterFactory(getProblemEventHandler());
-        }
         return m_problemReporterFactory;
     }
 

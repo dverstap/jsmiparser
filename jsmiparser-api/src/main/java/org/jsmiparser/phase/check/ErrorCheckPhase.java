@@ -1,9 +1,3 @@
-package org.jsmiparser.phase.check;
-
-import org.jsmiparser.phase.Phase;
-import org.jsmiparser.exception.SmiException;
-import org.jsmiparser.smi.SmiMib;
-
 /*
 * Copyright 2006 Davy Verstappen.
 *
@@ -19,6 +13,11 @@ import org.jsmiparser.smi.SmiMib;
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+package org.jsmiparser.phase.check;
+
+import org.jsmiparser.phase.Phase;
+import org.jsmiparser.exception.SmiException;
+import org.jsmiparser.smi.SmiMib;
 
 /**
  * This phase will be responsible for checking that the contents of each symbol is consistent

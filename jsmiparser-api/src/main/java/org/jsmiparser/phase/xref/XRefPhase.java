@@ -21,15 +21,18 @@ import org.jsmiparser.phase.Phase;
 import org.jsmiparser.smi.SmiDefaultValue;
 import org.jsmiparser.smi.SmiMib;
 import org.jsmiparser.smi.SmiModule;
+import org.jsmiparser.smi.SmiOidNode;
 import org.jsmiparser.smi.SmiOidValue;
 import org.jsmiparser.smi.SmiSymbol;
 import org.jsmiparser.smi.SmiVariable;
-import org.jsmiparser.smi.SmiOidNode;
+import org.jsmiparser.util.problem.DefaultProblemReporterFactory;
+import org.jsmiparser.util.problem.ProblemEventHandler;
+import org.jsmiparser.util.problem.ProblemReporterFactory;
 import org.jsmiparser.util.token.IdToken;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class XRefPhase implements Phase {
 
@@ -40,6 +43,15 @@ public class XRefPhase implements Phase {
 
     public XRefPhase(XRefProblemReporter reporter) {
         m_reporter = reporter;
+    }
+
+    public XRefPhase(ProblemReporterFactory reporterFactory) {
+        m_reporter = reporterFactory.create(XRefProblemReporter.class);
+    }
+
+    public XRefPhase(ProblemEventHandler eventHandler) {
+        DefaultProblemReporterFactory reporterFactory = new DefaultProblemReporterFactory(eventHandler);
+        m_reporter = reporterFactory.create(XRefProblemReporter.class);
     }
 
     public Object getOptions() {
