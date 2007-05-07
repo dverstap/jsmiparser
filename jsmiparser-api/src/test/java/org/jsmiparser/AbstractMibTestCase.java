@@ -16,25 +16,25 @@
 package org.jsmiparser;
 
 import junit.framework.TestCase;
+import org.apache.log4j.Logger;
 import org.jsmiparser.parser.SmiDefaultParser;
 import org.jsmiparser.parser.SmiParser;
-import org.jsmiparser.phase.file.FileParserOptions;
 import org.jsmiparser.smi.SmiConstants;
 import org.jsmiparser.smi.SmiMib;
 import org.jsmiparser.smi.SmiModule;
 import org.jsmiparser.smi.SmiObjectType;
+import org.jsmiparser.smi.SmiOidNode;
 import org.jsmiparser.smi.SmiOidValue;
 import org.jsmiparser.smi.SmiPrimitiveType;
 import org.jsmiparser.smi.SmiSymbol;
 import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.SmiVersion;
-import org.jsmiparser.smi.SmiOidNode;
-import org.apache.log4j.Logger;
+import org.jsmiparser.util.url.AbstractURLListFactory;
+import org.jsmiparser.util.url.ClassPathURLListFactory;
 import org.springframework.util.StopWatch;
 
-import java.io.File;
-import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
 import java.util.Set;
 
 public abstract class AbstractMibTestCase extends TestCase {
@@ -71,7 +71,7 @@ public abstract class AbstractMibTestCase extends TestCase {
                 SmiMib mib = parser.parse();
                 stopWatch.stop();
                 m_log.info("Parsing time: " + stopWatch.getTotalTimeSeconds() + " s");
-                
+
                 m_mib.set(mib);
                 m_testClass.set(getClass());
             } catch (Exception e) {
@@ -82,36 +82,25 @@ public abstract class AbstractMibTestCase extends TestCase {
     }
 
     protected SmiParser createParser() throws Exception {
-        m_parser = new SmiDefaultParser();
-        FileParserOptions options = (FileParserOptions) m_parser.getFileParserPhase().getOptions();
-
-        URL mibsURL = getClass().getClassLoader().getResource("libsmi-0.4.5/mibs/ietf");
-        File mibsDir = null;
-        try {
-            mibsDir = new File(mibsURL.toURI());
-        } catch (URISyntaxException e) {
-            fail(e.getMessage());
-        }
+        ClassPathURLListFactory urlListFactory = new ClassPathURLListFactory("libsmi-0.4.5/mibs/ietf/");
 
         if (m_version == null || m_version == SmiVersion.V1) {
-            options.addFile(new File(mibsDir, "RFC1155-SMI"));
+            urlListFactory.add("RFC1155-SMI");
         }
         if (m_version == null || m_version == SmiVersion.V2) {
-            options.addFile(new File(mibsDir, "SNMPv2-SMI"));
-            options.addFile(new File(mibsDir, "SNMPv2-TC"));
-            options.addFile(new File(mibsDir, "SNMPv2-CONF"));
-            options.addFile(new File(mibsDir, "SNMPv2-MIB"));
+            urlListFactory.add("SNMPv2-SMI");
+            urlListFactory.add("SNMPv2-TC");
+            urlListFactory.add("SNMPv2-CONF");
+            urlListFactory.add("SNMPv2-MIB");
         }
 
+        List<URL> urls = urlListFactory.create();
         for (String resource : getResources()) {
-            URL mibURL = getClass().getClassLoader().getResource(resource);
-            try {
-                File mibFile = new File(mibURL.toURI());
-                options.addFile(mibFile);
-            } catch (URISyntaxException e) {
-                fail(e.getMessage());
-            }
+            urls.add(getClass().getClassLoader().getResource(resource));
         }
+
+        m_parser = new SmiDefaultParser();
+        m_parser.getFileParserPhase().setInputUrls(urls);
         return m_parser;
     }
 

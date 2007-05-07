@@ -32,6 +32,14 @@ public class DefaultProblemReporterFactory implements ProblemReporterFactory {
         m_problemEventHandler = ph;
     }
 
+    public ClassLoader getClassLoader() {
+        return m_classLoader;
+    }
+
+    public ProblemEventHandler getProblemEventHandler() {
+        return m_problemEventHandler;
+    }
+
     @SuppressWarnings("unchecked")
     public <T> T create(Class<T> cl) {
         Class[] classArray = {cl};

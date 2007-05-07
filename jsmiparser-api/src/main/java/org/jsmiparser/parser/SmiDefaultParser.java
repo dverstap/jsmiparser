@@ -32,11 +32,22 @@ import org.jsmiparser.util.problem.ProblemReporterFactory;
 public class SmiDefaultParser implements SmiParser {
 
     protected boolean m_failOnError = false;
-    protected ProblemEventHandler m_problemEventHandler;
     protected ProblemReporterFactory m_problemReporterFactory;
-    protected Phase m_fileParserPhase;
-    protected Phase m_xRefPhase;
-    protected Phase m_errorCheckPhase;
+    protected FileParserPhase m_fileParserPhase;
+    protected XRefPhase m_xRefPhase;
+    protected ErrorCheckPhase m_errorCheckPhase;
+
+    public SmiDefaultParser() {
+        this(new DefaultProblemEventHandler());
+    }
+
+    public SmiDefaultParser(ProblemEventHandler problemEventHandler) {
+        this(new DefaultProblemReporterFactory(problemEventHandler));
+    }
+
+    public SmiDefaultParser(ProblemReporterFactory problemReporterFactory) {
+        m_problemReporterFactory = problemReporterFactory;
+    }
 
     public SmiMib parse() throws SmiException {
         SmiMib mib = new SmiMib(new SmiJavaCodeNamingStrategy("org.jsmiparser.mib")); // TODO
@@ -46,39 +57,29 @@ public class SmiDefaultParser implements SmiParser {
             phase.process(mib);
         }
 
-        if (m_failOnError && m_problemEventHandler.isNotOk()) {
+        if (m_failOnError && getProblemReporterFactory().getProblemEventHandler().isNotOk()) {
             throw new SmiException();
         }
         return mib;
     }
 
-    protected Phase createFileParserPhase() {
+    protected FileParserPhase createFileParserPhase() {
         return new FileParserPhase(getProblemReporterFactory().create(FileParserProblemReporter.class));
     }
 
-    protected Phase createXRefPhase() {
+    protected XRefPhase createXRefPhase() {
         return new XRefPhase(getProblemReporterFactory().create(XRefProblemReporter.class));
     }
 
-    private Phase createErrorCheckPhase() {
+    private ErrorCheckPhase createErrorCheckPhase() {
         return new ErrorCheckPhase();
     }
 
     public ProblemEventHandler getProblemEventHandler() {
-        if (m_problemEventHandler == null) {
-            m_problemEventHandler = new DefaultProblemEventHandler();
-        }
-        return m_problemEventHandler;
+        return m_problemReporterFactory.getProblemEventHandler();
     }
-
-    public void setProblemEventHandler(ProblemEventHandler problemEventHandler) {
-        m_problemEventHandler = problemEventHandler;
-    }
-
+    
     public ProblemReporterFactory getProblemReporterFactory() {
-        if (m_problemReporterFactory == null) {
-            m_problemReporterFactory = new DefaultProblemReporterFactory(getProblemEventHandler());
-        }
         return m_problemReporterFactory;
     }
 
@@ -86,36 +87,36 @@ public class SmiDefaultParser implements SmiParser {
         m_problemReporterFactory = problemReporterFactory;
     }
 
-    public Phase getFileParserPhase() {
+    public FileParserPhase getFileParserPhase() {
         if (m_fileParserPhase == null) {
             m_fileParserPhase = createFileParserPhase();
         }
         return m_fileParserPhase;
     }
 
-    public void setFileParserPhase(Phase fileParserPhase) {
+    public void setFileParserPhase(FileParserPhase fileParserPhase) {
         m_fileParserPhase = fileParserPhase;
     }
 
-    public Phase getXRefPhase() {
+    public XRefPhase getXRefPhase() {
         if (m_xRefPhase == null) {
             m_xRefPhase = createXRefPhase();
         }
         return m_xRefPhase;
     }
 
-    public void setXRefPhase(Phase xrefPhase) {
+    public void setXRefPhase(XRefPhase xrefPhase) {
         m_xRefPhase = xrefPhase;
     }
 
-    public Phase getErrorCheckPhase() {
+    public ErrorCheckPhase getErrorCheckPhase() {
         if (m_errorCheckPhase == null) {
             m_errorCheckPhase = createErrorCheckPhase();
         }
         return m_errorCheckPhase;
     }
 
-    public void setErrorCheckPhase(Phase errorCheckPhase) {
+    public void setErrorCheckPhase(ErrorCheckPhase errorCheckPhase) {
         m_errorCheckPhase = errorCheckPhase;
     }
 

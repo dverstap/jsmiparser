@@ -308,10 +308,11 @@ public class SmiModule {
      * @return The symbol that was found, or null.
      */
     public SmiSymbol resolveReference(IdToken idToken, XRefProblemReporter reporter) {
-        if (!idToken.getLocation().getSource().equals(getIdToken().getLocation().getSource())) {
-            // note this check is not entirely fool-proof in case multiple modules are located in one file
-            throw new IllegalArgumentException("Resolving references is only allowed from inside the same module");
-        }
+// doesn't work anymore with hardcoded missing symbols
+//        if (!idToken.getLocation().getSource().equals(getIdToken().getLocation().getSource())) {
+//            // note this check is not entirely fool-proof in case multiple modules are located in one file
+//            throw new IllegalArgumentException("Resolving references is only allowed from inside the same module");
+//        }
 
         SmiSymbol result = findSymbol(idToken.getId());
         if (result == null) {

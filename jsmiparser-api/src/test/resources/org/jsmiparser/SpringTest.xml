@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+    <bean id="urlListFactory"
+          class="org.jsmiparser.util.url.ClassPathURLListFactory">
+        <property name="rootPath" value="libsmi-0.4.5/mibs/"/>
+        <property name="children">
+            <list>
+                <value>iana/IANAifType-MIB</value>
+                <value>ietf/IF-MIB</value>
+                <value>ietf/SNMPv2-SMI</value>
+                <value>ietf/SNMPv2-TC</value>
+                <value>ietf/SNMPv2-CONF</value>
+                <value>ietf/SNMPv2-MIB</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="problemEventHandler"
+          class="org.jsmiparser.util.problem.DefaultProblemEventHandler"/>
+
+    <bean id="parser"
+          class="org.jsmiparser.parser.SmiDefaultParser">
+        <constructor-arg ref="problemEventHandler"/>
+        <property name="fileParserPhase">
+            <bean class="org.jsmiparser.phase.file.FileParserPhase">
+                <constructor-arg ref="problemEventHandler"/>
+                <property name="inputUrls">
+                    <bean factory-bean="urlListFactory"
+                          factory-method="create"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="mib"
+          factory-bean="parser"
+          factory-method="parse"/>
+
+</beans>

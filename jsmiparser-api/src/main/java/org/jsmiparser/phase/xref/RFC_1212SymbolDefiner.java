@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 Davy Verstappen.
+ * Copyright 2007 Davy Verstappen.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jsmiparser.phase;
+package org.jsmiparser.phase.xref;
 
-import org.jsmiparser.smi.SmiMib;
-import org.jsmiparser.exception.SmiException;
+public class RFC_1212SymbolDefiner extends AbstractSymbolDefiner {
 
-public interface Phase {
+    public RFC_1212SymbolDefiner() {
+        super("RFC-1212");
+    }
 
-    SmiMib process(SmiMib mib) throws SmiException;
+    @Override
+    public void defineSymbols() {
+        addObjectTypeMacro();
+        addIndexSyntaxType();
+    }
 
 }

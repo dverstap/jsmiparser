@@ -30,6 +30,14 @@ public abstract class AbstractToken implements Token {
     }
 
     public String toString() {
-        return getLocation().toString() + Location.SEPARATOR + getObject().toString();
+        StringBuilder result = new StringBuilder();
+        if (getLocation() != null) {
+            result.append(getLocation().toString());
+        } else {
+            result.append("<hardcoded>");
+        }
+        result.append(Location.SEPARATOR);
+        result.append(getObject().toString());
+        return result.toString();
     }
 }
