@@ -3,7 +3,7 @@
     <groupId>org.jsmiparser</groupId>
     <artifactId>jsmiparser</artifactId>
     <packaging>pom</packaging>
-    <version>0.5-SNAPSHOT</version>
+    <version>0.5</version>
     <name>Java SMI Parser</name>
     <url>http://www.jsmiparser.org</url>
     <inceptionYear>2005</inceptionYear>
@@ -30,9 +30,9 @@
     </modules>
 
     <scm>
-        <connection>scm:svn:http://jsmiparser.svn.sf.net/svnroot/jsmiparser/trunk</connection>
-        <developerConnection>scm:svn:https://jsmiparser.svn.sf.net/svnroot/jsmiparser/trunk</developerConnection>
-        <url>http://jsmiparser.svn.sourceforge.net/viewvc/jsmiparser/</url>
+        <connection>scm:svn:http://jsmiparser.svn.sf.net/svnroot/jsmiparser/tags/jsmiparser-0.5</connection>
+        <developerConnection>scm:svn:https://jsmiparser.svn.sf.net/svnroot/jsmiparser/tags/jsmiparser-0.5</developerConnection>
+        <url>http://jsmiparser.svn.sourceforge.net/viewvc/jsmiparser/tags/jsmiparser-0.5</url>
     </scm>
 
     <issueManagement>
