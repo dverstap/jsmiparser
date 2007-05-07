@@ -147,8 +147,4 @@ public class FileParserPhase implements Phase {
         }
     }
 
-//    public FileParserOptions getOptions() {
-//        return m_options;
-//    }
-
 }
