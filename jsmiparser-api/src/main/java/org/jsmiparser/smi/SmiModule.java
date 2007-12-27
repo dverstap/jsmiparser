@@ -394,10 +394,9 @@ public class SmiModule {
 
     private SmiSymbol findImportedSymbol(String id) {
         for (SmiImports imports : m_imports) {
-            for (SmiSymbol symbol : imports.getSymbols()) {
-                if (symbol.getId().equals(id)) {
-                    return symbol;
-                }
+            SmiSymbol symbol = imports.find(id);
+            if (symbol != null) {
+                return symbol;
             }
         }
         return null;

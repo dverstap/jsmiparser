@@ -20,7 +20,7 @@ import org.jsmiparser.util.token.IdToken;
 import org.jsmiparser.util.location.Location;
 
 public class SmiModuleTest extends TestCase {
-    private SmiMib m_mib = new SmiMib(new SmiJavaCodeNamingStrategy("test"));
+    private SmiMib m_mib = new SmiMib(new SmiOptions(), new SmiJavaCodeNamingStrategy("test"));
     private SmiModule m_module = new SmiModule(m_mib, new IdToken(new Location("IF-MIBsource", 1, 0), "IF-MIB"));
 
     public void testGetJavaId() {

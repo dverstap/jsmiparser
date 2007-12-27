@@ -33,6 +33,9 @@
                 </property>
             </bean>
         </property>
+        <property name="options">
+            <bean class="org.jsmiparser.smi.SmiOptions"/>
+        </property>
     </bean>
 
     <bean id="mib"

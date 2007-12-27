@@ -27,7 +27,7 @@ public class SmiConstants {
 
     public static final Set<String> SMI_DEFINITION_MODULE_NAMES = initSmiDefinitionModuleNames();
 
-    public static final SmiMib JSMIPARSER_HARDCODED_MIB = new SmiMib(null);
+    public static final SmiMib JSMIPARSER_HARDCODED_MIB = new SmiMib(new SmiOptions(), null);
     public static final SmiModule JSMIPARSER_HARDCODED_MODULE = new SmiModule(JSMIPARSER_HARDCODED_MIB, new IdToken(null, "JSMIPARSER_HARDCODED_MIB"));
 
     public static final SmiType OBJECT_IDENTIFIER_TYPE = newType("OBJECT IDENTIFIER", SmiPrimitiveType.OBJECT_IDENTIFIER);

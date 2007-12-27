@@ -28,6 +28,7 @@ import java.util.Set;
 public class SmiMib {
 
     private Map<String, SmiModule> m_moduleMap = new LinkedHashMap<String, SmiModule>();
+    private final SmiOptions m_options;
     private SmiCodeNamingStrategy m_codeNamingStrategy;
     private SmiOidNode m_rootNode;
 
@@ -45,7 +46,9 @@ public class SmiMib {
     int m_dummyOidNodesCount;
     private SmiModule m_internalModule;
 
-    public SmiMib(SmiCodeNamingStrategy codeNamingStrategy) {
+    public SmiMib(SmiOptions options, SmiCodeNamingStrategy codeNamingStrategy) {
+        m_options = options;
+
         //assert(codeNamingStrategy != null);
         m_codeNamingStrategy = codeNamingStrategy;
 
@@ -77,7 +80,10 @@ public class SmiMib {
 
     public Collection<SmiModule> getModules() {
         return m_moduleMap.values();
+    }
 
+    public SmiOptions getOptions() {
+        return m_options;
     }
 
     public SmiCodeNamingStrategy getCodeNamingStrategy() {

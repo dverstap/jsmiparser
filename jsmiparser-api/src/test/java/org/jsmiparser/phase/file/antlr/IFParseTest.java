@@ -19,6 +19,7 @@ import antlr.RecognitionException;
 import antlr.TokenStreamException;
 import junit.framework.TestCase;
 import org.jsmiparser.smi.SmiMib;
+import org.jsmiparser.smi.SmiOptions;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -46,7 +47,7 @@ public class IFParseTest extends TestCase {
         SMILexer lexer = new SMILexer(is);
 
         SMIParser parser = new SMIParser(lexer);
-        parser.init(new SmiMib(null), inputFile.getPath());
+        parser.init(new SmiMib(new SmiOptions(), null), inputFile.getPath());
 
         //ASNModule module =
         parser.module_definition();

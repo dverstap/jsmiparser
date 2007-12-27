@@ -24,6 +24,7 @@ import org.jsmiparser.phase.xref.XRefPhase;
 import org.jsmiparser.phase.xref.XRefProblemReporter;
 import org.jsmiparser.smi.SmiJavaCodeNamingStrategy;
 import org.jsmiparser.smi.SmiMib;
+import org.jsmiparser.smi.SmiOptions;
 import org.jsmiparser.util.problem.DefaultProblemEventHandler;
 import org.jsmiparser.util.problem.DefaultProblemReporterFactory;
 import org.jsmiparser.util.problem.ProblemEventHandler;
@@ -36,6 +37,7 @@ public class SmiDefaultParser implements SmiParser {
     protected FileParserPhase m_fileParserPhase;
     protected XRefPhase m_xRefPhase;
     protected ErrorCheckPhase m_errorCheckPhase;
+    protected SmiOptions options = new SmiOptions();
 
     public SmiDefaultParser() {
         this(new DefaultProblemEventHandler());
@@ -50,7 +52,7 @@ public class SmiDefaultParser implements SmiParser {
     }
 
     public SmiMib parse() throws SmiException {
-        SmiMib mib = new SmiMib(new SmiJavaCodeNamingStrategy("org.jsmiparser.mib")); // TODO
+        SmiMib mib = new SmiMib(options, new SmiJavaCodeNamingStrategy("org.jsmiparser.mib")); // TODO
         
         Phase[] phases = new Phase[]{getFileParserPhase(), getXRefPhase(), getErrorCheckPhase()};
         for (Phase phase : phases) {
@@ -61,6 +63,14 @@ public class SmiDefaultParser implements SmiParser {
             throw new SmiException();
         }
         return mib;
+    }
+
+    public SmiOptions getOptions() {
+        return options;
+    }
+
+    public void setOptions(SmiOptions options) {
+        this.options = options;
     }
 
     protected FileParserPhase createFileParserPhase() {
