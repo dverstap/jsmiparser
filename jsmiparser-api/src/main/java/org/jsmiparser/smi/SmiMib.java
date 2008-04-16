@@ -203,6 +203,19 @@ public class SmiMib {
         return m_objectTypesMap;
     }
 
+    public SmiOidNode findByOid(int... oid) {
+        SmiOidNode child = null;
+        SmiOidNode parent = getRootNode();
+        for (int oidPart : oid) {
+            child = parent.findChild(oidPart);
+            if (child == null) {
+                return null;
+            }
+            parent = child;
+        }
+        return child;
+    }
+
     /**
      * This method can be used to find the best match for an OID.
      * By comparing the length of the OID of the result and the input OID you can
@@ -211,7 +224,7 @@ public class SmiMib {
      * @param oid For which the best match is searched.
      * @return Best matching SmiOidValue, or null if none is found.
      */
-    public SmiOidNode findByOidPrefix(int[] oid) {
+    public SmiOidNode findByOidPrefix(int... oid) {
         SmiOidNode parent = getRootNode();
         for (int subId : oid) {
             SmiOidNode result = parent.findChild(subId);
@@ -263,4 +276,5 @@ public class SmiMib {
         }
         return result;
     }
+
 }

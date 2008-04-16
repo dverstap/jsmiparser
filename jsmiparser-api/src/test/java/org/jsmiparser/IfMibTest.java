@@ -163,4 +163,21 @@ public class IfMibTest extends AbstractMibTestCase {
         assertEquals(adminStatusOfInterface0x1101.length, result.getOid().length + 1);
     }
 
+    public void testFindByOid() {
+        SmiMib mib = getMib();
+
+        SmiVariable ifAdminStatus = mib.getVariables().find("ifAdminStatus");
+        assertNotNull(ifAdminStatus);
+        assertEquals("1.3.6.1.2.1.2.2.1.7", ifAdminStatus.getOidStr());
+
+        SmiOidNode result = mib.findByOid(1, 3, 6, 1, 2, 1, 2, 2, 1, 7);
+        assertNotNull(result);
+        assertSame(ifAdminStatus.getNode(), result);
+
+        result = mib.findByOid(1, 3);
+        assertNotNull(result);
+        assertEquals(1, result.getValues().size());
+        assertEquals("org", result.getValues().get(0).getId());
+    }
+
 }
