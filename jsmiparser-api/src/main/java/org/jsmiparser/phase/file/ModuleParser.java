@@ -16,7 +16,6 @@
 package org.jsmiparser.phase.file;
 
 import antlr.Token;
-import org.apache.log4j.Logger;
 import org.jsmiparser.smi.OidComponent;
 import org.jsmiparser.smi.ScopedId;
 import org.jsmiparser.smi.SmiConstants;
@@ -28,7 +27,6 @@ import org.jsmiparser.smi.SmiNamedNumber;
 import org.jsmiparser.smi.SmiOidMacro;
 import org.jsmiparser.smi.SmiOidValue;
 import org.jsmiparser.smi.SmiPrimitiveType;
-import static org.jsmiparser.smi.SmiPrimitiveType.*;
 import org.jsmiparser.smi.SmiProtocolType;
 import org.jsmiparser.smi.SmiRange;
 import org.jsmiparser.smi.SmiReferencedType;
@@ -47,13 +45,17 @@ import org.jsmiparser.util.token.HexStringToken;
 import org.jsmiparser.util.token.IdToken;
 import org.jsmiparser.util.token.IntegerToken;
 import org.jsmiparser.util.token.QuotedStringToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.jsmiparser.smi.SmiPrimitiveType.INTEGER;
+
 public class ModuleParser {
 
-    private static final Logger m_log = Logger.getLogger(ModuleParser.class);
+    private static final Logger m_log = LoggerFactory.getLogger(ModuleParser.class);
 
     private final SmiModule m_module;
 

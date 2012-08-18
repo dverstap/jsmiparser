@@ -16,7 +16,6 @@
 package org.jsmiparser;
 
 import junit.framework.TestCase;
-import org.apache.log4j.Logger;
 import org.jsmiparser.parser.SmiDefaultParser;
 import org.jsmiparser.parser.SmiParser;
 import org.jsmiparser.smi.SmiConstants;
@@ -30,6 +29,8 @@ import org.jsmiparser.smi.SmiSymbol;
 import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.SmiVersion;
 import org.jsmiparser.util.url.ClassPathURLListFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StopWatch;
 
 import java.net.URL;
@@ -40,7 +41,7 @@ public abstract class AbstractMibTestCase extends TestCase {
 
     public static final String LIBSMI_MIBS_URL = "libsmi-0.4.8/mibs";
 
-    private static final Logger m_log = Logger.getLogger(AbstractMibTestCase.class);
+    private static final Logger m_log = LoggerFactory.getLogger(AbstractMibTestCase.class);
 
     private final SmiVersion m_version;
     private final String[] m_resources;

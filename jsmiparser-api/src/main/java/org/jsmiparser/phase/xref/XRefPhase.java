@@ -15,7 +15,6 @@
  */
 package org.jsmiparser.phase.xref;
 
-import org.apache.log4j.Logger;
 import org.jsmiparser.exception.SmiException;
 import org.jsmiparser.phase.Phase;
 import org.jsmiparser.smi.SmiDefaultValue;
@@ -29,6 +28,8 @@ import org.jsmiparser.util.problem.DefaultProblemReporterFactory;
 import org.jsmiparser.util.problem.ProblemEventHandler;
 import org.jsmiparser.util.problem.ProblemReporterFactory;
 import org.jsmiparser.util.token.IdToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -36,7 +37,7 @@ import java.util.Map;
 
 public class XRefPhase implements Phase {
 
-    private static final Logger m_log = Logger.getLogger(XRefPhase.class);
+    private static final Logger m_log = LoggerFactory.getLogger(XRefPhase.class);
 
     private XRefProblemReporter m_reporter;
     private Map<String, SymbolDefiner> m_symbolDefinerMap = new LinkedHashMap<String, SymbolDefiner>();

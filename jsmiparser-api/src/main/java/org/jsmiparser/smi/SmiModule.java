@@ -15,9 +15,10 @@
  */
 package org.jsmiparser.smi;
 
-import org.apache.log4j.Logger;
 import org.jsmiparser.phase.xref.XRefProblemReporter;
 import org.jsmiparser.util.token.IdToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,7 +30,7 @@ import java.util.Set;
 
 public class SmiModule {
 
-    private static final Logger m_log = Logger.getLogger(SmiModule.class);
+    private static final Logger m_log = LoggerFactory.getLogger(SmiModule.class);
 
     private SmiMib m_mib;
     private IdToken m_idToken;
@@ -357,7 +358,7 @@ public class SmiModule {
         if (m_log.isDebugEnabled()) {
             m_log.debug("Couldn't choose between " + symbols.size() + " choices for resolving: " + idToken + ":");
             for (SmiSymbol symbol : symbols) {
-                m_log.debug(symbol);
+                m_log.debug(symbol.toString());
             }
         }
         return null;

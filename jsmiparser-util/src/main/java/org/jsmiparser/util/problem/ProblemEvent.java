@@ -15,7 +15,6 @@
  */
 package org.jsmiparser.util.problem;
 
-import org.apache.log4j.Logger;
 import org.jsmiparser.util.problem.annotations.ProblemSeverity;
 import org.jsmiparser.util.location.Location;
 
@@ -53,7 +52,7 @@ public class ProblemEvent {
     }
 
     /**
-     * @todo actually implement localization.
+     * TODO actually implement localization.
      * @return The localized message
      */
     public String getLocalizedMessage() {

@@ -17,7 +17,6 @@ package org.jsmiparser.phase.file;
 
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
-import org.apache.log4j.Logger;
 import org.jsmiparser.exception.SmiException;
 import org.jsmiparser.phase.Phase;
 import org.jsmiparser.phase.file.antlr.SMILexer;
@@ -26,9 +25,11 @@ import org.jsmiparser.smi.SmiMib;
 import org.jsmiparser.smi.SmiModule;
 import org.jsmiparser.smi.SmiVersion;
 import org.jsmiparser.util.location.Location;
-import org.jsmiparser.util.problem.ProblemReporterFactory;
-import org.jsmiparser.util.problem.ProblemEventHandler;
 import org.jsmiparser.util.problem.DefaultProblemReporterFactory;
+import org.jsmiparser.util.problem.ProblemEventHandler;
+import org.jsmiparser.util.problem.ProblemReporterFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -41,7 +42,7 @@ import java.util.Set;
 
 public class FileParserPhase implements Phase {
 
-    private static final Logger m_log = Logger.getLogger(FileParserPhase.class);
+    private static final Logger m_log = LoggerFactory.getLogger(FileParserPhase.class);
 
     private FileParserProblemReporter m_reporter;
 

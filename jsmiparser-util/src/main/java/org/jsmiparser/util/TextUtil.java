@@ -15,7 +15,8 @@
  */
 package org.jsmiparser.util;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -23,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TextUtil {
-    private static final Logger m_log = Logger.getLogger(TextUtil.class);
+    private static final Logger m_log = LoggerFactory.getLogger(TextUtil.class);
 
     static Map<String, String> keyWordMap_ = makeKeyWordMap();
 
@@ -33,7 +34,7 @@ public class TextUtil {
 
     static public String makeCodeId(String id, boolean isTypeName) {
         if (id == null || id.length() == 0) {
-            id = new String("_");
+            id = "_";
         } else {
             StringBuilder buf = null;
             for (int i = 0; i < id.length(); i++) {

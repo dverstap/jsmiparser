@@ -1,12 +1,13 @@
 package org.jsmiparser.smi;
 
-import org.apache.log4j.Logger;
 import org.jsmiparser.phase.xref.XRefProblemReporter;
 import org.jsmiparser.util.token.BigIntegerToken;
 import org.jsmiparser.util.token.BinaryStringToken;
 import org.jsmiparser.util.token.HexStringToken;
 import org.jsmiparser.util.token.IdToken;
 import org.jsmiparser.util.token.QuotedStringToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ import java.util.List;
 */
 public class SmiDefaultValue {
 
-    private static final Logger m_log = Logger.getLogger(SmiDefaultValue.class);
+    private static final Logger m_log = LoggerFactory.getLogger(SmiDefaultValue.class);
 
     private final SmiModule m_module;
     private final BigIntegerToken m_bigIntegerToken;
