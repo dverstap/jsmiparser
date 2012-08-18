@@ -29,7 +29,6 @@ import org.jsmiparser.smi.SmiPrimitiveType;
 import org.jsmiparser.smi.SmiSymbol;
 import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.SmiVersion;
-import org.jsmiparser.util.url.AbstractURLListFactory;
 import org.jsmiparser.util.url.ClassPathURLListFactory;
 import org.springframework.util.StopWatch;
 
@@ -38,6 +37,8 @@ import java.util.List;
 import java.util.Set;
 
 public abstract class AbstractMibTestCase extends TestCase {
+
+    public static final String LIBSMI_MIBS_URL = "libsmi-0.4.8/mibs";
 
     private static final Logger m_log = Logger.getLogger(AbstractMibTestCase.class);
 
@@ -82,7 +83,7 @@ public abstract class AbstractMibTestCase extends TestCase {
     }
 
     protected SmiParser createParser() throws Exception {
-        ClassPathURLListFactory urlListFactory = new ClassPathURLListFactory("libsmi-0.4.5/mibs/ietf/");
+        ClassPathURLListFactory urlListFactory = new ClassPathURLListFactory(LIBSMI_MIBS_URL + "/ietf");
 
         if (m_version == null || m_version == SmiVersion.V1) {
             urlListFactory.add("RFC1155-SMI");

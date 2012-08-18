@@ -49,10 +49,15 @@ public class ClassPathURLListFactory extends AbstractURLListFactory {
     public List<URL> create() {
         List<URL> result = new ArrayList<URL>();
         for (String child : m_children) {
-            String path = getRootPath() + child; // explicitly no
-            URL url = getClassLoader().getResource(path);
+            String path = getRootPath();
+            if (!path.isEmpty() && !path.endsWith("/")) {
+                path += "/";
+            }
+            path += child;
+            ClassLoader classLoader = getClassLoader();
+            URL url = classLoader.getResource(path);
             if (url == null) {
-                throw new IllegalStateException("Classpath resource doesn't exist (perhaps you are missing a slash or have one too much at the beginning?): " + path);
+                throw new IllegalStateException("Classpath resource doesn't exist (perhaps you are missing a slash at the end or have one too much at the beginning?): " + path);
             }
             result.add(url);
         }

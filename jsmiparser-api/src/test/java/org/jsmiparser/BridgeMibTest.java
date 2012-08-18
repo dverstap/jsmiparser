@@ -29,9 +29,9 @@ public class BridgeMibTest extends AbstractMibTestCase {
 
     public BridgeMibTest() {
         super(SmiVersion.V2,
-                "libsmi-0.4.5/mibs/iana/IANAifType-MIB",
-                "libsmi-0.4.5/mibs/ietf/IF-MIB",
-                "libsmi-0.4.5/mibs/ietf/BRIDGE-MIB");
+                LIBSMI_MIBS_URL + "/iana/IANAifType-MIB",
+                LIBSMI_MIBS_URL + "/ietf/IF-MIB",
+                LIBSMI_MIBS_URL + "/ietf/BRIDGE-MIB");
     }
 
     public void testBridgeMib() {

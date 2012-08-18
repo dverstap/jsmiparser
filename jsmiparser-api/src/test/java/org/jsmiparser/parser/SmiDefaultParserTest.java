@@ -52,7 +52,10 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
 
     @Override
     protected SmiDefaultParser createParser() throws Exception {
-        URL mibsURL = getClass().getClassLoader().getResource("libsmi-0.4.5/mibs");
+        URL mibsURL = getClass().getClassLoader().getResource(LIBSMI_MIBS_URL);
+        if (mibsURL == null) {
+            throw new IllegalStateException("Could not find resource: " + LIBSMI_MIBS_URL);
+        }
         File mibsDir = new File(mibsURL.toURI());
 
         SmiDefaultParser parser = new SmiDefaultParser();
@@ -72,16 +75,16 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         //XStream xStream = new XStream();
         //xStream.toXML(mib, System.out);
 
-        assertEquals(255, mib.getModules().size());
-        assertEquals(1888, mib.getTypes().size());
-        assertEquals(559, mib.getTextualConventions().size());
-        assertEquals(1265, mib.getTables().size());
-        assertEquals(1265, mib.getRows().size());
-        assertEquals(12590, mib.getVariables().size());
-        assertEquals(1465, mib.getScalars().size());
-        assertEquals(11125, mib.getColumns().size());
+        assertEquals(298, mib.getModules().size());
+        assertEquals(2227, mib.getTypes().size());
+        assertEquals(661, mib.getTextualConventions().size());
+        assertEquals(1502, mib.getTables().size());
+        assertEquals(1502, mib.getRows().size());
+        assertEquals(14909, mib.getVariables().size());
+        assertEquals(1689, mib.getScalars().size());
+        assertEquals(13220, mib.getColumns().size());
         assertEquals(mib.getVariables().size(), mib.getScalars().size() + mib.getColumns().size());
-        assertEquals(18938, mib.getOidValues().size());
+        assertEquals(22576, mib.getOidValues().size());
         assertEquals(mib.getTables().size() + mib.getRows().size() + mib.getVariables().size(), mib.getObjectTypes().size());
 
         checkObjectTypeAccessAll(mib);
@@ -259,7 +262,7 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
         SmiType interfaceIndex = ifModule.findType("InterfaceIndex");
         assertNotNull(interfaceIndex);
         Collection<SmiType> interfaceIndexes = mib.getTypes().findAll("InterfaceIndex");
-        assertEquals(3, interfaceIndexes.size());
+        assertEquals(2, interfaceIndexes.size());
         assertTrue(interfaceIndexes.contains(interfaceIndex));
         assertEquals("InterfaceIndex", interfaceIndex.getId());
         assertEquals("IF-MIB", interfaceIndex.getModule().getId());
@@ -376,7 +379,9 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
                         && !file.getName().startsWith("Makefile")
                         && !file.getName().endsWith("~")
                         //&& !v1mibs.contains(file.getName())
-                        && !file.getName().endsWith("-orig")) { // TODO parsing -orig should give more errors!
+                        && !file.getName().endsWith("-orig") // TODO parsing -orig should give more errors!
+                        && !(file.getName().equals("IANA-ITU-ALARM-TC-MIB") && file.getParentFile().getName().equals("iana"))
+                         ) {
                     urlListFactory.add(file.getName());
                 }
             }

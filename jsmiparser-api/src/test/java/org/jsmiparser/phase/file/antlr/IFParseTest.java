@@ -18,6 +18,7 @@ package org.jsmiparser.phase.file.antlr;
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
 import junit.framework.TestCase;
+import org.jsmiparser.AbstractMibTestCase;
 import org.jsmiparser.smi.SmiMib;
 import org.jsmiparser.smi.SmiOptions;
 
@@ -40,8 +41,11 @@ public class IFParseTest extends TestCase {
 
     public void testModule_definition() throws RecognitionException, TokenStreamException, URISyntaxException, FileNotFoundException {
 
-
-        URL resource = this.getClass().getResource("/libsmi-0.4.5/mibs/ietf/IF-MIB");
+        String path = AbstractMibTestCase.LIBSMI_MIBS_URL + "/ietf/IF-MIB";
+        URL resource = Thread.currentThread().getContextClassLoader().getResource(path);
+        if (resource == null) {
+            throw new IllegalStateException("Cannot locate classpath entry: " + path);
+        }
         File inputFile = new File(resource.toURI());
         InputStream is = new BufferedInputStream(new FileInputStream(inputFile));
         SMILexer lexer = new SMILexer(is);

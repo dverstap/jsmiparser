@@ -16,20 +16,19 @@
 package org.jsmiparser;
 
 import junit.framework.TestCase;
-
-import java.net.URL;
-import java.net.MalformedURLException;
-import java.util.List;
-import java.util.ArrayList;
-
 import org.jsmiparser.parser.SmiDefaultParser;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MixedV1V2Test extends TestCase {
 
     public void testToV2() throws MalformedURLException {
         String[] mibFileNames = { "TOKEN-RING-RMON-MIB", "RFC1271-MIB", "SNMPv2-SMI", "SNMPv2-TC"};
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        URL resource = cl.getResource("libsmi-0.4.5/mibs/ietf");
+        URL resource = cl.getResource(AbstractMibTestCase.LIBSMI_MIBS_URL + "/ietf");
         assertNotNull(resource);
         List<URL> urls = new ArrayList<URL>();
         for (String fn : mibFileNames) {

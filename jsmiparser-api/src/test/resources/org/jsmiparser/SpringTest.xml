@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd">
 
     <bean id="urlListFactory"
           class="org.jsmiparser.util.url.ClassPathURLListFactory">
-        <property name="rootPath" value="libsmi-0.4.5/mibs/"/>
+        <property name="rootPath">
+            <util:constant static-field="org.jsmiparser.AbstractMibTestCase.LIBSMI_MIBS_URL"/>
+        </property>
         <property name="children">
             <list>
                 <value>iana/IANAifType-MIB</value>
