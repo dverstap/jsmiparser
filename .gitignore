@@ -1,0 +1,11 @@
+*.iml
+*.ipr
+*.iws
+.idea
+target
+.project
+.classpath
+cobertura.ser
+ObjectStore
+projectFilesBackup*
+*~
