@@ -381,7 +381,7 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
                         //&& !v1mibs.contains(file.getName())
                         && !file.getName().endsWith("-orig") // TODO parsing -orig should give more errors!
                         && !(file.getName().equals("IANA-ITU-ALARM-TC-MIB") && file.getParentFile().getName().equals("iana"))
-                         ) {
+                        ) {
                     urlListFactory.add(file.getName());
                 }
             }

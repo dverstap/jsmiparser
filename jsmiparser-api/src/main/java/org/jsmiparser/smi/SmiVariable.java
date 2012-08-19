@@ -15,9 +15,9 @@
  */
 package org.jsmiparser.smi;
 
+import org.jsmiparser.phase.xref.XRefProblemReporter;
 import org.jsmiparser.util.token.IdToken;
 import org.jsmiparser.util.token.QuotedStringToken;
-import org.jsmiparser.phase.xref.XRefProblemReporter;
 
 import java.util.List;
 
@@ -32,7 +32,7 @@ public class SmiVariable extends SmiObjectType {
     private final SmiDefaultValue m_defaultValue;
 
     public SmiVariable(IdToken idToken, SmiModule module, SmiType type, QuotedStringToken unitsToken, SmiDefaultValue defaultValue) {
-		super(idToken, module);
+        super(idToken, module);
         setType(type);
         m_unitsToken = unitsToken;
         m_defaultValue = defaultValue;
@@ -42,32 +42,32 @@ public class SmiVariable extends SmiObjectType {
     }
 
     public String getCodeConstantId() {
-		return getModule().getMib().getCodeNamingStrategy().getCodeConstantId(this);
-	}
-	
-	public String getFullCodeConstantId() {
-		return getModule().getMib().getCodeNamingStrategy().getFullCodeConstantId(this);
-	}
+        return getModule().getMib().getCodeNamingStrategy().getCodeConstantId(this);
+    }
 
-	public String getCodeOid() {
-		return getOidStr();
-	}
+    public String getFullCodeConstantId() {
+        return getModule().getMib().getCodeNamingStrategy().getFullCodeConstantId(this);
+    }
 
-	public String getCodeId() {
-		return getModule().getMib().getCodeNamingStrategy().getVariableId(this);
-	}
+    public String getCodeOid() {
+        return getOidStr();
+    }
+
+    public String getCodeId() {
+        return getModule().getMib().getCodeNamingStrategy().getVariableId(this);
+    }
 
     public String getRequestMethodId() {
-		return getModule().getMib().getCodeNamingStrategy().getRequestMethodId(this);
-	}
+        return getModule().getMib().getCodeNamingStrategy().getRequestMethodId(this);
+    }
 
-	public String getGetterMethodId() {
-		return getModule().getMib().getCodeNamingStrategy().getGetterMethodId(this);
-	}
+    public String getGetterMethodId() {
+        return getModule().getMib().getCodeNamingStrategy().getGetterMethodId(this);
+    }
 
-	public String getSetterMethodId() {
-		return getModule().getMib().getCodeNamingStrategy().getSetterMethodId(this);
-	}
+    public String getSetterMethodId() {
+        return getModule().getMib().getCodeNamingStrategy().getSetterMethodId(this);
+    }
 
     public SmiRow getRow() {
         if (getNode() != null && getNode().getParent() != null) {
@@ -118,22 +118,50 @@ public class SmiVariable extends SmiObjectType {
         return m_type.getPrimitiveType();
     }
 
-    public List<SmiNamedNumber> getEnumValues() {
+    public SmiType getEnumType() {
         SmiType type = m_type;
         while (type != null) {
             if (type.getEnumValues() != null) {
-                return type.getEnumValues();
+                return type;
             }
             type = type.getBaseType();
         }
         return null;
     }
 
-    public List<SmiNamedNumber> getBitFields() {
+    public List<SmiNamedNumber> getEnumValues() {
+        SmiType type = getEnumType();
+        if (type != null) {
+            return type.getEnumValues();
+        }
+        return null;
+    }
+
+    public SmiType getBitFieldType() {
         SmiType type = m_type;
         while (type != null) {
             if (type.getBitFields() != null) {
-                return type.getBitFields();
+                return type;
+            }
+            type = type.getBaseType();
+        }
+        return null;
+
+    }
+
+    public List<SmiNamedNumber> getBitFields() {
+        SmiType type = getBitFieldType();
+        if (type != null) {
+            return type.getBitFields();
+        }
+        return null;
+    }
+
+    public SmiType getRangeConstraintType() {
+        SmiType type = m_type;
+        while (type != null) {
+            if (type.getRangeConstraints() != null) {
+                return type;
             }
             type = type.getBaseType();
         }
@@ -141,23 +169,28 @@ public class SmiVariable extends SmiObjectType {
     }
 
     public List<SmiRange> getRangeConstraints() {
+        SmiType type = getRangeConstraintType();
+        if (type != null) {
+            return type.getRangeConstraints();
+        }
+        return null;
+    }
+
+    public SmiType getSizeConstraintType() {
         SmiType type = m_type;
         while (type != null) {
-            if (type.getRangeConstraints() != null) {
-                return type.getRangeConstraints();
+            if (type.getSizeConstraints() != null) {
+                return type;
             }
             type = type.getBaseType();
         }
         return null;
     }
 
-    public List<SmiRange> getSizeConstraints() {
-        SmiType type = m_type;
-        while (type != null) {
-            if (type.getSizeConstraints() != null) {
-                return type.getSizeConstraints();
-            }
-            type = type.getBaseType();
+    public SmiType getSizeConstraints() {
+        SmiType type = getSizeConstraintType();
+        if (type != null) {
+            return type;
         }
         return null;
     }

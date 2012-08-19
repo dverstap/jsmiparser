@@ -3,6 +3,10 @@
 *.iws
 .idea
 target
+build
+classes
+out
+.gradle
 .project
 .classpath
 cobertura.ser

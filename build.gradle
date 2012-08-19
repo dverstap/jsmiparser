@@ -1,0 +1,119 @@
+allprojects {
+  apply plugin: 'java'
+  apply plugin: 'eclipse'
+  apply plugin: 'idea'
+
+  group = 'org.jsmiparser'
+  version = System.properties['version'] ? System.properties['version'] : 'SNAPSHOT'
+
+  sourceCompatibility = 1.5
+  targetCompatibility = 1.5
+
+  ext.aspectjVersion = '1.6.12'
+  ext.junitVersion = '4.10'
+  ext.slf4jVersion = '1.6.6'
+  ext.springVersion = '3.1.2.RELEASE'
+
+  repositories {
+    mavenCentral()
+  }
+
+}
+
+subprojects {
+//  jar {
+//    manifest.attributes['Implementation-Title'] = subproject.name
+//    manifest.attributes['Implementation-Version'] = subproject.version
+//  }
+
+  configurations {
+    all {
+      resolutionStrategy {
+        failOnVersionConflict()
+
+        forcedModules = [
+                'com.intellij:annotations:7.0.3',
+                'cglib:cglib:2.2.2',
+                'cglib:cglib-nodep:2.2.2',
+                'commons-beanutils:commons-beanutils:1.8.3',
+                'commons-collections:commons-collections:3.2.1',
+                //'commons-logging:commons-logging:' + _99_0,
+                'junit:junit:4.10',
+                'log4j:log4j:1.2.17',
+                'org.apache.xmlbeans:xmlbeans:2.4.0',
+                'org.aspectj:aspectjrt:1.6.12',
+                'org.aspectj:aspectjweaver:1.6.12',
+                'org.slf4j:slf4j-api:' + slf4jVersion,
+                'org.slf4j:slf4j-log4j12:' + slf4jVersion,
+                'org.slf4j:jcl-over-slf4j:' + slf4jVersion,
+                'org.springframework:spring-aop:' + springVersion,
+                'org.springframework:spring-aspects:' + springVersion,
+                'org.springframework:spring-beans:' + springVersion,
+                'org.springframework:spring-context:' + springVersion,
+                'org.springframework:spring-core:' + springVersion,
+                'org.springframework:spring-instrument:' + springVersion,
+                'org.springframework:spring-jdbc:' + springVersion,
+                'org.springframework:spring-orm:' + springVersion,
+                'org.springframework:spring-test:' + springVersion,
+                'org.springframework:spring-web:' + springVersion,
+                'org.springframework:spring-webmvc:' + springVersion,
+        ]
+      }
+    }
+
+  }
+
+}
+
+idea {
+    project {
+        languageLevel = '1.5'
+        ipr {
+            withXml { provider ->
+                provider.node.component.find { it.@name == 'VcsDirectoryMappings' }.mapping.@vcs = 'Git'
+            }
+            beforeMerged { project ->
+                project.modulePaths.clear()
+            }
+        }
+    }
+}
+
+
+
+project('jsmiparser-util') {
+
+  dependencies {
+    compile 'commons-beanutils:commons-beanutils'
+    compile 'commons-collections:commons-collections'
+    compile 'org.slf4j:slf4j-api'
+    testRuntime 'org.slf4j:slf4j-log4j12'
+    testRuntime 'log4j:log4j'
+    testCompile 'junit:junit'
+  }
+
+}
+
+
+project('jsmiparser-api') {
+
+  apply plugin: 'antlr'
+
+  dependencies {
+    compile project(':jsmiparser-util')
+
+    antlr 'antlr:antlr:2.7.7'
+
+    compile 'org.slf4j:slf4j-api'
+    compile 'org.springframework:spring-core'
+    compile 'org.springframework:spring-test'
+
+    testCompile 'junit:junit'
+
+    testRuntime 'log4j:log4j'
+    testRuntime 'org.slf4j:slf4j-log4j12'
+    testRuntime 'org.springframework:spring-beans'
+    testRuntime 'org.springframework:spring-context'
+  }
+
+}
