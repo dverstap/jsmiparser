@@ -19,11 +19,11 @@ allprojects {
 
 }
 
-subprojects {
-//  jar {
-//    manifest.attributes['Implementation-Title'] = subproject.name
-//    manifest.attributes['Implementation-Version'] = subproject.version
-//  }
+subprojects { subproject ->
+  jar {
+    manifest.attributes['Implementation-Title'] = subproject.name
+    manifest.attributes['Implementation-Version'] = subproject.version
+  }
 
   configurations {
     all {
