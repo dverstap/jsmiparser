@@ -268,6 +268,16 @@ public abstract class AbstractSymbolDefiner implements SymbolDefiner {
         m_defineItu = defineItu;
     }
 
+    public AbstractSymbolDefiner enableDefineItu() {
+        m_defineItu = true;
+        return this;
+    }
+
+    public AbstractSymbolDefiner disableDefineItu() {
+        m_defineItu = false;
+        return this;
+    }
+
     public boolean isDefineIso() {
         return m_defineIso;
     }
@@ -276,5 +286,14 @@ public abstract class AbstractSymbolDefiner implements SymbolDefiner {
         m_defineIso = defineIso;
     }
 
+    public AbstractSymbolDefiner enableDefineIso() {
+        m_defineIso = true;
+        return this;
+    }
+
+    public AbstractSymbolDefiner disableDefineIso() {
+        m_defineIso = false;
+        return this;
+    }
 
 }

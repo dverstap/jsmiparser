@@ -22,4 +22,10 @@ public class SmiMacro extends SmiSymbol {
     public SmiMacro(IdToken idToken, SmiModule module) {
         super(idToken, module);
     }
+
+    @Override
+    public String getCodeId() {
+        return null;
+    }
+
 }

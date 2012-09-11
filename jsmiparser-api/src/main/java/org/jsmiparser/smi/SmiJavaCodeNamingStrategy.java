@@ -135,12 +135,12 @@ public class SmiJavaCodeNamingStrategy implements SmiCodeNamingStrategy {
 		return type.getId();
 	}
 
-	public String getSingleVariableEnumId(SmiVariable attr) {
-		return SmiUtil.ucFirst(attr.getCodeId());
-	}
+    public String getOidValueId(SmiOidValue oidValue) {
+        return oidValue.getId();
+    }
 
-	public String getVariableId(SmiVariable variable) {
-		return variable.getId();
+    public String getSingleVariableEnumId(SmiVariable attr) {
+		return SmiUtil.ucFirst(attr.getCodeId());
 	}
 
 	public String getEnumValueId(SmiNamedNumber ev) {
@@ -161,10 +161,6 @@ public class SmiJavaCodeNamingStrategy implements SmiCodeNamingStrategy {
 
 	public String getFullCodeId(SmiSymbol symbol) {
 		return symbol.getModule().getFullCodeId() + "." + symbol.getCodeId();
-	}
-
-	public String getTableId(SmiTable table) {
-		return table.getId();
 	}
 
 	public String getFullVariableOidClassId(SmiModule module) {

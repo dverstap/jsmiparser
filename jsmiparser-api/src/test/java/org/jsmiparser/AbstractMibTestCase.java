@@ -28,6 +28,7 @@ import org.jsmiparser.smi.SmiPrimitiveType;
 import org.jsmiparser.smi.SmiSymbol;
 import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.SmiVersion;
+import org.jsmiparser.util.problem.annotations.ProblemSeverity;
 import org.jsmiparser.util.url.ClassPathURLListFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +74,10 @@ public abstract class AbstractMibTestCase extends TestCase {
                 SmiMib mib = parser.parse();
                 stopWatch.stop();
                 m_log.info("Parsing time: " + stopWatch.getTotalTimeSeconds() + " s");
-
+                if (mustParseSuccessfully()) {
+                    assertTrue(((SmiDefaultParser) parser).getProblemEventHandler().isOk());
+                    assertEquals(0, ((SmiDefaultParser) parser).getProblemEventHandler().getSeverityCount(ProblemSeverity.ERROR));
+                }
                 m_mib.set(mib);
                 m_testClass.set(getClass());
             } catch (Exception e) {
@@ -81,6 +85,10 @@ public abstract class AbstractMibTestCase extends TestCase {
             }
         }
         return m_mib.get();
+    }
+
+    protected boolean mustParseSuccessfully() {
+        return true;
     }
 
     protected SmiParser createParser() throws Exception {

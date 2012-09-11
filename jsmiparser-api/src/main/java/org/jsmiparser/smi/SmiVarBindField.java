@@ -125,15 +125,25 @@ Counter64 ::=
 public enum SmiVarBindField {
 	
 	// SimpleSyntax:
-	INTEGER_VALUE,
-	STRING_VALUE,
-	OBJECTID_VALUE,
+	INTEGER_VALUE(BERConstants.INTEGER32),
+	STRING_VALUE(BERConstants.OCTETSTRING),
+	OBJECTID_VALUE(BERConstants.OID),
 	
 	// ApplicationSyntax:
-	IPADDRESS_VALUE,
-	COUNTER_VALUE,
-	TIMETICKS_VALUE,
-	ARBITRARY_VALUE,
-	BIG_COUNTER_VALUE,
-	UNSIGNED_INTEGER_VALUE
+	IPADDRESS_VALUE(BERConstants.IPADDRESS),
+	COUNTER_VALUE(BERConstants.COUNTER32),
+	TIMETICKS_VALUE(BERConstants.TIMETICKS),
+	ARBITRARY_VALUE(BERConstants.OPAQUE),
+	BIG_COUNTER_VALUE(BERConstants.COUNTER64),
+	UNSIGNED_INTEGER_VALUE(BERConstants.GAUGE32);
+
+    private final byte berTagValue;
+
+    private SmiVarBindField(byte berValue) {
+        this.berTagValue = berValue;
+    }
+
+    public byte getBerTagValue() {
+        return berTagValue;
+    }
 }

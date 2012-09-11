@@ -55,6 +55,12 @@ public class IfMibTest extends AbstractMibTestCase {
 
         assertNotNull(ifMib.findColumn("ifName"));
         assertNull(ifMib.findScalar("ifName"));
+
+        assertNotNull(ifMib.findTable("ifTable"));
+        assertNull(ifMib.findVariable("ifTable"));
+
+        assertNotNull(ifMib.findRow("ifEntry"));
+        assertNull(ifMib.findVariable("ifEntry"));
     }
 
     public void testInterfaceIndex() {

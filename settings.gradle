@@ -1,2 +1,4 @@
 include 'jsmiparser-util'
 include 'jsmiparser-api'
+include 'jsmiparser-codegen'
+include 'jsmiparser-gradle'

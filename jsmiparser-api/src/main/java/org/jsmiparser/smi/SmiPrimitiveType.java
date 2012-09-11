@@ -52,7 +52,7 @@ public enum SmiPrimitiveType {
 	COUNTER_64(SmiVarBindField.BIG_COUNTER_VALUE, "Counter64", false, true),
 	
 	// From the TextualConvention macro:
-	BITS(SmiVarBindField.STRING_VALUE, "Bits", false, true)
+	BITS(SmiVarBindField.STRING_VALUE, "Bits", false, true)  // TODO this probably needs to be removed
 	;
 	
 	//private static Map<String, SmiPrimitiveType> xmlValueMap_;

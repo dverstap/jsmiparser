@@ -15,9 +15,10 @@
  */
 package org.jsmiparser.util.problem;
 
-import org.jsmiparser.util.problem.annotations.ProblemSeverity;
 import org.jsmiparser.util.location.Location;
+import org.jsmiparser.util.problem.annotations.ProblemSeverity;
 
+import java.util.Arrays;
 import java.util.Formatter;
 
 public class ProblemEvent {
@@ -59,5 +60,16 @@ public class ProblemEvent {
   		Formatter f = new Formatter();
 		f.format(m_defaultMessage, m_arguments);
         return f.toString();
+    }
+
+    @Override
+    public String toString() {
+        return "ProblemEvent{" +
+                "m_location=" + m_location +
+                ", m_severity=" + m_severity +
+                ", m_messageKey='" + m_messageKey + '\'' +
+                ", m_defaultMessage='" + m_defaultMessage + '\'' +
+                ", m_arguments=" + (m_arguments == null ? null : Arrays.asList(m_arguments)) +
+                '}';
     }
 }

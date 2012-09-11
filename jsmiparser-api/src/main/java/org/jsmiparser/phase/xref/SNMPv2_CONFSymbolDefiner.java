@@ -17,7 +17,7 @@ package org.jsmiparser.phase.xref;
 
 public class SNMPv2_CONFSymbolDefiner extends AbstractSymbolDefiner {
 
-    protected SNMPv2_CONFSymbolDefiner() {
+    public SNMPv2_CONFSymbolDefiner() {
         super("SNMPv2-CONF");
     }
 

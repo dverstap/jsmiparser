@@ -50,6 +50,9 @@ public class SmiOidValue extends SmiValue {
      * @return null for the root node; the OID in decimal dotted notation for all other nodes
      */
     public String getOidStr() {
+        if (m_node == null) {
+            throw new NullPointerException("OidNode was not resolved for " + getIdToken());
+        }
         return m_node.getOidStr();
     }
 
@@ -67,4 +70,9 @@ public class SmiOidValue extends SmiValue {
     public SmiOidNode getNode() {
         return m_node;
     }
+
+    public String getCodeId() {
+        return getModule().getMib().getCodeNamingStrategy().getOidValueId(this);
+    }
+
 }

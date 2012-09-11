@@ -10,6 +10,8 @@ ext {
   libraries = [
           antlr: 'antlr:antlr:2.7.7',
 
+          codemodel: 'com.sun.codemodel:codemodel:2.6',
+
           commons_beanutils: 'commons-beanutils:commons-beanutils:1.8.3',
           commons_collections: 'commons-collections:commons-collections:3.2.1',
 

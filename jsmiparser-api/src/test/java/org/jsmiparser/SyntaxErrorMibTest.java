@@ -29,4 +29,9 @@ public class SyntaxErrorMibTest extends AbstractMibTestCase {
         int severityCount = getParser().getProblemEventHandler().getSeverityCount(ProblemSeverity.ERROR);
         assertEquals(1, severityCount);
     }
+
+    @Override
+    protected boolean mustParseSuccessfully() {
+        return false;
+    }
 }

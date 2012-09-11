@@ -51,7 +51,7 @@ public class FileURLListFactory extends AbstractURLListFactory {
             if (!file.exists()) {
                 throw new IllegalStateException("File doesn't exist: " + file);
             }
-            result.add(file.toURL());
+            result.add(file.toURI().toURL());
         }
         return result;
     }

@@ -32,11 +32,11 @@ public abstract class AbstractProblemEventHandler implements ProblemEventHandler
             if (i >= ProblemSeverity.ERROR.ordinal()) {
                 int severityCounter = m_severityCounters[i];
                 if (severityCounter > 0) {
-                    return true;
+                    return false;
                 }
             }
         }
-        return false;
+        return true;
     }
 
     public boolean isNotOk() {

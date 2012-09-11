@@ -53,10 +53,6 @@ public class SmiVariable extends SmiObjectType {
         return getOidStr();
     }
 
-    public String getCodeId() {
-        return getModule().getMib().getCodeNamingStrategy().getVariableId(this);
-    }
-
     public String getRequestMethodId() {
         return getModule().getMib().getCodeNamingStrategy().getRequestMethodId(this);
     }

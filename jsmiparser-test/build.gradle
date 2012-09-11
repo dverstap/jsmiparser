@@ -1,0 +1,113 @@
+// Doing a system test for a gradle plugin seems a bit tricky: I solved it with the root project
+// invoking this project's build script directory, but this project is *not* a child project of the root project.
+
+apply plugin: 'java'
+apply plugin: 'idea'
+
+apply from: "../libraries.gradle"
+
+group = 'org.jsmiparser'
+version = System.properties['version'] ? System.properties['version'] : 'SNAPSHOT'
+
+sourceCompatibility = 1.5
+targetCompatibility = 1.5
+
+buildscript {
+  repositories {
+    mavenCentral()
+    mavenLocal()
+  }
+  dependencies {
+    classpath 'org.jsmiparser:jsmiparser-gradle:SNAPSHOT'
+    classpath 'org.jsmiparser:jsmiparser-api:SNAPSHOT:tests'
+  }
+}
+
+// TODO extract this out into an idea.gradle file, but I could not get that to work.
+def _hasGeneratedSources(project) {
+  for (ss in project.sourceSets) {
+    for (f in ss.allJava) {
+      //println(f.path)
+      if (f.path.contains('/generated-src/')) {
+        return true
+      }
+    }
+  }
+  return false
+}
+
+def determineIdeaExcludeDirs(project) {
+  def result = []
+  if (_hasGeneratedSources(project)) {
+    for (f in project.buildDir.listFiles()) {
+      //println(f)
+      if (f.name.equals("generated-src")) {
+        //println("Excluding generated-src")
+      } else {
+        result += f
+      }
+    }
+  } else {
+    result = ['build', '.gradle']
+  }
+  return result
+}
+
+
+task generateSources(type: org.jsmiparser.gradle.CodegenTask) {
+  settings.packageName = 'org.jsmiparser.test.libsmi'
+  inputFiles = fileTree('../jsmiparser-api/src/test/resources/libsmi-0.4.8/mibs/')
+          .exclude('**/*orig')
+          .exclude("ietf/RFC1158-MIB") // obsoleted by RFC-1213
+          .exclude('irtf/**')
+          .exclude('iana/IANA-ITU-ALARM-TC-MIB')
+          .exclude('**/Makefile*')
+}
+
+compileJava.dependsOn generateSources
+
+sourceSets {
+  main {
+    java {
+      srcDir generateSources.outputDir
+    }
+  }
+}
+
+repositories {
+  mavenCentral()
+  mavenLocal()
+}
+
+dependencies {
+  compile 'org.jsmiparser:jsmiparser-codegen:SNAPSHOT'
+
+  testCompile libraries.junit
+
+  testRuntime libraries.slf4j_log4j12
+  testRuntime libraries.slf4j_jcl_over_slf4j
+  testRuntime libraries.log4j
+}
+
+
+idea {
+  module {
+    // These settings make IntelliJ compile the class files to the same directories as gradle:
+    inheritOutputDirs = false
+    outputDir = sourceSets.main.output.classesDir
+    testOutputDir = sourceSets.test.output.classesDir
+    excludeDirs = determineIdeaExcludeDirs(project)
+  }
+
+  project {
+    languageLevel = '1.5'
+    ipr {
+      withXml { provider ->
+        provider.node.component.find { it.@name == 'VcsDirectoryMappings' }.mapping.@vcs = 'Git'
+      }
+      beforeMerged { project ->
+        project.modulePaths.clear()
+      }
+    }
+  }
+}

@@ -159,6 +159,15 @@ public class SmiType extends SmiSymbol {
         m_bitFields = bitFields;
     }
 
+    public List<SmiNamedNumber> getNamedNumbers() {
+        if (m_enumValues != null) {
+            return m_enumValues;
+        } else if (m_bitFields != null) {
+            return m_bitFields;
+        }
+        return null;
+    }
+
     public String getCodeId() {
         return getModule().getMib().getCodeNamingStrategy().getTypeId(this);
     }

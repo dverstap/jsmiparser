@@ -1,5 +1,34 @@
 apply from: "./libraries.gradle"
 
+def _hasGeneratedSources(project) {
+  for (ss in project.sourceSets) {
+    for (f in ss.allJava) {
+      //println(f.path)
+      if (f.path.contains('/generated-src/')) {
+        return true
+      }
+    }
+  }
+  return false
+}
+
+def determineIdeaExcludeDirs(project) {
+  def result = []
+  if (_hasGeneratedSources(project)) {
+    for (f in project.buildDir.listFiles()) {
+      //println(f)
+      if (f.name.equals("generated-src")) {
+        //println("Excluding generated-src")
+      } else {
+        result += f
+      }
+    }
+  } else {
+    result = ['build', '.gradle']
+  }
+  return result
+}
+
 
 allprojects {
   apply plugin: 'java'
@@ -8,7 +37,10 @@ allprojects {
   apply plugin: 'maven'
 
   group = 'org.jsmiparser'
-  version = System.properties['version'] ? System.properties['version'] : 'SNAPSHOT'
+
+  // set the to-be-released version with -Pversion=
+  if (version == DEFAULT_VERSION)
+    version = 'SNAPSHOT'
 
   sourceCompatibility = 1.5
   targetCompatibility = 1.5
@@ -38,12 +70,36 @@ subprojects { subproject ->
 
   }
 
+  task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+  }
+
+  task testsJar(type: Jar) {
+    classifier = 'tests'
+    from sourceSets.test.output
+  }
+
+  artifacts {
+    archives sourcesJar
+    archives testsJar
+  }
+
   dependencies {
     compile libraries.slf4j_api
     testCompile libraries.junit
     testRuntime libraries.slf4j_log4j12
     testRuntime libraries.slf4j_jcl_over_slf4j
     testRuntime libraries.log4j
+  }
+
+  idea {
+    module {
+      // These settings make IntelliJ compile the class files to the same directories as gradle:
+      inheritOutputDirs = false
+      outputDir = sourceSets.main.output.classesDir
+      testOutputDir = sourceSets.test.output.classesDir
+    }
   }
 
 }
@@ -63,7 +119,6 @@ idea {
 }
 
 
-
 project('jsmiparser-util') {
 
   dependencies {
@@ -76,18 +131,68 @@ project('jsmiparser-util') {
 
 project('jsmiparser-api') {
 
+
   apply plugin: 'antlr'
 
-  dependencies {
-    compile project(':jsmiparser-util')
+  idea {
+    module {
+      // excludeDirs must be set after the antlr plugin has been applied,
+      // otherwise the generated sources will not yet have been put in the java sourceSet:
+      excludeDirs = determineIdeaExcludeDirs(project)
+    }
+  }
 
+  dependencies {
     antlr libraries.antlr
 
-    compile libraries.spring_core
-    compile libraries.spring_test
+    compile project(':jsmiparser-util')
+    compile libraries.antlr // needed because otherwise there is no antlr dependency in the generated pom.xml
+
+    testCompile libraries.spring_core
+    testCompile libraries.spring_test
 
     testRuntime libraries.spring_beans
     testRuntime libraries.spring_context
   }
 
+}
+
+
+project('jsmiparser-codegen') {
+  //evaluationDependsOn(':jsmiparser-api')
+
+  dependencies {
+    compile project(':jsmiparser-api')
+    compile libraries.codemodel
+
+    testCompile project(':jsmiparser-util').sourceSets.test.output
+  }
+
+}
+
+
+project('jsmiparser-gradle') {
+
+  dependencies {
+    compile project(':jsmiparser-codegen')
+    compile gradleApi()
+    //groovy localGroovy()
+
+    testCompile project(':jsmiparser-util').sourceSets.test.output
+  }
+
+}
+
+
+
+task stestInit(dependsOn: [':jsmiparser-util:install', ':jsmiparser-api:install', ':jsmiparser-codegen:install', ':jsmiparser-gradle:install']) {}
+
+task stest(type: GradleBuild, dependsOn: stestInit) {
+  dir = 'jsmiparser-test'
+  tasks = ['test']
+}
+
+task stestClean(type: GradleBuild, dependsOn: stestInit) {
+  dir = 'jsmiparser-test'
+  tasks = ['clean', 'test']
 }

@@ -63,10 +63,7 @@ public abstract class SmiSymbol implements Serializable, Comparable {
         m_idToken = idToken;
     }
 
-    //  TODO should be abstract
-    public String getCodeId() {
-        return null;
-    }
+    public abstract String getCodeId();
 
     public String getFullCodeId() {
         return m_module.getMib().getCodeNamingStrategy().getFullCodeId(this);

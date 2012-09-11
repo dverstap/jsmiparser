@@ -26,7 +26,7 @@ import java.util.List;
 
 public class SNMPv2_SMISymbolDefiner extends AbstractSymbolDefiner {
 
-    protected SNMPv2_SMISymbolDefiner() {
+    public SNMPv2_SMISymbolDefiner() {
         super("SNMPv2-SMI");
     }
 

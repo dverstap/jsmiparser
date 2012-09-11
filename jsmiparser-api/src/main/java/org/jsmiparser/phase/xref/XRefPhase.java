@@ -67,6 +67,23 @@ public class XRefPhase implements Phase {
         m_symbolDefinerMap = symbolDefinerMap;
     }
 
+    public XRefPhase addSymbolDefiner(String moduleId, SymbolDefiner symbolDefiner) {
+        m_symbolDefinerMap.put(moduleId, symbolDefiner);
+        return this;
+    }
+
+    public XRefPhase addSymbolDefiner(SymbolDefiner symbolDefiner) {
+        m_symbolDefinerMap.put(symbolDefiner.getModuleId(), symbolDefiner);
+        return this;
+    }
+
+    public XRefPhase addSymbolDefiners(SymbolDefiner... symbolDefiners) {
+        for (SymbolDefiner symbolDefiner : symbolDefiners) {
+            m_symbolDefinerMap.put(symbolDefiner.getModuleId(), symbolDefiner);
+        }
+        return this;
+    }
+
     public SmiMib process(SmiMib mib) throws SmiException {
 
         defineMissingSymbols(mib);

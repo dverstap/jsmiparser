@@ -21,8 +21,8 @@ package org.jsmiparser.phase.xref;
  */
 public class SNMPv2_TCSymbolDefiner extends AbstractSymbolDefiner {
 
-    public SNMPv2_TCSymbolDefiner(String moduleId) {
-        super(moduleId);
+    public SNMPv2_TCSymbolDefiner() {
+        super("SNMPv2-TC");
     }
 
 

@@ -25,10 +25,9 @@ public interface SmiCodeNamingStrategy {
 	String getFullCodeConstantId(SmiVariable variable);
 	
 	String getTypeId(SmiType type);
+    String getOidValueId(SmiOidValue oidValue);
 
 	String getSingleVariableEnumId(SmiVariable attr);
-
-	String getVariableId(SmiVariable variable);
 
 	String getEnumValueId(SmiNamedNumber value);
 
@@ -37,8 +36,6 @@ public interface SmiCodeNamingStrategy {
 	String getSetterMethodId(SmiVariable attr);
 
 	String getFullCodeId(SmiSymbol symbol);
-
-	String getTableId(SmiTable table);
 
 	String getFullVariableOidClassId(SmiModule module);
 

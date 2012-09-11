@@ -34,13 +34,11 @@ import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.SmiVarBindField;
 import org.jsmiparser.smi.SmiVariable;
 import org.jsmiparser.util.token.HexStringToken;
-import org.jsmiparser.util.url.FileURLListFactory;
 
 import java.io.File;
 import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -57,11 +55,7 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
             throw new IllegalStateException("Could not find resource: " + LIBSMI_MIBS_URL);
         }
         File mibsDir = new File(mibsURL.toURI());
-
-        SmiDefaultParser parser = new SmiDefaultParser();
-        List<URL> inputUrls = initFileParserOptions(mibsDir, "iana", "ietf", "site", "tubs");
-        parser.getFileParserPhase().setInputUrls(inputUrls);
-        return parser;
+        return new LibSmiParserFactory(mibsDir).create();
     }
 
     public void testLibSmi() throws URISyntaxException {
@@ -361,34 +355,13 @@ public class SmiDefaultParserTest extends AbstractMibTestCase {
 
     }
 
-    private List<URL> initFileParserOptions(File mibsDir, String... subDirNames) throws Exception {
-        List<URL> result = new ArrayList<URL>();
-
-        for (String subDirName : subDirNames) {
-            File dir = new File(mibsDir, subDirName);
-            assertTrue(dir.toString(), dir.exists());
-            assertTrue(dir.toString(), dir.isDirectory());
-
-            FileURLListFactory urlListFactory = new FileURLListFactory(dir);
-            File[] files = dir.listFiles();
-            for (File file : files) {
-                if (file.isFile()
-                        && !file.getName().equals("RFC1158-MIB") // obsoleted by RFC-1213
-                        && !file.getName().contains("TOTAL")
-                        && !file.getName().endsWith("tree")
-                        && !file.getName().startsWith("Makefile")
-                        && !file.getName().endsWith("~")
-                        //&& !v1mibs.contains(file.getName())
-                        && !file.getName().endsWith("-orig") // TODO parsing -orig should give more errors!
-                        && !(file.getName().equals("IANA-ITU-ALARM-TC-MIB") && file.getParentFile().getName().equals("iana"))
-                        ) {
-                    urlListFactory.add(file.getName());
-                }
-            }
-            result.addAll(urlListFactory.create());
+    public void testAllVariables() {
+        for (SmiVariable v : getMib().getVariables()) {
+            assertTrue(v.getId(), v.isColumn() || v.isScalar());
+            assertFalse(v.getId(), v.isColumn() && v.isScalar());
+            assertFalse(v.getId().endsWith("Entry"));
+            assertNotNull(v.getPrimitiveType());
         }
-        return result;
     }
-
 
 }
