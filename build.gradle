@@ -1,5 +1,9 @@
 apply from: "./libraries.gradle"
 
+buildscript {
+  repositories { mavenCentral() }
+}
+
 def _hasGeneratedSources(project) {
   for (ss in project.sourceSets) {
     for (f in ss.allJava) {
@@ -35,6 +39,7 @@ allprojects {
   apply plugin: 'eclipse'
   apply plugin: 'idea'
   apply plugin: 'maven'
+  apply plugin: 'signing'
 
   group = 'org.jsmiparser'
 
@@ -80,9 +85,21 @@ subprojects { subproject ->
     from sourceSets.test.output
   }
 
+  task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from 'build/docs/javadoc'
+  }
+
   artifacts {
+    archives jar
     archives sourcesJar
+    archives javadocJar
     archives testsJar
+  }
+
+  signing {
+    required = { gradle.taskGraph.hasTask("uploadArchives") && !version.endsWith("SNAPSHOT") }
+    sign configurations.archives
   }
 
   dependencies {
@@ -99,6 +116,51 @@ subprojects { subproject ->
       inheritOutputDirs = false
       outputDir = sourceSets.main.output.classesDir
       testOutputDir = sourceSets.test.output.classesDir
+    }
+  }
+
+  uploadArchives {
+    repositories {
+      mavenDeployer {
+        beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+        repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+          authentication(userName: sonatypeUsername, password: sonatypePassword)
+        }
+
+        pom {
+          version project.version
+        }
+
+        pom.project {
+          name project.name
+          packaging 'jar'
+          description 'A Java 1.5 SNMP mib parser that builds a complete cross-referenced symbol table.'
+          url 'http://www.jsmiparser.org/'
+
+          scm {
+            url 'https://github.com/dverstap/jsmiparser'
+            connection 'scm:git://github.com/dverstap/jsmiparser.git'
+            developerConnection 'scm:git@github.com:dverstap/jsmiparser.git'
+          }
+
+          licenses {
+            license {
+              name 'The Apache Software License, Version 2.0'
+              url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+              distribution 'repo'
+            }
+          }
+
+          developers {
+            developer {
+              id 'dverstap'
+              name 'Davy Verstappen'
+              email 'davy@jsmiparser.org'
+            }
+          }
+        }
+      }
     }
   }
 
