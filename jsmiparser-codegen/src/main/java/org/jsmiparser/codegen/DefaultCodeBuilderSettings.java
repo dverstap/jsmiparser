@@ -21,6 +21,7 @@ public class DefaultCodeBuilderSettings implements CodeBuilderSettings {
     private String packageName;
     private File outputDir;
     private String bitsEnumTypeNameSuffix = "Bit";
+    private String enumInterface;
 
     public String getPackageName() {
         return packageName;
@@ -44,5 +45,13 @@ public class DefaultCodeBuilderSettings implements CodeBuilderSettings {
 
     public void setBitsEnumTypeNameSuffix(String bitsEnumTypeNameSuffix) {
         this.bitsEnumTypeNameSuffix = bitsEnumTypeNameSuffix;
+    }
+
+    public String getEnumInterface() {
+        return enumInterface;
+    }
+
+    public void setEnumInterface(String enumInterface) {
+        this.enumInterface = enumInterface;
     }
 }

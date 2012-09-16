@@ -99,8 +99,9 @@ public class EnumBuilder {
     }
 
     protected void addInterfaces() {
-        // TODO add configurable interface
-        //definedClass._implements(Serializable.class);
+        if (settings.getEnumInterface() != null) {
+            definedClass._implements(codeModel.ref(settings.getEnumInterface()));
+        }
     }
 
     protected void addEnumConstants() {

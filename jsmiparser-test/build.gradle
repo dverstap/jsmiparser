@@ -56,6 +56,7 @@ def determineIdeaExcludeDirs(project) {
 
 task generateSources(type: org.jsmiparser.gradle.CodegenTask) {
   settings.packageName = 'org.jsmiparser.test.libsmi'
+  settings.enumInterface = 'org.jsmiparser.test.MyEnum'
   inputFiles = fileTree('../jsmiparser-api/src/test/resources/libsmi-0.4.8/mibs/')
           .exclude('**/*orig')
           .exclude("ietf/RFC1158-MIB") // obsoleted by RFC-1213

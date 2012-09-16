@@ -25,4 +25,5 @@ public interface CodeBuilderSettings {
 
     String getBitsEnumTypeNameSuffix();
 
+    String getEnumInterface();
 }
