@@ -42,6 +42,8 @@ public class SmiMib {
     SmiSymbolMapImpl<SmiVariable> m_scalarMap = new SmiSymbolMapImpl<SmiVariable>(SmiVariable.class, m_moduleMap);
     SmiSymbolMapImpl<SmiOidValue> m_oidValueMap = new SmiSymbolMapImpl<SmiOidValue>(SmiOidValue.class, m_moduleMap);
     SmiSymbolMapImpl<SmiObjectType> m_objectTypesMap = new SmiSymbolMapImpl<SmiObjectType>(SmiObjectType.class, m_moduleMap);
+    SmiSymbolMapImpl<SmiNotificationType> m_notificationTypesMap = new SmiSymbolMapImpl<SmiNotificationType>(SmiNotificationType.class, m_moduleMap);
+    SmiSymbolMapImpl<SmiTrapType> m_trapTypesMap = new SmiSymbolMapImpl<SmiTrapType>(SmiTrapType.class, m_moduleMap);
 
     int m_dummyOidNodesCount;
     private SmiModule m_internalModule;
@@ -201,6 +203,14 @@ public class SmiMib {
 
     public SmiSymbolMap<SmiObjectType> getObjectTypes() {
         return m_objectTypesMap;
+    }
+    
+    public SmiSymbolMap<SmiNotificationType> getNotificationTypes() {
+    	return m_notificationTypesMap;
+    }
+    
+    public SmiSymbolMap<SmiTrapType> getTrapTypes() {
+    	return m_trapTypesMap;
     }
 
     public SmiOidNode findByOid(int... oid) {
