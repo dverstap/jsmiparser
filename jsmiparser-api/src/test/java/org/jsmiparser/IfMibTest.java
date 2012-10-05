@@ -43,6 +43,7 @@ public class IfMibTest extends AbstractMibTestCase {
     public void testSizes() {
         assertEquals(44, getMib().getScalars().size());
         assertEquals(57, getMib().getColumns().size());
+        assertEquals(2, getMib().getNotificationTypes().size());
 
         SmiModule ifMib = getMib().findModule("IF-MIB");
         assertNotNull(ifMib);

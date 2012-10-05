@@ -148,6 +148,8 @@ public class SmiMib {
             m_symbolMap.putAll(module.m_symbolMap);
             m_oidValueMap.putAll(module.m_oidValueMap);
             m_objectTypesMap.putAll(module.m_objectTypeMap);
+            m_notificationTypesMap.putAll(module.m_notificationTypeMap);
+            m_trapTypesMap.putAll(module.m_trapTypeMap);
         }
     }
 

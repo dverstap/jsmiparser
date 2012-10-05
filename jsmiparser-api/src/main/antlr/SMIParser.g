@@ -638,7 +638,7 @@ oid_macro_value_assignment[IdToken idToken] returns [SmiOidMacro v = null]
 	(v=objecttype_macro[idToken]
 	| moduleidentity_macro
 	| objectidentity_macro
-	| notificationtype_macro
+	| notificationtype_macro[idToken]
 	| objectgroup_macro
 	| notificationgroup_macro
 	| modulecompliance_macro
@@ -829,14 +829,22 @@ objectidentity_macro
 	"DESCRIPTION" C_STRING ("REFERENCE" C_STRING)?
 ;
 
-
-notificationtype_macro
+notificationtype_macro[IdToken idToken] returns [SmiNotificationType nt = null]
+{
+	StatusV2 status = null;
+}
 :
 	"NOTIFICATION-TYPE"
-	("OBJECTS" L_BRACE LOWER (COMMA LOWER)* R_BRACE)? 
-	"STATUS" status_v2
-	"DESCRIPTION" C_STRING ("REFERENCE" C_STRING)?
+	("OBJECTS" L_BRACE symbol_list R_BRACE)?
+	"STATUS" status=status_v2
+	"DESCRIPTION" desc:C_STRING ("REFERENCE" C_STRING)?
+	{
+		nt = m_mp.createNotification(idToken, status);
+		nt.setStatusV2(status);
+	    nt.setDescription(m_mp.getOptCStr(desc));
+	}
 ;
+
 
 textualconvention_macro[IdToken idToken] returns [SmiTextualConvention tc=null]
 {

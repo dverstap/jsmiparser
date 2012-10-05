@@ -25,18 +25,16 @@ public class SmiNotificationType extends SmiOidMacro {
 
     protected SmiType m_type;
     private List<IdToken> m_objectTokens;
+    private StatusV2 m_statusV2;
     private String m_description;
 
-    public SmiNotificationType(IdToken idToken, SmiModule module) {
+    public SmiNotificationType(IdToken idToken, SmiModule module, StatusV2 statusV2) {
         super(idToken, module);
+        m_statusV2 = statusV2;
     }
 
     public SmiType getType() {
         return m_type;
-    }
-
-    public void setType(SmiType type) {
-        m_type = type;
     }
 
     public void resolveReferences(XRefProblemReporter reporter) {
@@ -51,16 +49,16 @@ public class SmiNotificationType extends SmiOidMacro {
         m_description = description;
     }
 
-    public void setStatus(StatusAll status) {
-        m_status = status;
+    public void setStatusV2(StatusV2 statusV2) {
+        m_statusV2 = statusV2;
     }
 
     public List<IdToken> getObjectTokens() {
         return m_objectTokens;
     }
-
-    public void setAccessToken(List<IdToken> objectTokens) {
-        m_objectTokens = objectTokens;
+    
+    public StatusV2 getStatusV2() {
+    	return m_statusV2;
     }
 
 }
