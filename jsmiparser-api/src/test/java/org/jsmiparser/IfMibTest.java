@@ -49,6 +49,9 @@ public class IfMibTest extends AbstractMibTestCase {
 
         SmiModule ifMib = getMib().findModule("IF-MIB");
         assertNotNull(ifMib);
+        
+        // Just linkUp, linkDown
+        assertEquals(2, ifMib.getNotificationTypes().size());
 
         assertEquals(3, ifMib.getScalars().size());
         assertEquals(22+19+3+3+6, ifMib.getColumns().size());
@@ -187,6 +190,10 @@ public class IfMibTest extends AbstractMibTestCase {
         assertNotNull(result);
         assertEquals(1, result.getValues().size());
         assertEquals("org", result.getValues().get(0).getId());
+    }
+    
+    public void testNotificationTypes() {
+    	
     }
 
 }
