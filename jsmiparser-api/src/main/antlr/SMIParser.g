@@ -654,8 +654,14 @@ oid_macro_value_assignment[IdToken idToken] returns [SmiOidMacro v = null]
 ;
 
 int_macro_value_assignment
+{
+	OidComponent specificType = null;
+}
 :
-	traptype_macro ASSIGN_OP NUMBER
+	(v=traptype_macro ASSIGN_OP specificType=NUMBER)
+{
+	v.setSpecificType(specificType);
+}
 ;
 
 
@@ -982,13 +988,23 @@ agentcapabilities_access
 ;
 
 
-traptype_macro
+traptype_macro[IdToken idToken] returns [SmiTrapType tt = null]
+{
+	IdToken enterprise = null;
+	List<IdToken> variables = null;
+	Integer specificType = null;
+}
 :
 	"TRAP-TYPE"
-	"ENTERPRISE" LOWER
-	("VARIABLES" L_BRACE LOWER (COMMA LOWER)* R_BRACE)? 
-	("DESCRIPTION" C_STRING)?
+	"ENTERPRISE" enterprise=LOWER
+	("VARIABLES" L_BRACE variables=symbol_list R_BRACE)? 
+	("DESCRIPTION" desc:C_STRING)?
 	("REFERENCE" C_STRING)?
+	{
+		tt = m_mp.createTrap(idToken);
+		tt.setDescription(m_mp.getOptCStr(desc));
+		tt.setVariableTokens(variables);
+	}
 ;
 
 named_number_list returns [List<SmiNamedNumber> l = new ArrayList<SmiNamedNumber>()]

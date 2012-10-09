@@ -24,8 +24,10 @@ import org.jsmiparser.util.token.IdToken;
 public class SmiTrapType extends SmiOidMacro {
 
     protected SmiType m_type;
-    private List<IdToken> m_objectTokens;
+    private IdToken m_enterprise;
+    private List<IdToken> m_variableTokens;
     private String m_description;
+    private Integer m_specificType;
 
     public SmiTrapType(IdToken idToken, SmiModule module) {
         super(idToken, module);
@@ -40,7 +42,8 @@ public class SmiTrapType extends SmiOidMacro {
     }
 
     public void resolveReferences(XRefProblemReporter reporter) {
-        m_type = m_type.resolveThis(reporter, null);
+    	// TODO What, if anything, do we need to do here for TRAP-TYPE?
+        //m_type = m_type.resolveThis(reporter, null);
     }
 
     public String getDescription() {
@@ -51,16 +54,27 @@ public class SmiTrapType extends SmiOidMacro {
         m_description = description;
     }
 
-    public void setStatus(StatusAll status) {
-        m_status = status;
+    public List<IdToken> getVariableTokens() {
+        return m_variableTokens;
     }
-
-    public List<IdToken> getObjectTokens() {
-        return m_objectTokens;
+    
+    public void setVariableTokens(List<IdToken> variableTokens) {
+    	m_variableTokens = variableTokens;
     }
-
-    public void setAccessToken(List<IdToken> objectTokens) {
-        m_objectTokens = objectTokens;
+    
+    public IdToken getEnterprise() {
+    	return m_enterprise;
     }
-
+    
+    public void setEnterprise(IdToken enterprise) {
+    	m_enterprise = enterprise;
+    }
+    
+    public Integer getSpecificType() {
+    	return m_specificType;
+    }
+    
+    public void setSpecificType(Integer specificType) {
+    	m_specificType = specificType;
+    }
 }

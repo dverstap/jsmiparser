@@ -36,6 +36,10 @@ public class SmiNotificationType extends SmiOidMacro {
     public SmiType getType() {
         return m_type;
     }
+    
+    public void setType(SmiType type) {
+    	m_type = type;
+    }
 
     public void resolveReferences(XRefProblemReporter reporter) {
     	// TODO What exactly should this method do for the case of NOTIFICATION-TYPE?
