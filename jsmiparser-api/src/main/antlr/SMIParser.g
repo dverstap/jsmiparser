@@ -638,7 +638,7 @@ oid_macro_value_assignment[IdToken idToken] returns [SmiOidMacro v = null]
 	(v=objecttype_macro[idToken]
 	| moduleidentity_macro
 	| objectidentity_macro
-	| notificationtype_macro[idToken]
+	| v=notificationtype_macro[idToken]
 	| objectgroup_macro
 	| notificationgroup_macro
 	| modulecompliance_macro

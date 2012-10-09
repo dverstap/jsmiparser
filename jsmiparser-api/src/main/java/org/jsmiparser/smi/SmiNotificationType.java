@@ -38,7 +38,8 @@ public class SmiNotificationType extends SmiOidMacro {
     }
 
     public void resolveReferences(XRefProblemReporter reporter) {
-        m_type = m_type.resolveThis(reporter, null);
+    	// TODO What exactly should this method do for the case of NOTIFICATION-TYPE?
+        //m_type = m_type.resolveThis(reporter, null);
     }
 
     public String getDescription() {

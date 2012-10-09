@@ -43,7 +43,9 @@ public class IfMibTest extends AbstractMibTestCase {
     public void testSizes() {
         assertEquals(44, getMib().getScalars().size());
         assertEquals(57, getMib().getColumns().size());
-        assertEquals(2, getMib().getNotificationTypes().size());
+        
+        // { linkUp, linkDown } from IF-MIB plus { warmStart, coldStart, authenticationFailure } from SNMPv2-MIB dependency 
+        assertEquals(5, getMib().getNotificationTypes().size());
 
         SmiModule ifMib = getMib().findModule("IF-MIB");
         assertNotNull(ifMib);
