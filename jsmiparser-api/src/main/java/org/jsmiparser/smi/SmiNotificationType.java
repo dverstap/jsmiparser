@@ -54,12 +54,16 @@ public class SmiNotificationType extends SmiOidMacro {
         m_statusV2 = statusV2;
     }
 
-    public List<IdToken> getObjectTokens() {
-        return m_objectTokens;
-    }
     
     public StatusV2 getStatusV2() {
     	return m_statusV2;
     }
 
+    public void setObjectTokens(List<IdToken> objectTokens) {
+    	m_objectTokens = objectTokens;
+    }
+    
+    public List<IdToken> getObjectTokens() {
+    	return m_objectTokens;
+    }
 }
