@@ -653,12 +653,12 @@ oid_macro_value_assignment[IdToken idToken] returns [SmiOidMacro v = null]
 }
 ;
 
-int_macro_value_assignment
+int_macro_value_assignment returns [SmiTrapType v = null]
 {
-	OidComponent specificType = null;
+	Integer specificType = null;
 }
 :
-	(v=traptype_macro ASSIGN_OP specificType=NUMBER)
+	(v=traptype_macro ASSIGN_OP specificType:NUMBER)
 {
 	v.setSpecificType(specificType);
 }
@@ -996,7 +996,7 @@ traptype_macro[IdToken idToken] returns [SmiTrapType tt = null]
 }
 :
 	"TRAP-TYPE"
-	"ENTERPRISE" enterprise=LOWER
+	"ENTERPRISE" enterprise:LOWER
 	("VARIABLES" L_BRACE variables=symbol_list R_BRACE)? 
 	("DESCRIPTION" desc:C_STRING)?
 	("REFERENCE" C_STRING)?
