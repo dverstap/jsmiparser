@@ -627,7 +627,7 @@ oid_value_assignment[IdToken idToken] returns [SmiOidValue v = null]
 macro_value_assignment[IdToken idToken] returns [SmiValue v = null]
 :
 	v=oid_macro_value_assignment[idToken]
-	| int_macro_value_assignment
+	| v=int_macro_value_assignment[idToken]
 ;
 
 oid_macro_value_assignment[IdToken idToken] returns [SmiOidMacro v = null]
@@ -653,9 +653,9 @@ oid_macro_value_assignment[IdToken idToken] returns [SmiOidMacro v = null]
 }
 ;
 
-int_macro_value_assignment returns [SmiTrapType v = null]
+int_macro_value_assignment[IdToken idToken] returns [SmiTrapType v = null]
 :
-	(v=traptype_macro ASSIGN_OP specificType:NUMBER)
+	(v=traptype_macro[idToken] ASSIGN_OP specificType:NUMBER)
 {
 	v.setSpecificType(m_mp.intt(specificType));
 }

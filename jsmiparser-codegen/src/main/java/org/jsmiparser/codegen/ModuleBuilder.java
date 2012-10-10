@@ -124,10 +124,6 @@ public class ModuleBuilder {
         	SmiNotificationType notificationType = (SmiNotificationType) v;
         	ec.javadoc().append("<pre>" + notificationType.getDescription() + "</pre>");
         }
-        if (v instanceof SmiTrapType) {
-        	SmiTrapType trapType = (SmiTrapType) v;
-        	ec.javadoc().append("<pre>" + trapType.getDescription() + "</pre>");
-        }
 
         // TODO add link to generated enum type, if applicable
     }

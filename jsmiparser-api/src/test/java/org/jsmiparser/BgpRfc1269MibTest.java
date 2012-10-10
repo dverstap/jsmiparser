@@ -1,5 +1,5 @@
 /*
- * Copyright 2006 Davy Verstappen.
+ * Copyright 2012 The OpenNMS Group, Inc..
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,15 +34,19 @@ import org.jsmiparser.smi.SmiOidNode;
 import java.net.URISyntaxException;
 import java.util.List;
 
-public class IfMibTest extends AbstractMibTestCase {
+public class BgpRfc1269MibTest extends AbstractMibTestCase {
 
-    public IfMibTest() {
+    public BgpRfc1269MibTest() {
         super(SmiVersion.V1,
                 LIBSMI_MIBS_URL + "/ietf/RFC1269-MIB");
     }
 
     public void testSizes() {
+    	assertNotNull(getMib());
+    	assertNotNull(getMib().getScalars());
         assertEquals(0, getMib().getScalars().size());
+        
+        assertNotNull(getMib().getColumns());
         assertEquals(0, getMib().getColumns().size());
         
         // { bgpEstablished, bgpBackwardTransition } from RFC1269-MIB 
@@ -74,10 +78,10 @@ public class IfMibTest extends AbstractMibTestCase {
     	SmiModule bgpMib = getMib().findModule("RFC1269-MIB");
         assertNotNull(bgpMib);
         
-        SmiTrapType bgpEstablished = bgpMib.findNotificationType("bgpEstablished");
+        SmiTrapType bgpEstablished = bgpMib.findTrapType("bgpEstablished");
         assertNotNull(bgpEstablished);
         
-        SmiTrapType bgpBackwardTransition = bgpMib.findNotificationType("bgpBackwardTransition");
+        SmiTrapType bgpBackwardTransition = bgpMib.findTrapType("bgpBackwardTransition");
         assertNotNull(bgpBackwardTransition);
         
         assertEquals("foo", bgpEstablished.getEnterprise());

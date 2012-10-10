@@ -19,22 +19,26 @@ package org.jsmiparser.smi;
 import java.util.List;
 
 import org.jsmiparser.phase.xref.XRefProblemReporter;
-import org.jsmiparser.util.token.IntegerToken;
 import org.jsmiparser.util.token.IdToken;
+import org.jsmiparser.util.token.IntegerToken;
 
-public class SmiTrapType extends SmiOidMacro {
+public class SmiTrapType extends SmiValue {
 
     protected SmiType m_type;
     private IdToken m_enterprise;
     private List<IdToken> m_variableTokens;
     private String m_description;
     private IntegerToken m_specificType;
-
+    
     public SmiTrapType(IdToken idToken, SmiModule module) {
         super(idToken, module);
     }
 
-    public SmiType getType() {
+    public String getCodeId() {
+	    return getId();
+	}
+
+	public SmiType getType() {
         return m_type;
     }
 
