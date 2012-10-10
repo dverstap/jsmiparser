@@ -997,6 +997,7 @@ traptype_macro[IdToken idToken] returns [SmiTrapType tt = null]
 	("REFERENCE" C_STRING)?
 	{
 		tt = m_mp.createTrap(idToken);
+		tt.setEnterprise(m_mp.idt(enterprise));
 		tt.setDescription(m_mp.getOptCStr(desc));
 		tt.setVariableTokens(variables);
 	}

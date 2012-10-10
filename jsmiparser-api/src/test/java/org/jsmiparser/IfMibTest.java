@@ -193,7 +193,7 @@ public class IfMibTest extends AbstractMibTestCase {
         assertEquals("org", result.getValues().get(0).getId());
     }
     
-    public void testNotificationTypes() {
+    public void testTrapTypes() {
     	SmiModule ifMib = getMib().findModule("IF-MIB");
         assertNotNull(ifMib);
         

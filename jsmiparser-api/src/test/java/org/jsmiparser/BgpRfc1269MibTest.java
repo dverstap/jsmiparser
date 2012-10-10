@@ -38,19 +38,22 @@ public class BgpRfc1269MibTest extends AbstractMibTestCase {
 
     public BgpRfc1269MibTest() {
         super(SmiVersion.V1,
+        		LIBSMI_MIBS_URL + "/ietf/RFC-1212",
+        		LIBSMI_MIBS_URL + "/ietf/RFC1213-MIB",
+        		LIBSMI_MIBS_URL + "/ietf/RFC-1215",
                 LIBSMI_MIBS_URL + "/ietf/RFC1269-MIB");
     }
 
     public void testSizes() {
-    	assertNotNull(getMib());
+    	assertNotNull("MIB cannot be null", getMib());
     	assertNotNull(getMib().getScalars());
-        assertEquals(0, getMib().getScalars().size());
+        assertEquals(108, getMib().getScalars().size());
         
         assertNotNull(getMib().getColumns());
-        assertEquals(0, getMib().getColumns().size());
+        assertEquals(89, getMib().getColumns().size());
         
         // { bgpEstablished, bgpBackwardTransition } from RFC1269-MIB 
-        assertEquals(0, getMib().getTrapTypes().size());
+        assertEquals(2, getMib().getTrapTypes().size());
 
         SmiModule bgpMib = getMib().findModule("RFC1269-MIB");
         assertNotNull(bgpMib);
@@ -59,7 +62,7 @@ public class BgpRfc1269MibTest extends AbstractMibTestCase {
         assertEquals(2, bgpMib.getTrapTypes().size());
 
         assertEquals(3, bgpMib.getScalars().size());
-        assertEquals(22+19+3+3+6, bgpMib.getColumns().size());
+        assertEquals(20, bgpMib.getColumns().size());
 
         assertNotNull(bgpMib.findScalar("bgpLocalAs"));
         assertNull(bgpMib.findColumn("bgpLocalAs"));
@@ -74,7 +77,7 @@ public class BgpRfc1269MibTest extends AbstractMibTestCase {
         assertNull(bgpMib.findVariable("bgpPeerEntry"));
     }
 
-    public void testNotificationTypes() {
+    public void testTrapTypes() {
     	SmiModule bgpMib = getMib().findModule("RFC1269-MIB");
         assertNotNull(bgpMib);
         
@@ -84,8 +87,8 @@ public class BgpRfc1269MibTest extends AbstractMibTestCase {
         SmiTrapType bgpBackwardTransition = bgpMib.findTrapType("bgpBackwardTransition");
         assertNotNull(bgpBackwardTransition);
         
-        assertEquals("foo", bgpEstablished.getEnterprise());
-        assertEquals(1, bgpEstablished.getSpecificType());
+        assertEquals("1.3.6.1.2.1.15", bgpEstablished.getEnterpriseOid().getOidStr());
+        assertEquals(1, bgpEstablished.getSpecificType().getValue());
         assertEquals("The BGP Established event is generated when\n"
             + "          the BGP FSM enters the ESTABLISHED state. ", bgpEstablished.getDescription());
         assertNotNull(bgpEstablished.getVariableTokens());

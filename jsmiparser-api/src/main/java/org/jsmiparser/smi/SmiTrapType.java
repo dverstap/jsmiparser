@@ -26,6 +26,7 @@ public class SmiTrapType extends SmiValue {
 
     protected SmiType m_type;
     private IdToken m_enterprise;
+    private SmiOidValue m_enterpriseOid;
     private List<IdToken> m_variableTokens;
     private String m_description;
     private IntegerToken m_specificType;
@@ -49,6 +50,8 @@ public class SmiTrapType extends SmiValue {
     public void resolveReferences(XRefProblemReporter reporter) {
     	// TODO What, if anything, do we need to do here for TRAP-TYPE?
         //m_type = m_type.resolveThis(reporter, null);
+    	//m_enterpriseSymbol = getModule().resolveReference(m_enterprise, reporter);
+    	m_enterpriseOid = getModule().resolveReference(m_enterprise, SmiOidValue.class, reporter);
     }
 
     public String getDescription() {
@@ -73,6 +76,10 @@ public class SmiTrapType extends SmiValue {
     
     public void setEnterprise(IdToken enterprise) {
     	m_enterprise = enterprise;
+    }
+    
+    public SmiOidValue getEnterpriseOid() {
+    	return m_enterpriseOid;
     }
     
     public IntegerToken getSpecificType() {
