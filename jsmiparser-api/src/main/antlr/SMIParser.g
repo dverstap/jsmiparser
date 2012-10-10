@@ -654,13 +654,10 @@ oid_macro_value_assignment[IdToken idToken] returns [SmiOidMacro v = null]
 ;
 
 int_macro_value_assignment returns [SmiTrapType v = null]
-{
-	Integer specificType = null;
-}
 :
 	(v=traptype_macro ASSIGN_OP specificType:NUMBER)
 {
-	v.setSpecificType(specificType);
+	v.setSpecificType(m_mp.intt(specificType));
 }
 ;
 
@@ -990,9 +987,7 @@ agentcapabilities_access
 
 traptype_macro[IdToken idToken] returns [SmiTrapType tt = null]
 {
-	IdToken enterprise = null;
 	List<IdToken> variables = null;
-	Integer specificType = null;
 }
 :
 	"TRAP-TYPE"
