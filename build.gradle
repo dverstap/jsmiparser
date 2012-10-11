@@ -52,6 +52,9 @@ allprojects {
 }
 
 subprojects { subproject ->
+
+  apply plugin: 'osgi'
+
   jar {
     manifest.attributes['Implementation-Title'] = subproject.name
     manifest.attributes['Implementation-Version'] = subproject.version
