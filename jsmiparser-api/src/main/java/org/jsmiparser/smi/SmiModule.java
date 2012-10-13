@@ -48,6 +48,8 @@ public class SmiModule {
     Map<String, SmiVariable> m_columnMap = new LinkedHashMap<String, SmiVariable>();
     Map<String, SmiOidValue> m_oidValueMap = new LinkedHashMap<String, SmiOidValue>();
     Map<String, SmiObjectType> m_objectTypeMap = new LinkedHashMap<String, SmiObjectType>();
+    Map<String, SmiNotificationType> m_notificationTypeMap = new LinkedHashMap<String, SmiNotificationType>();
+    Map<String, SmiTrapType> m_trapTypeMap = new LinkedHashMap<String, SmiTrapType>();
 
     private int m_v1Features = 0;
     private int m_v2Features = 0;
@@ -179,9 +181,25 @@ public class SmiModule {
     public SmiObjectType findObjectType(String id) {
         return m_objectTypeMap.get(id);
     }
+    
+    public SmiNotificationType findNotificationType(String id) {
+    	return m_notificationTypeMap.get(id);
+    }
+    
+    public SmiTrapType findTrapType(String id) {
+    	return m_trapTypeMap.get(id);
+    }
 
     public Collection<SmiObjectType> getObjectTypes() {
         return m_objectTypeMap.values();
+    }
+    
+    public Collection<SmiNotificationType> getNotificationTypes() {
+    	return m_notificationTypeMap.values();
+    }
+    
+    public Collection<SmiTrapType> getTrapTypes() {
+    	return m_trapTypeMap.values();
     }
 
     public void setIdToken(IdToken id) {
@@ -276,6 +294,8 @@ public class SmiModule {
             put(m_rowMap, SmiRow.class, symbol);
             put(m_oidValueMap, SmiOidValue.class, symbol);
             put(m_objectTypeMap, SmiObjectType.class, symbol);
+            put(m_notificationTypeMap, SmiNotificationType.class, symbol);
+            put(m_trapTypeMap, SmiTrapType.class, symbol);
         }
     }
 

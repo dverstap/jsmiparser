@@ -627,7 +627,7 @@ oid_value_assignment[IdToken idToken] returns [SmiOidValue v = null]
 macro_value_assignment[IdToken idToken] returns [SmiValue v = null]
 :
 	v=oid_macro_value_assignment[idToken]
-	| int_macro_value_assignment
+	| v=int_macro_value_assignment[idToken]
 ;
 
 oid_macro_value_assignment[IdToken idToken] returns [SmiOidMacro v = null]
@@ -638,7 +638,7 @@ oid_macro_value_assignment[IdToken idToken] returns [SmiOidMacro v = null]
 	(v=objecttype_macro[idToken]
 	| moduleidentity_macro
 	| objectidentity_macro
-	| notificationtype_macro
+	| v=notificationtype_macro[idToken]
 	| objectgroup_macro
 	| notificationgroup_macro
 	| modulecompliance_macro
@@ -653,9 +653,12 @@ oid_macro_value_assignment[IdToken idToken] returns [SmiOidMacro v = null]
 }
 ;
 
-int_macro_value_assignment
+int_macro_value_assignment[IdToken idToken] returns [SmiTrapType v = null]
 :
-	traptype_macro ASSIGN_OP NUMBER
+	(v=traptype_macro[idToken] ASSIGN_OP specificType:NUMBER)
+{
+	v.setSpecificType(m_mp.intt(specificType));
+}
 ;
 
 
@@ -829,14 +832,24 @@ objectidentity_macro
 	"DESCRIPTION" C_STRING ("REFERENCE" C_STRING)?
 ;
 
-
-notificationtype_macro
+notificationtype_macro[IdToken idToken] returns [SmiNotificationType nt = null]
+{
+	StatusV2 status = null;
+	List<IdToken> objects = null;
+}
 :
 	"NOTIFICATION-TYPE"
-	("OBJECTS" L_BRACE LOWER (COMMA LOWER)* R_BRACE)? 
-	"STATUS" status_v2
-	"DESCRIPTION" C_STRING ("REFERENCE" C_STRING)?
+	("OBJECTS" L_BRACE objects=symbol_list R_BRACE)?
+	"STATUS" status=status_v2
+	"DESCRIPTION" desc:C_STRING ("REFERENCE" C_STRING)?
+	{
+		nt = m_mp.createNotification(idToken, status);
+		nt.setStatusV2(status);
+		nt.setDescription(m_mp.getOptCStr(desc));
+		nt.setObjectTokens(objects);
+	}
 ;
+
 
 textualconvention_macro[IdToken idToken] returns [SmiTextualConvention tc=null]
 {
@@ -972,13 +985,22 @@ agentcapabilities_access
 ;
 
 
-traptype_macro
+traptype_macro[IdToken idToken] returns [SmiTrapType tt = null]
+{
+	List<IdToken> variables = null;
+}
 :
 	"TRAP-TYPE"
-	"ENTERPRISE" LOWER
-	("VARIABLES" L_BRACE LOWER (COMMA LOWER)* R_BRACE)? 
-	("DESCRIPTION" C_STRING)?
+	"ENTERPRISE" enterprise:LOWER
+	("VARIABLES" L_BRACE variables=symbol_list R_BRACE)? 
+	("DESCRIPTION" desc:C_STRING)?
 	("REFERENCE" C_STRING)?
+	{
+		tt = m_mp.createTrap(idToken);
+		tt.setEnterprise(m_mp.idt(enterprise));
+		tt.setDescription(m_mp.getOptCStr(desc));
+		tt.setVariableTokens(variables);
+	}
 ;
 
 named_number_list returns [List<SmiNamedNumber> l = new ArrayList<SmiNamedNumber>()]
