@@ -16,77 +16,114 @@
 
 package org.jsmiparser.smi;
 
-import java.util.List;
-
 import org.jsmiparser.phase.xref.XRefProblemReporter;
 import org.jsmiparser.util.token.IdToken;
 import org.jsmiparser.util.token.IntegerToken;
 
-public class SmiTrapType extends SmiValue {
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-    protected SmiType m_type;
-    private IdToken m_enterprise;
+public class SmiTrapType extends SmiValue implements Notification {
+
+    private IdToken m_enterpriseIdToken;
     private SmiOidValue m_enterpriseOid;
     private List<IdToken> m_variableTokens;
+    private List<SmiVariable> m_variables = new ArrayList<SmiVariable>();
     private String m_description;
-    private IntegerToken m_specificType;
+    private String m_reference;
+    private IntegerToken m_specificTypeToken;
     
-    public SmiTrapType(IdToken idToken, SmiModule module) {
+    public SmiTrapType(IdToken idToken, SmiModule module,
+                       IdToken enterpriseIdToken, List<IdToken> variableTokens,
+                       String description, String reference) {
         super(idToken, module);
+        m_enterpriseIdToken = enterpriseIdToken;
+        m_variableTokens = variableTokens;
+        if (m_variableTokens == null) {
+            m_variableTokens = Collections.emptyList();
+        }
+        m_description = description;
+        m_reference = reference;
     }
 
     public String getCodeId() {
 	    return getId();
 	}
 
-	public SmiType getType() {
-        return m_type;
-    }
-
-    public void setType(SmiType type) {
-        m_type = type;
-    }
-
     public void resolveReferences(XRefProblemReporter reporter) {
-    	// TODO What, if anything, do we need to do here for TRAP-TYPE?
-        //m_type = m_type.resolveThis(reporter, null);
-    	//m_enterpriseSymbol = getModule().resolveReference(m_enterprise, reporter);
-    	m_enterpriseOid = getModule().resolveReference(m_enterprise, SmiOidValue.class, reporter);
+    	m_enterpriseOid = getModule().resolveReference(m_enterpriseIdToken, SmiOidValue.class, reporter);
+        for (IdToken variableToken : m_variableTokens) {
+            SmiVariable variable = getModule().resolveReference(variableToken, SmiVariable.class, reporter);
+            if (variable != null) {
+                m_variables.add(variable);
+            }
+        }
+    }
+
+    public IdToken getEnterpriseIdToken() {
+        return m_enterpriseIdToken;
+    }
+
+    public SmiOidValue getEnterpriseOid() {
+        return m_enterpriseOid;
+    }
+
+    public List<IdToken> getVariableTokens() {
+        return m_variableTokens;
+    }
+
+    public List<SmiVariable> getVariables() {
+        return m_variables;
+    }
+
+    public List<SmiVariable> getObjects() {
+        return m_variables;
+    }
+
+    public List<IdToken> getObjectTokens() {
+        return m_variableTokens;
     }
 
     public String getDescription() {
         return m_description;
     }
 
-    public void setDescription(String description) {
-        m_description = description;
+    /**
+     * This method is just here to implement Notification, for v1/v2 interoperability.
+     *
+     * Ideally we would return an SmiOidValue object here, but those would essentially always
+     * cause clashes and "duplicate OID" errors. This is because traps essentially do not
+     * define unique OIDs, and concatenating the trap enterprise OID with the trap specific type
+     * integer, will essentially always clash with other OBJECT-TYPE definitions in the mib file.
+     *
+     * For instance:
+     * <ul>
+     *     <li>bgpVersion OBJECT-TYPE [snip] ::= { bgp 1 }</li>
+     *     <li>bgpEstablished TRAP-TYPE ENTERPRISE bgp [snip] ::= 1</li>
+     * </ul>
+     *
+     * @return The OID in decimal dotted notation.
+     */
+
+    public String getOidStr() {
+        return getEnterpriseOid().getOidStr() + '.' + getSpecificType();
     }
 
-    public List<IdToken> getVariableTokens() {
-        return m_variableTokens;
+    public String getReference() {
+        return m_reference;
+    }
+
+    public IntegerToken getSpecificTypeToken() {
+    	return m_specificTypeToken;
     }
     
-    public void setVariableTokens(List<IdToken> variableTokens) {
-    	m_variableTokens = variableTokens;
+    public void setSpecificTypeToken(IntegerToken specificTypeToken) {
+    	m_specificTypeToken = specificTypeToken;
     }
-    
-    public IdToken getEnterprise() {
-    	return m_enterprise;
+
+    public int getSpecificType() {
+        return m_specificTypeToken.getValue();
     }
-    
-    public void setEnterprise(IdToken enterprise) {
-    	m_enterprise = enterprise;
-    }
-    
-    public SmiOidValue getEnterpriseOid() {
-    	return m_enterpriseOid;
-    }
-    
-    public IntegerToken getSpecificType() {
-    	return m_specificType;
-    }
-    
-    public void setSpecificType(IntegerToken specificType) {
-    	m_specificType = specificType;
-    }
+
 }

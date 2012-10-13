@@ -15,24 +15,10 @@
  */
 package org.jsmiparser;
 
-import org.jsmiparser.smi.SmiNotificationType;
 import org.jsmiparser.smi.SmiTrapType;
-import org.jsmiparser.smi.SmiVariable;
-import org.jsmiparser.smi.SmiConstants;
-import org.jsmiparser.smi.SmiMib;
 import org.jsmiparser.smi.SmiModule;
-import org.jsmiparser.smi.SmiPrimitiveType;
-import org.jsmiparser.smi.SmiRow;
-import org.jsmiparser.smi.SmiTable;
-import org.jsmiparser.smi.SmiTextualConvention;
-import org.jsmiparser.smi.SmiType;
+import org.jsmiparser.smi.SmiVariable;
 import org.jsmiparser.smi.SmiVersion;
-import org.jsmiparser.smi.StatusV2;
-import org.jsmiparser.smi.SmiIndex;
-import org.jsmiparser.smi.SmiOidNode;
-
-import java.net.URISyntaxException;
-import java.util.List;
 
 public class BgpRfc1269MibTest extends AbstractMibTestCase {
 
@@ -86,19 +72,36 @@ public class BgpRfc1269MibTest extends AbstractMibTestCase {
         
         SmiTrapType bgpBackwardTransition = bgpMib.findTrapType("bgpBackwardTransition");
         assertNotNull(bgpBackwardTransition);
-        
+
+        SmiVariable bgpPeerRemoteAddr = bgpMib.findVariable("bgpPeerRemoteAddr");
+        assertNotNull(bgpPeerRemoteAddr);
+
+        SmiVariable bgpPeerLastError = bgpMib.findVariable("bgpPeerLastError");
+        assertNotNull(bgpPeerLastError);
+
+        SmiVariable bgpPeerState = bgpMib.findVariable("bgpPeerState");
+        assertNotNull(bgpPeerState);
+
         assertEquals("1.3.6.1.2.1.15", bgpEstablished.getEnterpriseOid().getOidStr());
-        assertEquals(1, bgpEstablished.getSpecificType().getValue());
+        assertEquals(1, bgpEstablished.getSpecificType());
+        assertEquals("1.3.6.1.2.1.15.1", bgpEstablished.getOidStr());
+
         assertEquals("The BGP Established event is generated when\n"
             + "          the BGP FSM enters the ESTABLISHED state. ", bgpEstablished.getDescription());
+        assertNull(bgpEstablished.getReference());
+
         assertNotNull(bgpEstablished.getVariableTokens());
         assertEquals(3, bgpEstablished.getVariableTokens().size());
         assertEquals("bgpPeerRemoteAddr", bgpEstablished.getVariableTokens().get(0).getValue());
         assertEquals("bgpPeerLastError", bgpEstablished.getVariableTokens().get(1).getValue());
         assertEquals("bgpPeerState", bgpEstablished.getVariableTokens().get(2).getValue());
         assertEquals("bgpEstablished", bgpEstablished.getIdToken().getValue());
-        
-        
+
+        assertNotNull(bgpEstablished.getVariables());
+        assertEquals(3, bgpEstablished.getVariables().size());
+        assertSame(bgpPeerRemoteAddr, bgpEstablished.getVariables().get(0));
+        assertSame(bgpPeerLastError, bgpEstablished.getVariables().get(1));
+        assertSame(bgpPeerState, bgpEstablished.getVariables().get(2));
     }
 
 }

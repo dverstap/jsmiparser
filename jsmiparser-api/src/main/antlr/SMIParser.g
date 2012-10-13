@@ -657,7 +657,7 @@ int_macro_value_assignment[IdToken idToken] returns [SmiTrapType v = null]
 :
 	(v=traptype_macro[idToken] ASSIGN_OP specificType:NUMBER)
 {
-	v.setSpecificType(m_mp.intt(specificType));
+	v.setSpecificTypeToken(m_mp.intt(specificType));
 }
 ;
 
@@ -991,13 +991,10 @@ traptype_macro[IdToken idToken] returns [SmiTrapType tt = null]
 	"TRAP-TYPE"
 	"ENTERPRISE" enterprise:LOWER
 	("VARIABLES" L_BRACE variables=symbol_list R_BRACE)? 
-	("DESCRIPTION" desc:C_STRING)?
-	("REFERENCE" C_STRING)?
+	("DESCRIPTION" description:C_STRING)?
+	("REFERENCE" reference:C_STRING)?
 	{
-		tt = m_mp.createTrap(idToken);
-		tt.setEnterprise(m_mp.idt(enterprise));
-		tt.setDescription(m_mp.getOptCStr(desc));
-		tt.setVariableTokens(variables);
+		tt = m_mp.createTrap(idToken, m_mp.idt(enterprise), variables, m_mp.getOptCStr(description), m_mp.getOptCStr(reference));
 	}
 ;
 

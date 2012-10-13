@@ -223,6 +223,7 @@ public class IfMibTest extends AbstractMibTestCase {
             + "            transitioned into some other state (but not into the\n"
             + "            notPresent state).  This other state is indicated by the\n"
             + "            included value of ifOperStatus.", linkUp.getDescription());
+        assertNull(linkUp.getReference());
         assertNotNull(linkUp.getObjectTokens());
         assertEquals(3, linkUp.getObjectTokens().size());
         assertEquals("ifIndex", linkUp.getObjectTokens().get(0).getValue());
@@ -230,6 +231,8 @@ public class IfMibTest extends AbstractMibTestCase {
         assertEquals("ifOperStatus", linkUp.getObjectTokens().get(2).getValue());
         assertEquals(StatusV2.CURRENT, linkUp.getStatusV2());
         assertEquals("linkUp", linkUp.getIdToken().getValue());
+        assertNotNull(linkUp.getObjects());
+        assertEquals(3, linkUp.getObjects().size());
         assertSame(ifIndex, linkUp.getObjects().get(0));
         assertSame(ifAdminStatus, linkUp.getObjects().get(1));
         assertSame(ifOperStatus, linkUp.getObjects().get(2));
@@ -242,6 +245,7 @@ public class IfMibTest extends AbstractMibTestCase {
         		+ "            state from some other state (but not from the notPresent\n"
         		+ "            state).  This other state is indicated by the included value\n"
         		+ "            of ifOperStatus.", linkDown.getDescription());
+        assertNull(linkDown.getReference());
         assertNotNull(linkDown.getObjectTokens());
         assertEquals(3, linkDown.getObjectTokens().size());
         assertEquals("ifIndex", linkDown.getObjectTokens().get(0).getValue());
@@ -249,6 +253,8 @@ public class IfMibTest extends AbstractMibTestCase {
         assertEquals("ifOperStatus", linkDown.getObjectTokens().get(2).getValue());
         assertEquals(StatusV2.CURRENT, linkDown.getStatusV2());
         assertEquals("linkDown", linkDown.getIdToken().getValue());
+        assertNotNull(linkDown.getObjects());
+        assertEquals(3, linkDown.getObjects().size());
         assertSame(ifIndex, linkDown.getObjects().get(0));
         assertSame(ifAdminStatus, linkDown.getObjects().get(1));
         assertSame(ifOperStatus, linkDown.getObjects().get(2));

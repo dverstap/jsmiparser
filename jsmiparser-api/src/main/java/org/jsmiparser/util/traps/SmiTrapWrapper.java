@@ -15,11 +15,11 @@
  */
 package org.jsmiparser.util.traps;
 
-import java.util.List;
-
 import org.jsmiparser.smi.SmiModule;
 import org.jsmiparser.smi.SmiTrapType;
 import org.jsmiparser.util.token.IdToken;
+
+import java.util.List;
 
 public class SmiTrapWrapper implements TrapWrapper {
 
@@ -46,7 +46,7 @@ public class SmiTrapWrapper implements TrapWrapper {
     }
 
     public String getTrapOid() {
-        return trap.getEnterpriseOid().getOidStr() + '.' + trap.getSpecificType().getValue();
+        return trap.getEnterpriseOid().getOidStr() + '.' + trap.getSpecificType();
     }
 
 }

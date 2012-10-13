@@ -174,11 +174,13 @@ public class ModuleParser {
     	return new SmiNotificationType(idToken, m_module, objectTokens, status, description, reference);
     }
     
-    public SmiTrapType createTrap(IdToken idToken) {
+    public SmiTrapType createTrap(IdToken idToken, IdToken enterpriseIdToken,
+                                  List<IdToken> objectTokens, String description, String reference) {
     	final String methodWithParams = "createTrap(" + idToken.getId() + ")";
     	m_log.debug(methodWithParams);
     	
-    	return new SmiTrapType(idToken, m_module);
+    	return new SmiTrapType(idToken, m_module, enterpriseIdToken, objectTokens,
+                description, reference);
     }
 
     public SmiRow createRow(IdToken idToken, SmiType t) {

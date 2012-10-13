@@ -41,11 +41,9 @@ public interface Notification {
 
     List<IdToken> getObjectTokens();
 
-    StatusV2 getStatusV2();
-
     String getDescription();
 
-    int[] getOid();
+    String getReference();
 
     String getOidStr();
 
