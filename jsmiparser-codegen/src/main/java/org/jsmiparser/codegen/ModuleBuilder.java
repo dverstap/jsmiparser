@@ -26,9 +26,11 @@ import com.sun.codemodel.JMod;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JVar;
 import org.jsmiparser.smi.SmiModule;
+import org.jsmiparser.smi.SmiNotificationType;
 import org.jsmiparser.smi.SmiObjectType;
 import org.jsmiparser.smi.SmiOidValue;
 import org.jsmiparser.smi.SmiPrimitiveType;
+import org.jsmiparser.smi.SmiTrapType;
 import org.jsmiparser.smi.SmiVariable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -118,6 +120,11 @@ public class ModuleBuilder {
             ec.javadoc().append("<pre>" + objectType.getDescription() + "</pre>");
 
         }
+        if (v instanceof SmiNotificationType) {
+        	SmiNotificationType notificationType = (SmiNotificationType) v;
+        	ec.javadoc().append("<pre>" + notificationType.getDescription() + "</pre>");
+        }
+
         // TODO add link to generated enum type, if applicable
     }
 

@@ -24,6 +24,7 @@ import org.jsmiparser.smi.SmiImports;
 import org.jsmiparser.smi.SmiMacro;
 import org.jsmiparser.smi.SmiModule;
 import org.jsmiparser.smi.SmiNamedNumber;
+import org.jsmiparser.smi.SmiNotificationType;
 import org.jsmiparser.smi.SmiOidMacro;
 import org.jsmiparser.smi.SmiOidValue;
 import org.jsmiparser.smi.SmiPrimitiveType;
@@ -34,6 +35,7 @@ import org.jsmiparser.smi.SmiRow;
 import org.jsmiparser.smi.SmiSymbol;
 import org.jsmiparser.smi.SmiTable;
 import org.jsmiparser.smi.SmiTextualConvention;
+import org.jsmiparser.smi.SmiTrapType;
 import org.jsmiparser.smi.SmiType;
 import org.jsmiparser.smi.SmiVariable;
 import org.jsmiparser.smi.SmiVersion;
@@ -162,6 +164,20 @@ public class ModuleParser {
             unitsToken = new QuotedStringToken(makeLocation(units), units.getText(), '\"');
         }
         return new SmiVariable(idToken, m_module, t, unitsToken, defaultValue);
+    }
+    
+    public SmiNotificationType createNotification(IdToken idToken, StatusV2 status) {
+    	final String methodWithParams = "createNotification(" + idToken.getId() + ")";
+    	m_log.debug(methodWithParams);
+    	
+    	return new SmiNotificationType(idToken, m_module, status);
+    }
+    
+    public SmiTrapType createTrap(IdToken idToken) {
+    	final String methodWithParams = "createTrap(" + idToken.getId() + ")";
+    	m_log.debug(methodWithParams);
+    	
+    	return new SmiTrapType(idToken, m_module);
     }
 
     public SmiRow createRow(IdToken idToken, SmiType t) {
