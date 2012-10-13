@@ -16,58 +16,59 @@
 
 package org.jsmiparser.smi;
 
-import java.util.List;
-
 import org.jsmiparser.phase.xref.XRefProblemReporter;
 import org.jsmiparser.util.token.IdToken;
 
-public class SmiNotificationType extends SmiOidMacro {
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-    protected SmiType m_type;
+public class SmiNotificationType extends SmiOidMacro implements Notification {
+
     private List<IdToken> m_objectTokens;
+    private List<SmiVariable> m_objects = new ArrayList<SmiVariable>();
     private StatusV2 m_statusV2;
     private String m_description;
+    private String m_reference;
 
-    public SmiNotificationType(IdToken idToken, SmiModule module, StatusV2 statusV2) {
+    public SmiNotificationType(IdToken idToken, SmiModule module, List<IdToken> objectTokens, StatusV2 statusV2, String description, String reference) {
         super(idToken, module);
+        m_objectTokens = objectTokens;
+        if (m_objectTokens == null) {
+            m_objectTokens = Collections.emptyList();
+        }
         m_statusV2 = statusV2;
-    }
-
-    public SmiType getType() {
-        return m_type;
-    }
-    
-    public void setType(SmiType type) {
-    	m_type = type;
+        m_description = description;
+        m_reference = reference;
     }
 
     public void resolveReferences(XRefProblemReporter reporter) {
-    	// TODO What exactly should this method do for the case of NOTIFICATION-TYPE?
-        //m_type = m_type.resolveThis(reporter, null);
+        for (IdToken objectToken : m_objectTokens) {
+            SmiVariable variable = getModule().resolveReference(objectToken, SmiVariable.class, reporter);
+            if (variable != null) {
+                m_objects.add(variable);
+            }
+        }
+    }
+
+    public List<SmiVariable> getObjects() {
+        return m_objects;
+    }
+
+    public List<IdToken> getObjectTokens() {
+    	return m_objectTokens;
+    }
+
+    public StatusV2 getStatusV2() {
+        return m_statusV2;
     }
 
     public String getDescription() {
         return m_description;
     }
 
-    public void setDescription(String description) {
-        m_description = description;
+    public String getReference() {
+        return m_reference;
     }
 
-    public void setStatusV2(StatusV2 statusV2) {
-        m_statusV2 = statusV2;
-    }
-
-    
-    public StatusV2 getStatusV2() {
-    	return m_statusV2;
-    }
-
-    public void setObjectTokens(List<IdToken> objectTokens) {
-    	m_objectTokens = objectTokens;
-    }
-    
-    public List<IdToken> getObjectTokens() {
-    	return m_objectTokens;
-    }
 }

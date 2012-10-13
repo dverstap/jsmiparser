@@ -166,11 +166,12 @@ public class ModuleParser {
         return new SmiVariable(idToken, m_module, t, unitsToken, defaultValue);
     }
     
-    public SmiNotificationType createNotification(IdToken idToken, StatusV2 status) {
+    public SmiNotificationType createNotification(IdToken idToken, List<IdToken> objectTokens,
+                                                  StatusV2 status, String description, String reference) {
     	final String methodWithParams = "createNotification(" + idToken.getId() + ")";
     	m_log.debug(methodWithParams);
     	
-    	return new SmiNotificationType(idToken, m_module, status);
+    	return new SmiNotificationType(idToken, m_module, objectTokens, status, description, reference);
     }
     
     public SmiTrapType createTrap(IdToken idToken) {

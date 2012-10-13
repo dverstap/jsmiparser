@@ -193,7 +193,7 @@ public class IfMibTest extends AbstractMibTestCase {
         assertEquals("org", result.getValues().get(0).getId());
     }
     
-    public void testTrapTypes() {
+    public void testNotificationTypes() {
     	SmiModule ifMib = getMib().findModule("IF-MIB");
         assertNotNull(ifMib);
         
@@ -202,7 +202,16 @@ public class IfMibTest extends AbstractMibTestCase {
         
         SmiNotificationType linkDown = ifMib.findNotificationType("linkDown");
         assertNotNull(linkDown);
-        
+
+        SmiVariable ifIndex = ifMib.findVariable("ifIndex");
+        assertNotNull(ifIndex);
+
+        SmiVariable ifAdminStatus = ifMib.findVariable("ifAdminStatus");
+        assertNotNull(ifAdminStatus);
+
+        SmiVariable ifOperStatus = ifMib.findVariable("ifOperStatus");
+        assertNotNull(ifOperStatus);
+
         // coldStart is defined in SNMPv2-MIB, not in IF-MIB
         SmiNotificationType coldStart = ifMib.findNotificationType("coldStart");
         assertNull(coldStart);
@@ -221,7 +230,10 @@ public class IfMibTest extends AbstractMibTestCase {
         assertEquals("ifOperStatus", linkUp.getObjectTokens().get(2).getValue());
         assertEquals(StatusV2.CURRENT, linkUp.getStatusV2());
         assertEquals("linkUp", linkUp.getIdToken().getValue());
-        
+        assertSame(ifIndex, linkUp.getObjects().get(0));
+        assertSame(ifAdminStatus, linkUp.getObjects().get(1));
+        assertSame(ifOperStatus, linkUp.getObjects().get(2));
+
         
         assertEquals("1.3.6.1.6.3.1.1.5.3", linkDown.getOidStr());
         assertEquals("A linkDown trap signifies that the SNMP entity, acting in\n"
@@ -237,6 +249,9 @@ public class IfMibTest extends AbstractMibTestCase {
         assertEquals("ifOperStatus", linkDown.getObjectTokens().get(2).getValue());
         assertEquals(StatusV2.CURRENT, linkDown.getStatusV2());
         assertEquals("linkDown", linkDown.getIdToken().getValue());
+        assertSame(ifIndex, linkDown.getObjects().get(0));
+        assertSame(ifAdminStatus, linkDown.getObjects().get(1));
+        assertSame(ifOperStatus, linkDown.getObjects().get(2));
     }
 
 }

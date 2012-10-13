@@ -834,19 +834,17 @@ objectidentity_macro
 
 notificationtype_macro[IdToken idToken] returns [SmiNotificationType nt = null]
 {
+	List<IdToken> objectTokens = null;
 	StatusV2 status = null;
-	List<IdToken> objects = null;
 }
 :
 	"NOTIFICATION-TYPE"
-	("OBJECTS" L_BRACE objects=symbol_list R_BRACE)?
+	("OBJECTS" L_BRACE objectTokens=symbol_list R_BRACE)?
 	"STATUS" status=status_v2
-	"DESCRIPTION" desc:C_STRING ("REFERENCE" C_STRING)?
+	"DESCRIPTION" description:C_STRING
+	("REFERENCE" reference:C_STRING)?
 	{
-		nt = m_mp.createNotification(idToken, status);
-		nt.setStatusV2(status);
-		nt.setDescription(m_mp.getOptCStr(desc));
-		nt.setObjectTokens(objects);
+		nt = m_mp.createNotification(idToken, objectTokens, status, m_mp.getCStr(description), m_mp.getOptCStr(reference));
 	}
 ;
 
