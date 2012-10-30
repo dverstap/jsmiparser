@@ -72,7 +72,7 @@ public class OidComponent {
             if (m_parent != null) {
                 parent = m_parent.resolveNode(module, reporter);
                 if (parent == null) {
-                    System.out.println("couldn't find parent for: " + m_parent.getToken());
+                    reporter.reportCannotFindParent(m_parent.getToken());
                 }
             }
             m_node = doResolve(module, parent, reporter);
@@ -82,13 +82,13 @@ public class OidComponent {
                         if (m_valueToken != null) {
                             m_node = new SmiOidNode(parent, m_valueToken.getValue());
                         } else {
-                            System.out.println("valueToken missing for last subid: " + getToken());
+                            reporter.reportValueTokenMissingForLastSubid(getToken());
                         }
                     } else {
-                        System.out.println("parent missing for last subid: " + getToken());
+                        reporter.reporParentMissingForLastSubid(getToken());
                     }
                 } else {
-                    System.out.println("couldn't resolve non-last subid " + getToken());
+                    reporter.reportCannotResolveNonLastSubid(getToken());
                 }
             }
             m_isResolved = true;

@@ -57,4 +57,15 @@ public interface XRefProblemReporter {
     @ProblemMethod(message = "%s is not a valid value for the MAX-ACCESS(SMIv2) field. You are probably mixing v1/v2 constructions.", severity = ProblemSeverity.WARNING)
     void reportInvalidMaxAccess(IdToken idToken);
 
+    @ProblemMethod(message = "Couldn't find parent for %s")
+    void reportCannotFindParent(Token parentToken);
+
+    @ProblemMethod(message = "valueToken missing for last subid %s")
+    void reportValueTokenMissingForLastSubid(Token token);
+
+    @ProblemMethod(message = "Parent missing for last subid %s")
+    void reporParentMissingForLastSubid(Token token);
+
+    @ProblemMethod(message = "Couldn't resolve non-last subid %s")
+    void reportCannotResolveNonLastSubid(Token token);
 }
