@@ -19,7 +19,8 @@ public enum ModuleComplianceAccess {
     NOT_ACCESSIBLE(AccessAll.NOT_ACCESSIBLE),
     ACCESSIBLE_FOR_NOTIFY(AccessAll.ACCESSIBLE_FOR_NOTIFY),
     READ_ONLY(AccessAll.READ_ONLY),
-    READ_WRITE(AccessAll.READ_WRITE);
+    READ_WRITE(AccessAll.READ_WRITE),
+    READ_CREATE(AccessAll.READ_CREATE);
 
     private AccessAll m_accessAll;
 
