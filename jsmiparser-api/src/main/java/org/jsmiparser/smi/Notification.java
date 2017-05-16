@@ -27,7 +27,7 @@ import java.util.List;
  *     <li>the terminology of SMIv2.</li>
  * </ul>
  *
- * @see http://tools.ietf.org/html/rfc1908#section-2.2
+ * @see <a href="http://tools.ietf.org/html/rfc1908#section-2.2" target="_top">http://tools.ietf.org/html/rfc1908#section-2.2</a>
  */
 public interface Notification {
 

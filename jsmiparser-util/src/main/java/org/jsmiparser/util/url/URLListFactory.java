@@ -19,7 +19,7 @@ import java.net.URL;
 import java.util.List;
 
 /**
- * Utility interface to create a List<URL> for input to the FileParserPhase of the jsmiparser.
+ * Utility interface to create a List&lt;URL&gt; for input to the FileParserPhase of the jsmiparser.
  */
 public interface URLListFactory {
 
