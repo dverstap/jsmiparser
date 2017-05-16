@@ -15,20 +15,22 @@
  */
 package org.jsmiparser;
 
-import org.jsmiparser.smi.SmiNotificationType;
-import org.jsmiparser.smi.SmiVariable;
 import org.jsmiparser.smi.SmiConstants;
+import org.jsmiparser.smi.SmiIndex;
 import org.jsmiparser.smi.SmiMib;
 import org.jsmiparser.smi.SmiModule;
+import org.jsmiparser.smi.SmiModuleIdentity;
+import org.jsmiparser.smi.SmiModuleRevision;
+import org.jsmiparser.smi.SmiNotificationType;
+import org.jsmiparser.smi.SmiOidNode;
 import org.jsmiparser.smi.SmiPrimitiveType;
 import org.jsmiparser.smi.SmiRow;
 import org.jsmiparser.smi.SmiTable;
 import org.jsmiparser.smi.SmiTextualConvention;
 import org.jsmiparser.smi.SmiType;
+import org.jsmiparser.smi.SmiVariable;
 import org.jsmiparser.smi.SmiVersion;
 import org.jsmiparser.smi.StatusV2;
-import org.jsmiparser.smi.SmiIndex;
-import org.jsmiparser.smi.SmiOidNode;
 
 import java.net.URISyntaxException;
 import java.util.List;
@@ -260,4 +262,20 @@ public class IfMibTest extends AbstractMibTestCase {
         assertSame(ifOperStatus, linkDown.getObjects().get(2));
     }
 
+    public void testModuleIdentity() {
+        SmiModule ifMib = getMib().findModule("IF-MIB");
+        assertNotNull(ifMib);
+
+        SmiModuleIdentity moduleIdentity = ifMib.getModuleIdentity();
+        assertNotNull("ModuleIdentity must not be null", moduleIdentity);
+        assertEquals("IETF Interfaces MIB Working Group", moduleIdentity.getOrganization());
+        assertEquals("200006140000Z", moduleIdentity.getLastUpdated());
+
+        List<SmiModuleRevision> revisions = moduleIdentity.getRevisions();
+        assertEquals(3, revisions.size());
+
+        SmiModuleRevision lastRevision = revisions.get(2);
+        assertEquals("199311082155Z", lastRevision.getRevision());
+        assertEquals("Initial revision, published as part of RFC 1573.", lastRevision.getDescription());
+    }
 }

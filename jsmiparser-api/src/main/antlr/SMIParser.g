@@ -809,19 +809,28 @@ objecttype_macro_augments[IdToken idToken, SmiType type] returns [SmiRow row = m
 
 
 moduleidentity_macro
+{
+    List<SmiModuleRevision> revisions = new ArrayList<SmiModuleRevision>();
+}
 :
 	"MODULE-IDENTITY" 
-	"LAST-UPDATED" C_STRING
-	"ORGANIZATION" C_STRING
-	"CONTACT-INFO" C_STRING 
-	"DESCRIPTION"  C_STRING
-	(moduleidentity_macro_revision)*
+	"LAST-UPDATED" lastUpdated:C_STRING
+	"ORGANIZATION" organization:C_STRING
+	"CONTACT-INFO" contactInfo:C_STRING
+	"DESCRIPTION"  description:C_STRING
+	(moduleidentity_macro_revision[revisions])*
+	{
+	    m_mp.setModuleIdentity(lastUpdated, organization, contactInfo, description, revisions);
+	}
 ;
 
-moduleidentity_macro_revision
+moduleidentity_macro_revision[List<SmiModuleRevision> revisions]
 :
-	"REVISION"    C_STRING
-	"DESCRIPTION" C_STRING
+	"REVISION"    revision:C_STRING
+	"DESCRIPTION" description:C_STRING
+	{
+        revisions.add(m_mp.createModuleRevision(revision, description));
+	}
 ;
 
 
