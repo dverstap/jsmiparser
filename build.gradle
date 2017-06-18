@@ -4,7 +4,7 @@ buildscript {
   repositories { mavenCentral() }
 }
 
-def _hasGeneratedSources(project) {
+static def _hasGeneratedSources(project) {
   for (ss in project.sourceSets) {
     for (f in ss.allJava) {
       //println(f.path)
@@ -16,7 +16,7 @@ def _hasGeneratedSources(project) {
   return false
 }
 
-def determineIdeaExcludeDirs(project) {
+static def determineIdeaExcludeDirs(project) {
   def result = []
   if (_hasGeneratedSources(project)) {
     for (f in project.buildDir.listFiles()) {
@@ -128,7 +128,7 @@ subprojects { subproject ->
         beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
         repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-          authentication(userName: sonatypeUsername, password: sonatypePassword)
+          authentication(userName: ossrhUsername, password: ossrhPassword)
         }
 
         pom {
