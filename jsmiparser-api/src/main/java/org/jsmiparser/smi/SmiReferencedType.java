@@ -24,7 +24,7 @@ import java.util.List;
  * This class is only used during parsing, to temporarily referenced type that are defined
  * somewhere else, or that have not even been defined. If the mib is correct, there will
  * never be instances of this class in the final SmiMib datastructure.
- * <p/>
+ * <p>
  * TODO move class out of public API
  */
 public class SmiReferencedType extends SmiType {

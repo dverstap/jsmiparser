@@ -56,6 +56,7 @@ public class SmiModule {
     private SmiVersion m_version;
     private boolean m_isSmiDefinitionModule;
 
+    private SmiModuleIdentity m_moduleIdentity;
 
     public SmiModule(SmiMib mib, IdToken idToken) {
         m_mib = mib;
@@ -218,6 +219,14 @@ public class SmiModule {
 
     public SmiMib getMib() {
         return m_mib;
+    }
+
+    public SmiModuleIdentity getModuleIdentity() {
+        return m_moduleIdentity;
+    }
+
+    public void setModuleIdentity(SmiModuleIdentity identity) {
+        m_moduleIdentity = identity;
     }
 
     public SmiType createType(IdToken idToken) {

@@ -23,6 +23,8 @@ import org.jsmiparser.smi.SmiDefaultValue;
 import org.jsmiparser.smi.SmiImports;
 import org.jsmiparser.smi.SmiMacro;
 import org.jsmiparser.smi.SmiModule;
+import org.jsmiparser.smi.SmiModuleIdentity;
+import org.jsmiparser.smi.SmiModuleRevision;
 import org.jsmiparser.smi.SmiNamedNumber;
 import org.jsmiparser.smi.SmiNotificationType;
 import org.jsmiparser.smi.SmiOidMacro;
@@ -50,7 +52,11 @@ import org.jsmiparser.util.token.QuotedStringToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.jsmiparser.smi.SmiPrimitiveType.INTEGER;
@@ -362,5 +368,12 @@ public class ModuleParser {
         return new ScopedId(m_module, moduleToken != null ? idt(moduleToken) : null, idt(symbolToken));
     }
 
+    public void setModuleIdentity(Token lastUpdated, Token organization, Token contactInfo, Token description, List<SmiModuleRevision> revisions) {
+        m_module.setModuleIdentity(new SmiModuleIdentity(getOptCStr(lastUpdated), getOptCStr(organization), getOptCStr(contactInfo), getOptCStr(description), revisions));
+    }
+
+    public SmiModuleRevision createModuleRevision(Token revision, Token description) {
+        return new SmiModuleRevision(getOptCStr(revision), getOptCStr(description));
+    }
 }
 
