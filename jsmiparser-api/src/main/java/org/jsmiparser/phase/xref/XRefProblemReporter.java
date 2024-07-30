@@ -68,4 +68,7 @@ public interface XRefProblemReporter {
 
     @ProblemMethod(message = "Couldn't resolve non-last subid %s")
     void reportCannotResolveNonLastSubid(Token token);
+    
+    @ProblemMethod(message = "More than one value found (%s and %s)", severity = ProblemSeverity.WARNING)
+    void reportMoreThanOneValue(IdToken token1, IdToken token2);
 }

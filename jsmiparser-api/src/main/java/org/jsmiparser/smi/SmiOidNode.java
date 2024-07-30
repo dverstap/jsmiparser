@@ -1,5 +1,7 @@
 package org.jsmiparser.smi;
 
+import org.jsmiparser.exception.SmiMultipleValueException ;
+
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -129,7 +131,7 @@ public class SmiOidNode {
                 if (result == null) {
                     result = clazz.cast(value);
                 } else {
-                    throw new IllegalArgumentException("more than one found");
+                    throw new SmiMultipleValueException(result, value);
                 }
             }
         }

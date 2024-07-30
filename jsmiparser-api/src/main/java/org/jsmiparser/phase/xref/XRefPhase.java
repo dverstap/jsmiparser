@@ -98,7 +98,7 @@ public class XRefPhase implements Phase {
         Collection<SmiModule> modules = mib.getModules();
         resolveReferences(modules);
         resolveOids(modules);
-        mib.fillExtraTables();
+        mib.fillExtraTables(m_reporter);
         resolveDefaultValues(mib);
 
         return mib;

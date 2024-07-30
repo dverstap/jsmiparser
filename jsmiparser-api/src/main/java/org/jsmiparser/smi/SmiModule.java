@@ -15,6 +15,7 @@
  */
 package org.jsmiparser.smi;
 
+import org.jsmiparser.exception.SmiMultipleValueException ;
 import org.jsmiparser.phase.xref.XRefProblemReporter;
 import org.jsmiparser.util.token.IdToken;
 import org.slf4j.Logger;
@@ -308,12 +309,16 @@ public class SmiModule {
         }
     }
 
-    public void fillExtraTables() {
+    public void fillExtraTables(XRefProblemReporter reporter) {
         for (SmiVariable variable : m_variableMap.values()) {
-            if (variable.isColumn()) {
-                m_columnMap.put(variable.getId(), variable);
-            } else {
-                m_scalarMap.put(variable.getId(), variable);
+            try {
+                if (variable.isColumn()) {
+                    m_columnMap.put(variable.getId(), variable);
+                } else {
+                    m_scalarMap.put(variable.getId(), variable);
+                }
+            } catch (SmiMultipleValueException e) {
+            	reporter.reportMoreThanOneValue(e.getValue1().getIdToken(), e.getValue2().getIdToken()) ;
             }
         }
     }

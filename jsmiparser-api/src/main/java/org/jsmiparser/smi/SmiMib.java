@@ -153,10 +153,10 @@ public class SmiMib {
         }
     }
 
-    public void fillExtraTables() {
+    public void fillExtraTables(XRefProblemReporter reporter) {
         // TODO deal with double defines
         for (SmiModule module : m_moduleMap.values()) {
-            module.fillExtraTables();
+            module.fillExtraTables(reporter);
             m_scalarMap.putAll(module.m_scalarMap);
             m_columnMap.putAll(module.m_columnMap);
         }
