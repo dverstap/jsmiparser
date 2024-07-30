@@ -43,7 +43,7 @@ public class SmiRow extends SmiObjectType {
 
         List<SmiVariable> result = new ArrayList<SmiVariable>();
         for (SmiOidNode child : getNode().getChildren()) {
-            result.add(child.getSingleValue(SmiVariable.class));
+            result.add(child.getSingleValue(SmiVariable.class, getModule()));
         }
         return result;
     }
